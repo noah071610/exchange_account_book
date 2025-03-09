@@ -20,22 +20,19 @@ class AccountBookBtnModelAdapter extends TypeAdapter<AccountBookBtnModel> {
       label: fields[0] as String,
       icon: fields[1] as String,
       color: fields[2] as String,
-      favorite: fields[3] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, AccountBookBtnModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.label)
       ..writeByte(1)
       ..write(obj.icon)
       ..writeByte(2)
-      ..write(obj.color)
-      ..writeByte(3)
-      ..write(obj.favorite);
+      ..write(obj.color);
   }
 
   @override
@@ -58,7 +55,6 @@ AccountBookBtnModel _$AccountBookBtnModelFromJson(Map<String, dynamic> json) =>
       label: json['label'] as String,
       icon: json['icon'] as String,
       color: json['color'] as String,
-      favorite: json['favorite'] as bool,
     );
 
 Map<String, dynamic> _$AccountBookBtnModelToJson(
@@ -67,5 +63,4 @@ Map<String, dynamic> _$AccountBookBtnModelToJson(
       'label': instance.label,
       'icon': instance.icon,
       'color': instance.color,
-      'favorite': instance.favorite,
     };

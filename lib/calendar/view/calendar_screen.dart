@@ -1,7 +1,8 @@
 import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/provider/account_book_list_provider.dart';
 import 'package:currency_exchange/common/widgets/account_book_card.dart';
-import 'package:currency_exchange/common/widgets/country_image.dart';
+import 'package:currency_exchange/common/widgets/account_total_by_day.dart';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,7 +21,7 @@ class CalenderScreen extends ConsumerStatefulWidget {
 class _CalenderScreenState extends ConsumerState<CalenderScreen> {
   DateTime _selectedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.week; // 초기 포맷 설정
-  bool isShowDetailOfTotal = false;
+  bool isShowList = true;
 
   @override
   Widget build(BuildContext context) {
@@ -36,44 +37,22 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
 
     final list = accountBook.accountBookDic[year]?[month]?[day] ?? [];
 
-    final allListThisMonth = accountBook.accountBookDic[year]?[month]?.values
-            .expand((element) => element)
-            .toList() ??
-        [];
+    final Map<String, Map<String, dynamic>> totalByCountry = {};
 
-    final spendList = allListThisMonth.where((item) => item.isSpend).toList();
-    final incomeList = allListThisMonth.where((item) => !item.isSpend).toList();
-    final totalSpend =
-        spendList.fold(0.0, (sum, item) => sum + item.baseCurrency.amount);
-    final totalIncome =
-        incomeList.fold(0.0, (sum, item) => sum + item.baseCurrency.amount);
+    final List<String> countryCodes =
+        list.map((item) => item.currency.countryCode).toSet().toList();
 
-    final Map<String, List<double>> thisMonthDetail = {};
-    final List<String> targetCountryCode = allListThisMonth
-        .map((e) => e.baseCurrency.countryCode)
-        .toSet()
-        .toList();
-
-    if (isShowDetailOfTotal) {
-      if (_calendarFormat == CalendarFormat.month) {
-        setState(() {
-          _calendarFormat = CalendarFormat.week;
-        });
-      }
-      for (var i = 0; i < targetCountryCode.length; i++) {
-        final spendListSpecific = spendList
-            .where((e) => e.baseCurrency.countryCode == targetCountryCode[i]);
-        final totalSpendSpecific = spendListSpecific.fold(
-            0.0, (sum, item) => sum + item.baseCurrency.amount);
-        final incomeListSpecific = incomeList
-            .where((e) => e.baseCurrency.countryCode == targetCountryCode[i]);
-        final totalIncomeSpecific = incomeListSpecific.fold(
-            0.0, (sum, item) => sum + item.baseCurrency.amount);
-        thisMonthDetail[targetCountryCode[i]] = [
-          totalSpendSpecific,
-          totalIncomeSpecific
-        ];
-      }
+    for (var code in countryCodes) {
+      totalByCountry[code] = {
+        'currency':
+            currencyModels.firstWhere((model) => model.countryCode == code),
+        'spendSum': list
+            .where((e) => e.currency.countryCode == code && e.isSpend)
+            .fold(0.0, (sum, e) => sum + e.currency.amount),
+        'incomeSum': list
+            .where((e) => e.currency.countryCode == code && !e.isSpend)
+            .fold(0.0, (sum, e) => sum + e.currency.amount),
+      };
     }
 
     return Column(
@@ -82,109 +61,6 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(
-                height: 20,
-              ),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    isShowDetailOfTotal = !isShowDetailOfTotal;
-                  });
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.account_balance_wallet, color: Colors.red),
-                          SizedBox(width: 5),
-                          Text(
-                            '지출: $totalSpend',
-                            style: TextStyle(color: Colors.red),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: 20,
-                      width: 1,
-                      color: Colors.grey,
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.trending_up, color: Colors.blue),
-                          SizedBox(width: 5),
-                          Text(
-                            '수입: $totalIncome',
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              if (isShowDetailOfTotal)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 20.0,
-                    right: 20.0,
-                    top: 15.0,
-                    bottom: 10.0,
-                  ),
-                  child: Column(
-                    children: thisMonthDetail.entries.map((entry) {
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              spacing: 3.0,
-                              children: [
-                                CountryImage(language: entry.key),
-                                Text(
-                                  '?????',
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                  ),
-                                )
-                              ],
-                            ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  entry.value[0].toString(),
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                Container(
-                                  height: 14,
-                                  width: 1,
-                                  color: Colors.grey,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                ),
-                                Text(
-                                  entry.value[1].toString(),
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
               TableCalendar(
                 firstDay: DateTime.utc(2010, 10, 16),
                 lastDay: DateTime.utc(2030, 3, 14),
@@ -207,9 +83,6 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
                       setState(() {
                         _calendarFormat = CalendarFormat.month;
                       });
-                      if (isShowDetailOfTotal) {
-                        isShowDetailOfTotal = false;
-                      }
                     } else if (details.primaryDelta! < 0) {
                       // 위로 스와이프
                       setState(() {
@@ -226,16 +99,204 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
                 ),
               )
             ]),
-        Expanded(
-          // 리스트
-          child: ListView.builder(
-            itemCount: list.length, // 예시로 20개의 아이템을 생성
-            itemBuilder: (context, index) {
-              return AccountBookCard(model: list[index], onTap: (a) {});
-            },
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor:
+                        isShowList ? Colors.deepPurpleAccent : Colors.white,
+                    foregroundColor: isShowList ? Colors.white : Colors.black54,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(0),
+                        bottomRight: Radius.circular(0),
+                        topLeft: Radius.circular(10),
+                        bottomLeft: Radius.circular(10),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isShowList = true;
+                    });
+                  },
+                  child: Text('리스트 보기',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+              Expanded(
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    backgroundColor:
+                        !isShowList ? Colors.deepPurpleAccent : Colors.white,
+                    foregroundColor:
+                        !isShowList ? Colors.white : Colors.black54,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        bottomRight: Radius.circular(10),
+                        topLeft: Radius.circular(0),
+                        bottomLeft: Radius.circular(0),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      isShowList = false;
+                    });
+                  },
+                  child: Text('통계 보기',
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ],
           ),
         ),
+        isShowList
+            ? Expanded(
+                // 리스트
+                child: ListView.builder(
+                  itemCount: list.length, // 예시로 20개의 아이템을 생성
+                  itemBuilder: (context, index) {
+                    return AccountBookCard(model: list[index], onTap: (a) {});
+                  },
+                ),
+              )
+            : countryCodes.isNotEmpty
+                ? Expanded(
+                    // 리스트
+                    child: ListView.separated(
+                      itemCount: countryCodes.length,
+                      itemBuilder: (context, index) {
+                        if (totalByCountry[countryCodes[index]] == null) {
+                          return Container();
+                        }
+                        return AccountTotalByDay(
+                            model: totalByCountry[countryCodes[index]]!);
+                      },
+                      separatorBuilder: (context, index) => Column(
+                        children: [
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Divider(
+                            color: Colors.black12,
+                            thickness: 1,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Container(),
       ],
     );
   }
 }
+
+
+              // GestureDetector(
+              //   onTap: () {
+              //     setState(() {
+              //       isShowDetailOfTotal = !isShowDetailOfTotal;
+              //     });
+              //   },
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       Expanded(
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             Icon(Icons.account_balance_wallet, color: Colors.red),
+              //             SizedBox(width: 5),
+              //             Text(
+              //               '지출: ${formatDouble(totalSpend)}',
+              //               style: TextStyle(color: Colors.red),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //       Container(
+              //         height: 20,
+              //         width: 1,
+              //         color: Colors.grey,
+              //       ),
+              //       Expanded(
+              //         child: Row(
+              //           mainAxisAlignment: MainAxisAlignment.center,
+              //           children: [
+              //             Icon(Icons.trending_up, color: Colors.blue),
+              //             SizedBox(width: 5),
+              //             Text(
+              //               '수입: ${formatDouble(totalIncome)}',
+              //               style: TextStyle(color: Colors.blue),
+              //             ),
+              //           ],
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              // if (isShowDetailOfTotal)
+              //   Padding(
+              //     padding: const EdgeInsets.only(
+              //       left: 10.0,
+              //       right: 10.0,
+              //       top: 15.0,
+              //       bottom: 10.0,
+              //     ),
+              //     child: Column(
+              //       children: thisMonthDetail.entries.map((entry) {
+              //         return Container(
+              //           margin: EdgeInsets.only(bottom: 5.0),
+              //           child: Row(
+              //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //             children: [
+              //               Row(
+              //                 crossAxisAlignment: CrossAxisAlignment.center,
+              //                 spacing: 3.0,
+              //                 children: [
+              //                   CountryImage(language: entry.key),
+              //                   Text(
+              //                     '?????',
+              //                     style: TextStyle(
+              //                       color: Colors.black54,
+              //                     ),
+              //                   )
+              //                 ],
+              //               ),
+              //               Row(
+              //                 crossAxisAlignment: CrossAxisAlignment.center,
+              //                 children: [
+              //                   Text(
+              //                     entry.value[0].toString(),
+              //                     style: TextStyle(
+              //                       color: Colors.red,
+              //                     ),
+              //                   ),
+              //                   Container(
+              //                     height: 14,
+              //                     width: 1,
+              //                     color: Colors.grey,
+              //                     margin: EdgeInsets.symmetric(horizontal: 5.0),
+              //                   ),
+              //                   Text(
+              //                     entry.value[1].toString(),
+              //                     style: TextStyle(
+              //                       color: Colors.blue,
+              //                     ),
+              //                   )
+              //                 ],
+              //               )
+              //             ],
+              //           ),
+              //         );
+              //       }).toList(),
+              //     ),
+              //   ),

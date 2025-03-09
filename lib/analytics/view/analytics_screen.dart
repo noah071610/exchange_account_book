@@ -72,10 +72,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         [];
 
     final Map<String, List<double>> thisMonthDetail = {};
-    final List<String> targetCountryCode = allListThisMonth
-        .map((e) => e.baseCurrency.countryCode)
-        .toSet()
-        .toList();
+    final List<String> targetCountryCode =
+        allListThisMonth.map((e) => e.currency.countryCode).toSet().toList();
 
     // 예시로 주어진 연도와 월을 사용하여 주 목록을 생성
     List<List<DateTime>> weeks =
@@ -238,26 +236,26 @@ class _WeekItemState extends ConsumerState<WeekItem> {
       final double spendTargetDay = map[d] != null
           ? map[d]!
               .where((e) => e.isSpend)
-              .fold(0, (sum, item) => sum + item.baseCurrency.amount)
+              .fold(0, (sum, item) => sum + item.currency.amount)
           : 0;
       chartList[t == 7 ? 0 : t][1] = spendTargetDay;
       weekIncome = weekIncome +
           (map[d] != null
-              ? map[d]!.where((e) => !e.isSpend).fold(
-                  0, (sum, item) => sum + item.baseCurrency.amount.toInt())
+              ? map[d]!
+                  .where((e) => !e.isSpend)
+                  .fold(0, (sum, item) => sum + item.currency.amount.toInt())
               : 0);
       weekSpend = weekSpend + spendTargetDay;
     }
-    print(map);
 
     // print(widget.targetDays);
 
     // final spendList = allListThisMonth.where((item) => item.isSpend).toList();
     // final incomeList = allListThisMonth.where((item) => !item.isSpend).toList();
     // final totalSpend = spendList.fold(
-    //     0.0, (sum, item) => sum + item.baseCurrency.displayAmount);
+    //     0.0, (sum, item) => sum + item.currency.displayAmount);
     // final totalIncome = incomeList.fold(
-    //     0.0, (sum, item) => sum + item.baseCurrency.displayAmount);
+    //     0.0, (sum, item) => sum + item.currency.displayAmount);
 
     return GestureDetector(
       onTap: () {

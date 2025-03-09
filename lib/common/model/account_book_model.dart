@@ -12,34 +12,34 @@ part 'account_book_model.g.dart';
 class AccountBookModel {
   @JsonKey()
   @HiveField(0)
-  final AccountBookBtnModel category;
+  final String accountType;
 
   @JsonKey()
   @HiveField(1)
-  final String consumptionType;
+  final String subType;
 
   @JsonKey()
   @HiveField(2)
-  final bool isSpend;
+  final AccountBookBtnModel category;
 
   @JsonKey()
   @HiveField(3)
-  final CurrencyModel baseCurrency;
+  final CurrencyModel currency;
 
   @JsonKey()
   @HiveField(4)
-  final CurrencyModel targetCurrency;
+  final bool isSpend;
 
   @JsonKey()
   @HiveField(5)
   final DateTime createdAt;
 
   AccountBookModel({
-    required this.category,
-    required this.consumptionType,
+    required this.accountType,
+    required this.subType,
     required this.isSpend,
-    required this.baseCurrency,
-    required this.targetCurrency,
+    required this.category,
+    required this.currency,
     required this.createdAt,
   });
 
@@ -49,19 +49,19 @@ class AccountBookModel {
   Map<String, dynamic> toJson() => _$AccountBookModelToJson(this);
 
   AccountBookModel copyWith({
+    String? accountType,
+    String? subType,
     AccountBookBtnModel? category,
-    String? consumptionType,
+    CurrencyModel? currency,
     bool? isSpend,
-    CurrencyModel? baseCurrency,
-    CurrencyModel? targetCurrency,
     DateTime? createdAt,
   }) {
     return AccountBookModel(
-      category: category ?? this.category,
-      consumptionType: consumptionType ?? this.consumptionType,
+      accountType: accountType ?? this.accountType,
+      subType: subType ?? this.subType,
       isSpend: isSpend ?? this.isSpend,
-      baseCurrency: baseCurrency ?? this.baseCurrency,
-      targetCurrency: targetCurrency ?? this.targetCurrency,
+      category: category ?? this.category,
+      currency: currency ?? this.currency,
       createdAt: createdAt ?? this.createdAt,
     );
   }

@@ -18,16 +18,19 @@ class AccountBookCategoryModelAdapter
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AccountBookCategoryModel(
-      categoryList: (fields[0] as List).cast<AccountBookBtnModel>(),
+      spendCategories: (fields[0] as List).cast<AccountBookBtnModel>(),
+      incomeCategories: (fields[1] as List).cast<AccountBookBtnModel>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, AccountBookCategoryModel obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.categoryList);
+      ..write(obj.spendCategories)
+      ..writeByte(1)
+      ..write(obj.incomeCategories);
   }
 
   @override
@@ -48,7 +51,10 @@ class AccountBookCategoryModelAdapter
 AccountBookCategoryModel _$AccountBookCategoryModelFromJson(
         Map<String, dynamic> json) =>
     AccountBookCategoryModel(
-      categoryList: (json['categoryList'] as List<dynamic>)
+      spendCategories: (json['spendCategories'] as List<dynamic>)
+          .map((e) => AccountBookBtnModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      incomeCategories: (json['incomeCategories'] as List<dynamic>)
           .map((e) => AccountBookBtnModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
@@ -56,5 +62,6 @@ AccountBookCategoryModel _$AccountBookCategoryModelFromJson(
 Map<String, dynamic> _$AccountBookCategoryModelToJson(
         AccountBookCategoryModel instance) =>
     <String, dynamic>{
-      'categoryList': instance.categoryList,
+      'spendCategories': instance.spendCategories,
+      'incomeCategories': instance.incomeCategories,
     };

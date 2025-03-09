@@ -61,7 +61,7 @@ class AccountBookCard extends StatelessWidget {
                       color: const Color.fromARGB(255, 191, 245, 190),
                     ),
                     child: Text(
-                      context.tr('category.${model.consumptionType}'),
+                      context.tr('category.${model.subType}'),
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
@@ -94,44 +94,25 @@ class AccountBookCard extends StatelessWidget {
                     ),
                   ),
                   SizedBox(
-                    width: 4,
+                    width: 2,
                   ),
                   Text(
-                    model.baseCurrency.currencyCode,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: model.isSpend ? Colors.redAccent : Colors.green,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 1,
-                  ),
-                  Text(
-                    model.baseCurrency.amount.toString(),
+                    model.currency.currencySymbol,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: model.isSpend ? Colors.redAccent : Colors.green,
                     ),
-                  )
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    model.targetCurrency.currencyCode,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.black54,
-                    ),
+                  ),
+                  SizedBox(
+                    width: 3,
                   ),
                   Text(
-                    model.targetCurrency.amount.toString(),
+                    model.currency.amount.toString(),
                     style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.black54,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: model.isSpend ? Colors.redAccent : Colors.green,
                     ),
                   )
                 ],

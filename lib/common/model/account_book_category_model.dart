@@ -9,10 +9,15 @@ part 'account_book_category_model.g.dart';
 class AccountBookCategoryModel {
   @JsonKey()
   @HiveField(0)
-  final List<AccountBookBtnModel> categoryList;
+  final List<AccountBookBtnModel> spendCategories;
+
+  @JsonKey()
+  @HiveField(1)
+  final List<AccountBookBtnModel> incomeCategories;
 
   AccountBookCategoryModel({
-    required this.categoryList,
+    required this.spendCategories,
+    required this.incomeCategories,
   });
 
   factory AccountBookCategoryModel.fromJson(Map<String, dynamic> json) =>
@@ -21,10 +26,12 @@ class AccountBookCategoryModel {
   Map<String, dynamic> toJson() => _$AccountBookCategoryModelToJson(this);
 
   AccountBookCategoryModel copyWith({
-    List<AccountBookBtnModel>? categoryList,
+    List<AccountBookBtnModel>? spendCategories,
+    List<AccountBookBtnModel>? incomeCategories,
   }) {
     return AccountBookCategoryModel(
-      categoryList: categoryList ?? this.categoryList,
+      spendCategories: spendCategories ?? this.spendCategories,
+      incomeCategories: incomeCategories ?? this.incomeCategories,
     );
   }
 }

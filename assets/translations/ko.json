@@ -124,6 +124,12 @@
     "qrCode": "QR 코드",
     "transfer": "이체",
     "spend": "지출",
-    "income": "수입"
+    "income": "수입",
+    "salary": "월급",
+    "allowance": "부수입",
+    "savings": "저금액",
+    "exchange": "환전",
+    "exchangeSpend": "환전 출금",
+    "exchangeIncome": "환전 송금"
   }
 }

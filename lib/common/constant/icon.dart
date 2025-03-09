@@ -21,4 +21,9 @@ final iconDictionary = {
   'transfer': Icons.account_balance_wallet_outlined,
   'spend': FeatherIcons.arrowUp, // 지출에 어울리는 아이콘
   'income': FeatherIcons.arrowDown, // 수입에 어울리는 아이콘
+  'attachMoney': Icons.attach_money, // 월급에 어울리는 아이콘
+  'accountBalanceWallet': Icons.account_balance_wallet, // 계좌이체에 어울리는 아이콘
+  'cardGiftcard': Icons.card_giftcard, // 용돈에 어울리는 아이콘
+  'savings': Icons.savings, // 저금에 어울리는 아이콘
+  'swap_horiz': Icons.swap_horiz, // 환전에 어울리는 아이콘
 };

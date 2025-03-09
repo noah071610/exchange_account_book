@@ -41,26 +41,26 @@ void main() async {
 
   Hive.registerAdapter(SettingModelAdapter());
 
-  await Hive.deleteFromDisk();
-  try {
-    final appDocumentDir =
-        await path_provider.getApplicationDocumentsDirectory();
-    final hivePath = appDocumentDir.path;
+  // await Hive.deleteFromDisk();
+  // try {
+  //   final appDocumentDir =
+  //       await path_provider.getApplicationDocumentsDirectory();
+  //   final hivePath = appDocumentDir.path;
 
-    // Hive 닫기
-    await Hive.close();
+  //   // Hive 닫기
+  //   await Hive.close();
 
-    // Hive 디렉토리 삭제
-    final directory = Directory(hivePath);
-    if (await directory.exists()) {
-      await directory.delete(recursive: true);
-    }
+  //   // Hive 디렉토리 삭제
+  //   final directory = Directory(hivePath);
+  //   if (await directory.exists()) {
+  //     await directory.delete(recursive: true);
+  //   }
 
-    // Hive 재초기화
-    Hive.init(hivePath);
-  } on HiveError {
-    await Hive.deleteFromDisk();
-  }
+  //   // Hive 재초기화
+  //   Hive.init(hivePath);
+  // } on HiveError {
+  //   await Hive.deleteFromDisk();
+  // }
 
   runApp(
     ProviderScope(

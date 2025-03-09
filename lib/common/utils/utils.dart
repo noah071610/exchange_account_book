@@ -87,9 +87,6 @@ String convertToKoreanNumber(double value, BuildContext context) {
     unitIndex++;
   }
   String finalResult = result.join() + decimalPart;
-  if (finalResult.endsWith('0')) {
-    finalResult = finalResult.substring(0, finalResult.length - 1);
-  }
   return finalResult;
 }
 
@@ -119,12 +116,14 @@ Map<String, double> convertExchangeRates(String baseCurrency) {
   return convertedRates;
 }
 
-String formatDouble(double value) {
+String formatDouble(double value, {bool isDecimal = true}) {
   String result = value.toStringAsFixed(2);
   if (result.endsWith('.00')) {
     result = result.substring(0, result.length - 3);
   }
-  RegExp regExp = RegExp(r'\B(?=(\d{3})+(?!\d))');
-  result = result.replaceAllMapped(regExp, (Match match) => ',');
+  if (isDecimal) {
+    RegExp regExp = RegExp(r'\B(?=(\d{3})+(?!\d))');
+    result = result.replaceAllMapped(regExp, (Match match) => ',');
+  }
   return result;
 }

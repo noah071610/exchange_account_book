@@ -65,6 +65,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
   String? activeCalc;
   bool? isPageOfAccountBook = false;
   String consumptionType = 'cash';
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
@@ -75,7 +76,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
   }
 
   AccountBookBtnModel? selectedCategory;
-  String spendOrIncomeState = 'spend';
+  String accountType = 'spend';
 
   void onPressedCalcBtn(String value) {
     if (value.contains(RegExp(r'^[0-9]$'))) {
@@ -176,402 +177,521 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
     final setCurrency = ref.read(currencyListProvider.notifier).setCurrency;
     final accountBook = ref.read(accountBookListProvider.notifier);
     final currencyList = ref.watch(currencyListProvider).currencyList;
-    final categoryList = ref.watch(accountBookCategoryProvider).categoryList;
+    final spendCategories =
+        ref.watch(accountBookCategoryProvider).spendCategories;
+    final incomeCategories =
+        ref.watch(accountBookCategoryProvider).incomeCategories;
 
     if (selectedCategory == null) {
       setState(() {
-        selectedCategory = categoryList[0];
+        selectedCategory = spendCategories[0];
       });
     }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 30.0),
-      child: Container(
-        width: double.infinity,
-        constraints: BoxConstraints(
-          minHeight: 0,
-          maxHeight: 620,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              spacing: 3.0,
-              children: [
-                CountryImage(language: widget.baseData.countryCode),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 0,
-                  children: [
-                    Text(
-                      context.tr('countries.${widget.baseData.countryCode}'),
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        height: 1.0,
+      child: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          width: double.infinity,
+          color: Colors.white,
+          constraints: BoxConstraints(
+            minHeight: 0,
+            maxHeight: 620,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                spacing: 3.0,
+                children: [
+                  CountryImage(language: widget.baseData.countryCode),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 0,
+                    children: [
+                      Text(
+                        context.tr('countries.${widget.baseData.countryCode}'),
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          height: 1.0,
+                        ),
                       ),
-                    ),
-                    Text(
-                      widget.baseData.currencyCode,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                        height: 1.2,
+                      Text(
+                        widget.baseData.currencyCode,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                          height: 1.2,
+                        ),
                       ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            GestureDetector(
-              onHorizontalDragEnd: (details) {
-                if (isPageOfAccountBook == true) return;
-                // 왼쪽 또는 오른쪽으로 스와이프 하면 발동
-                if (details.primaryVelocity != 0) {
-                  onPressedCalcBtn('backspace');
-                }
-              },
-              onTap: () {
-                if (isPageOfAccountBook == false) return;
-                setState(() {
-                  isPageOfAccountBook = false;
-                });
-              },
-              child: Container(
-                height: 60.0,
-                child: Row(
+                    ],
+                  )
+                ],
+              ),
+              GestureDetector(
+                onHorizontalDragEnd: (details) {
+                  if (isPageOfAccountBook == true) return;
+                  // 왼쪽 또는 오른쪽으로 스와이프 하면 발동
+                  if (details.primaryVelocity != 0) {
+                    onPressedCalcBtn('backspace');
+                  }
+                },
+                onTap: () {
+                  if (isPageOfAccountBook == false) return;
+                  setState(() {
+                    isPageOfAccountBook = false;
+                  });
+                },
+                child: Container(
+                  height: 60.0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        widget.baseData.currencySymbol,
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: AutoSizeText(
+                          firstNumSet +
+                              (activeCalc is String ? '$activeCalc' : '') +
+                              secondNumSet,
+                          style: TextStyle(
+                            fontSize: 56,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.right,
+                          maxLines: 1,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (isPageOfAccountBook == false)
+                Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      widget.baseData.currencySymbol,
+                      widget.targetData.currencySymbol,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black54,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      formatDouble(getExchangedAmount(
+                        amount: double.parse(firstNumSet),
+                        baseCode: widget.baseData.currencyCode,
+                        targetCode: widget.targetData.currencyCode,
+                      )),
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.bold,
+                        color: Colors.black54,
                       ),
-                      maxLines: 1,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: AutoSizeText(
-                        firstNumSet +
-                            (activeCalc is String ? '$activeCalc' : '') +
-                            secondNumSet,
-                        style: TextStyle(
-                          fontSize: 56,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.right,
-                        maxLines: 1,
-                      ),
+                      textAlign: TextAlign.right,
                     ),
                   ],
                 ),
+              SizedBox(
+                height: 20,
               ),
-            ),
-            if (isPageOfAccountBook == false)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+              if (isPageOfAccountBook == false) ...[
+                GridView.count(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 15,
+                  mainAxisSpacing: 15,
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: gridList.map((item) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Colors.blue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        onPressed: () {
+                          onPressedCalcBtn(item['value'] as String);
+                        },
+                        color: Colors.white,
+                        icon: item['label'] is IconData
+                            ? Icon(item['label'] as IconData?,
+                                color: Colors.white, size: 30)
+                            : Center(
+                                child: Text(
+                                  item['label'] as String,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+              if (isPageOfAccountBook == true) ...[
+                Text(
+                  '분류',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 8,
+                    children: accountTypeLabels.map((k) {
+                      return AccountBookTag(
+                        label: k,
+                        onTap: (String label) {
+                          setState(() {
+                            accountType = label;
+                            switch (label) {
+                              case 'spend':
+                                selectedCategory = spendCategories[0];
+                                break;
+                              case 'income':
+                                selectedCategory = incomeCategories[0];
+                                break;
+                              case 'exchange':
+                                _controller.text = formatDouble(
+                                    getExchangedAmount(
+                                      amount: double.parse(firstNumSet),
+                                      baseCode: widget.baseData.currencyCode,
+                                      targetCode:
+                                          widget.targetData.currencyCode,
+                                    ),
+                                    isDecimal: false);
+                                break;
+                            }
+                          });
+                        },
+                        isActive: k == accountType,
+                      );
+                    }).toList(),
+                  ),
+                ),
+                SizedBox(height: 3),
+                if (accountType == 'spend') ...[
+                  SizedBox(height: 7),
                   Text(
-                    widget.targetData.currencySymbol,
+                    '지출 종류',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black54,
                     ),
                   ),
-                  SizedBox(
-                    width: 4,
-                  ),
-                  Text(
-                    formatDouble(getExchangedAmount(
-                      amount: double.parse(firstNumSet),
-                      baseCode: widget.baseData.currencyCode,
-                      targetCode: widget.targetData.currencyCode,
-                    )),
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
+                  SizedBox(height: 10),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 8,
+                      children: spendingCategoryLabels.map((k) {
+                        return AccountBookTag(
+                          label: k,
+                          onTap: (String label) {
+                            setState(() {
+                              consumptionType = label;
+                            });
+                          },
+                          isActive: k == consumptionType,
+                        );
+                      }).toList(),
                     ),
-                    textAlign: TextAlign.right,
                   ),
                 ],
-              ),
-            SizedBox(
-              height: 20,
-            ),
-            if (isPageOfAccountBook == false) ...[
-              GridView.count(
-                crossAxisCount: 4,
-                crossAxisSpacing: 15,
-                mainAxisSpacing: 15,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: gridList.map((item) {
-                  return Container(
+                SizedBox(height: 10),
+                if (accountType == 'exchange') ...[
+                  Text(
+                    '환전액 (환전 화폐)',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 5),
+                  CupertinoTextField(
+                    controller: _controller,
+                    enabled: true,
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      // disabled시 bg grey
+                      border: Border.all(color: Colors.grey),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    suffix: Padding(
+                      padding: const EdgeInsets.only(right: 12.0),
+                      child: Text(
+                        widget.targetData.currencySymbol,
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                ],
+                if (accountType != 'exchange') ...[
+                  Text(
+                    '카테고리',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      spacing: 12,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: List.generate(
+                        accountType == 'income'
+                            ? incomeCategories.length
+                            : (spendCategories.length / 2).ceil(),
+                        (index) {
+                          if (accountType == 'income') {
+                            return AccountBookBtn(
+                              model: incomeCategories[index],
+                              onTap: (AccountBookBtnModel model) {
+                                setState(() {
+                                  selectedCategory = incomeCategories[index];
+                                });
+                              },
+                              isActive: selectedCategory == null
+                                  ? false
+                                  : incomeCategories[index].label ==
+                                      selectedCategory!.label,
+                            );
+                          } else {
+                            final start = index * 2;
+                            final end = (index * 2 + 2) > spendCategories.length
+                                ? spendCategories.length
+                                : index * 2 + 2;
+                            final sublist = spendCategories.sublist(start, end);
+                            return Column(
+                              spacing: 6,
+                              children: sublist.map((k) {
+                                return AccountBookBtn(
+                                  model: k,
+                                  onTap: (AccountBookBtnModel model) {
+                                    setState(() {
+                                      selectedCategory = k;
+                                    });
+                                  },
+                                  isActive: selectedCategory == null
+                                      ? false
+                                      : k.label == selectedCategory!.label,
+                                );
+                              }).toList(),
+                            );
+                          }
+                        },
+                      ).toList(),
+                    ),
+                  ),
+                ]
+              ],
+              SizedBox(height: 30),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Container(
+                      height: 70,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color.fromARGB(255, 244, 183, 255),
+                            const Color.fromARGB(255, 132, 79, 224)
+                          ],
+                        ),
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          // 숫자 계산
+                          double result = double.parse(firstNumSet);
+                          if (activeCalc is String && secondNumSet.isNotEmpty) {
+                            switch (activeCalc) {
+                              case '+':
+                                result += double.parse(secondNumSet);
+                                break;
+                              case '-':
+                                result -= double.parse(secondNumSet);
+                                break;
+                              case '/':
+                                result /= double.parse(secondNumSet);
+                                break;
+                              case 'x':
+                                result *= double.parse(secondNumSet);
+                                break;
+                              default:
+                                break;
+                            }
+                          }
+
+                          String resultStr = result.toString();
+                          resultStr = resultStr.endsWith('.0')
+                              ? resultStr.substring(0, resultStr.length - 2)
+                              : resultStr;
+                          result = double.parse(resultStr);
+
+                          final isBaseCard = currencyList[0].countryCode ==
+                              widget.baseData.countryCode;
+                          setCurrency(
+                              targetIndex: isBaseCard ? 0 : 1, amount: result);
+                          setCurrency(
+                            targetIndex: isBaseCard ? 1 : 0,
+                            amount: getExchangedAmount(
+                              amount: result,
+                              baseCode: widget.baseData.currencyCode,
+                              targetCode: widget.targetData.currencyCode,
+                            ),
+                          );
+                          for (var i = 2; i < 5; i++) {
+                            // ignore: unnecessary_null_comparison
+                            if (currencyList[i] != null) {
+                              setCurrency(
+                                targetIndex: i,
+                                amount: getExchangedAmount(
+                                  amount: result,
+                                  baseCode: widget.baseData.currencyCode,
+                                  targetCode: currencyList[i].currencyCode,
+                                ),
+                              );
+                            }
+                          }
+
+                          if (isPageOfAccountBook == true) {
+                            if (accountType == 'exchange' &&
+                                _controller.text.isNotEmpty) {
+                              accountBook.addAccountBookList(
+                                AccountBookModel(
+                                  accountType: accountType,
+                                  subType: 'exchange',
+                                  category: AccountBookBtnModel(
+                                    label: 'exchangeSpend',
+                                    icon: 'swap_horiz', // 환전에 어울리는 아이콘
+                                    color: '#E57373', // 핑크색 (70% 밝기)
+                                  ),
+                                  currency: widget.baseData.copyWith(
+                                    amount: result,
+                                  ),
+                                  isSpend: true,
+                                  createdAt: DateTime.now(),
+                                ),
+                              );
+                              accountBook.addAccountBookList(
+                                AccountBookModel(
+                                  accountType: accountType,
+                                  subType: 'exchange',
+                                  category: AccountBookBtnModel(
+                                    label: 'exchangeIncome',
+                                    icon: 'swap_horiz', // 환전에 어울리는 아이콘
+                                    color: '#64B5F6', // 파란색 (70% 밝기)
+                                  ),
+                                  currency: widget.targetData.copyWith(
+                                    amount: double.parse(_controller.text),
+                                  ),
+                                  isSpend: false,
+                                  createdAt: DateTime.now(),
+                                ),
+                              );
+                            }
+
+                            if (selectedCategory != null &&
+                                accountType != 'exchange') {
+                              accountBook.addAccountBookList(
+                                AccountBookModel(
+                                  accountType: accountType,
+                                  subType: accountType == 'income'
+                                      ? 'income'
+                                      : consumptionType,
+                                  category: selectedCategory!,
+                                  currency: widget.baseData.copyWith(
+                                    amount: result,
+                                  ),
+                                  isSpend: accountType != 'income',
+                                  createdAt: DateTime.now(),
+                                ),
+                              );
+                            }
+                          }
+
+                          Navigator.pop(context);
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 30.0),
+                        ),
+                        child: Text(
+                          isPageOfAccountBook == true ? '변환하고 저장하기' : '변환하기',
+                          style: TextStyle(
+                            fontSize: 19,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 15),
+                    width: 70,
+                    height: 70,
                     decoration: BoxDecoration(
                       color: Colors.blue,
                       shape: BoxShape.circle,
                     ),
                     child: IconButton(
-                      onPressed: () {
-                        onPressedCalcBtn(item['value'] as String);
-                      },
-                      color: Colors.white,
-                      icon: item['label'] is IconData
-                          ? Icon(item['label'] as IconData?,
-                              color: Colors.white, size: 30)
-                          : Center(
-                              child: Text(
-                                item['label'] as String,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                    ),
-                  );
-                }).toList(),
-              ),
-            ],
-            if (isPageOfAccountBook == true) ...[
-              Text(
-                '수입 또는 지출',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 10),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  spacing: 8,
-                  children: spendOrIncome.map((k) {
-                    return AccountBookTag(
-                      model: k,
-                      onTap: (String label) {
-                        setState(() {
-                          spendOrIncomeState = label;
-                        });
-                      },
-                      isActive: k.label == spendOrIncomeState,
-                    );
-                  }).toList(),
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                '지출 종류',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 10),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  spacing: 8,
-                  children: spendingCategory.map((k) {
-                    return AccountBookTag(
-                      model: k,
-                      onTap: (String label) {
-                        setState(() {
-                          consumptionType = label;
-                        });
-                      },
-                      isActive: k.label == consumptionType,
-                    );
-                  }).toList(),
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                '카테고리',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 10),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  spacing: 12,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: List.generate(
-                    (categoryList.length / 2).ceil(),
-                    (index) {
-                      final start = index * 2;
-                      final end = (index * 2 + 2) > categoryList.length
-                          ? categoryList.length
-                          : index * 2 + 2;
-                      final sublist = categoryList.sublist(start, end);
-                      return Column(
-                        spacing: 6,
-                        children: sublist.map((k) {
-                          return AccountBookBtn(
-                            model: k,
-                            onTap: (AccountBookBtnModel model) {
-                              setState(() {
-                                selectedCategory = k;
-                              });
-                            },
-                            isActive: selectedCategory == null
-                                ? false
-                                : k.label == selectedCategory!.label,
-                          );
-                        }).toList(),
-                      );
-                    },
-                  ).toList(),
-                ),
-              ),
-              SizedBox(height: 30),
-            ],
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 70,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color.fromARGB(255, 244, 183, 255),
-                          const Color.fromARGB(255, 132, 79, 224)
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    child: TextButton(
-                      onPressed: () {
-                        // 숫자 계산
-                        double result = double.parse(firstNumSet);
-                        if (activeCalc is String && secondNumSet.isNotEmpty) {
-                          switch (activeCalc) {
-                            case '+':
-                              result += double.parse(secondNumSet);
-                              break;
-                            case '-':
-                              result -= double.parse(secondNumSet);
-                              break;
-                            case '/':
-                              result /= double.parse(secondNumSet);
-                              break;
-                            case 'x':
-                              result *= double.parse(secondNumSet);
-                              break;
-                            default:
-                              break;
-                          }
-                        }
-
-                        String resultStr = result.toString();
-                        resultStr = resultStr.endsWith('.0')
-                            ? resultStr.substring(0, resultStr.length - 2)
-                            : resultStr;
-                        result = double.parse(resultStr);
-
-                        final isBaseCard = currencyList[0].countryCode ==
-                            widget.baseData.countryCode;
-                        setCurrency(
-                            targetIndex: isBaseCard ? 0 : 1, amount: result);
-                        setCurrency(
-                          targetIndex: isBaseCard ? 1 : 0,
-                          amount: getExchangedAmount(
-                            amount: result,
-                            baseCode: widget.baseData.currencyCode,
-                            targetCode: widget.targetData.currencyCode,
-                          ),
-                        );
-                        for (var i = 2; i < 5; i++) {
-                          // ignore: unnecessary_null_comparison
-                          if (currencyList[i] != null) {
-                            setCurrency(
-                              targetIndex: i,
-                              amount: getExchangedAmount(
-                                amount: result,
-                                baseCode: widget.baseData.currencyCode,
-                                targetCode: currencyList[i].currencyCode,
-                              ),
-                            );
-                          }
-                        }
-
-                        if (isPageOfAccountBook == true &&
-                            selectedCategory != null) {
-                          accountBook.addAccountBookList(
-                            AccountBookModel(
-                                category: selectedCategory!,
-                                consumptionType: consumptionType,
-                                isSpend: spendOrIncomeState == 'income'
-                                    ? false
-                                    : true,
-                                baseCurrency: widget.baseData.copyWith(
-                                  amount: result,
-                                ),
-                                targetCurrency: widget.targetData.copyWith(
-                                  amount: result,
-                                ),
-                                createdAt: DateTime.now()),
-                          );
-                        }
-
-                        Navigator.pop(context);
-                      },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 15.0, horizontal: 30.0),
-                      ),
-                      child: Text(
-                        isPageOfAccountBook == true ? '변환하고 저장하기' : '변환하기',
-                        style: TextStyle(
-                          fontSize: 19,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(left: 15),
-                  width: 70,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isPageOfAccountBook = !isPageOfAccountBook!;
-                        });
-                      },
-                      color: Colors.white,
-                      icon: Icon(
-                        isPageOfAccountBook == false
-                            ? Icons.receipt_outlined
-                            : Icons.chevron_left,
+                        onPressed: () {
+                          setState(() {
+                            isPageOfAccountBook = !isPageOfAccountBook!;
+                          });
+                        },
                         color: Colors.white,
-                        size: 30,
-                      )),
-                ),
-              ],
-            ),
-          ],
+                        icon: Icon(
+                          isPageOfAccountBook == false
+                              ? Icons.receipt_outlined
+                              : Icons.chevron_left,
+                          color: Colors.white,
+                          size: 30,
+                        )),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,5 @@
 import 'package:currency_exchange/common/constant/category.dart';
-import 'package:currency_exchange/common/hive/category_hive.dart';
+import 'package:currency_exchange/common/hive/account_book_category_hive.dart';
 import 'package:currency_exchange/common/model/account_book_category_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,7 +13,10 @@ class AccountBookCategoryNotifier
   final Ref _ref;
 
   AccountBookCategoryNotifier(this._ref)
-      : super(AccountBookCategoryModel(categoryList: defaultCategoryList)) {
+      : super(AccountBookCategoryModel(
+          spendCategories: defaultSpendCategories,
+          incomeCategories: defaultIncomeCategories,
+        )) {
     _initializeSetting();
   }
 

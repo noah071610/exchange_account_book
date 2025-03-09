@@ -18,15 +18,10 @@ class AccountBookBtnModel {
   @HiveField(2)
   final String color;
 
-  @JsonKey()
-  @HiveField(3)
-  final bool favorite;
-
   AccountBookBtnModel({
     required this.label,
     required this.icon,
     required this.color,
-    required this.favorite,
   });
 
   factory AccountBookBtnModel.fromJson(Map<String, dynamic> json) =>
@@ -44,7 +39,6 @@ class AccountBookBtnModel {
       label: label ?? this.label,
       icon: icon ?? this.icon,
       color: color ?? this.color,
-      favorite: favorite ?? this.favorite,
     );
   }
 }
