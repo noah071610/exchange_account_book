@@ -4,7 +4,6 @@ import 'package:currency_exchange/common/model/currency_list_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:currency_exchange/common/hive/hive.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
-import 'package:currency_exchange/common/model/currency_pair_model.dart';
 
 Future<AccountBookCategoryModel> loadAccountBookCategoryFromHive(
     Ref<Object?> ref) async {

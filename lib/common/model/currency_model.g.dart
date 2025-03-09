@@ -17,11 +17,11 @@ class CurrencyModelAdapter extends TypeAdapter<CurrencyModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return CurrencyModel(
-      countryCode: fields[0] as String,
-      inputAmount: fields[1] as double,
-      displayAmount: fields[2] as double,
-      index: fields[3] as int,
-      quickTag: (fields[4] as List).cast<int>(),
+      name: fields[0] as String,
+      countryCode: fields[1] as String,
+      currencyCode: fields[2] as String,
+      currencySymbol: fields[3] as String,
+      amount: fields[4] as double,
     );
   }
 
@@ -30,15 +30,15 @@ class CurrencyModelAdapter extends TypeAdapter<CurrencyModel> {
     writer
       ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.countryCode)
+      ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.inputAmount)
+      ..write(obj.countryCode)
       ..writeByte(2)
-      ..write(obj.displayAmount)
+      ..write(obj.currencyCode)
       ..writeByte(3)
-      ..write(obj.index)
+      ..write(obj.currencySymbol)
       ..writeByte(4)
-      ..write(obj.quickTag);
+      ..write(obj.amount);
   }
 
   @override
@@ -58,20 +58,18 @@ class CurrencyModelAdapter extends TypeAdapter<CurrencyModel> {
 
 CurrencyModel _$CurrencyModelFromJson(Map<String, dynamic> json) =>
     CurrencyModel(
+      name: json['name'] as String,
       countryCode: json['countryCode'] as String,
-      inputAmount: (json['inputAmount'] as num).toDouble(),
-      displayAmount: (json['displayAmount'] as num).toDouble(),
-      index: (json['index'] as num).toInt(),
-      quickTag: (json['quickTag'] as List<dynamic>)
-          .map((e) => (e as num).toInt())
-          .toList(),
+      currencyCode: json['currencyCode'] as String,
+      currencySymbol: json['currencySymbol'] as String,
+      amount: (json['amount'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$CurrencyModelToJson(CurrencyModel instance) =>
     <String, dynamic>{
+      'name': instance.name,
       'countryCode': instance.countryCode,
-      'inputAmount': instance.inputAmount,
-      'displayAmount': instance.displayAmount,
-      'index': instance.index,
-      'quickTag': instance.quickTag,
+      'currencyCode': instance.currencyCode,
+      'currencySymbol': instance.currencySymbol,
+      'amount': instance.amount,
     };

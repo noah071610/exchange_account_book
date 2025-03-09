@@ -1,5 +1,5 @@
 import 'package:currency_exchange/common/model/account_book_btn_model.dart';
-import 'package:currency_exchange/common/model/account_book_category_model.dart';
+
 import 'package:currency_exchange/common/model/currency_model.dart';
 
 import 'package:hive/hive.dart';
@@ -27,8 +27,12 @@ class AccountBookModel {
   final CurrencyModel baseCurrency;
 
   @JsonKey()
-  @HiveField(5)
+  @HiveField(4)
   final CurrencyModel targetCurrency;
+
+  @JsonKey()
+  @HiveField(5)
+  final DateTime createdAt;
 
   AccountBookModel({
     required this.category,
@@ -36,6 +40,7 @@ class AccountBookModel {
     required this.isSpend,
     required this.baseCurrency,
     required this.targetCurrency,
+    required this.createdAt,
   });
 
   factory AccountBookModel.fromJson(Map<String, dynamic> json) =>
@@ -49,6 +54,7 @@ class AccountBookModel {
     bool? isSpend,
     CurrencyModel? baseCurrency,
     CurrencyModel? targetCurrency,
+    DateTime? createdAt,
   }) {
     return AccountBookModel(
       category: category ?? this.category,
@@ -56,6 +62,7 @@ class AccountBookModel {
       isSpend: isSpend ?? this.isSpend,
       baseCurrency: baseCurrency ?? this.baseCurrency,
       targetCurrency: targetCurrency ?? this.targetCurrency,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 }

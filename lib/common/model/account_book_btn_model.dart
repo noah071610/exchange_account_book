@@ -1,8 +1,5 @@
-import 'package:flutter/widgets.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
-import "package:flutter_feather_icons/flutter_feather_icons.dart";
-import 'package:flutter/material.dart';
 
 part 'account_book_btn_model.g.dart';
 

@@ -1,5 +1,5 @@
 import 'package:currency_exchange/common/model/account_book_model.dart';
-import 'package:flutter/material.dart';
+
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -10,7 +10,8 @@ part 'account_book_list_model.g.dart';
 class AccountBookListModel {
   @JsonKey()
   @HiveField(0)
-  final Map<String, List<AccountBookModel>> accountBookDic;
+  final Map<String, Map<String, Map<String, List<AccountBookModel>>>>
+      accountBookDic;
 
   AccountBookListModel({
     required this.accountBookDic,
@@ -22,7 +23,8 @@ class AccountBookListModel {
   Map<String, dynamic> toJson() => _$AccountBookListModelToJson(this);
 
   AccountBookListModel copyWith({
-    Map<String, List<AccountBookModel>>? accountBookDic,
+    Map<String, Map<String, Map<String, List<AccountBookModel>>>>?
+        accountBookDic,
   }) {
     return AccountBookListModel(
       accountBookDic: accountBookDic ?? this.accountBookDic,

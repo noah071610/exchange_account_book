@@ -17,18 +17,15 @@ class CurrencyListModelAdapter extends TypeAdapter<CurrencyListModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return CurrencyListModel(
-      basePair: fields[0] as CurrencyPairModel,
-      currencyList: (fields[1] as List).cast<CurrencyModel>(),
+      currencyList: (fields[0] as List).cast<CurrencyModel>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, CurrencyListModel obj) {
     writer
-      ..writeByte(2)
-      ..writeByte(0)
-      ..write(obj.basePair)
       ..writeByte(1)
+      ..writeByte(0)
       ..write(obj.currencyList);
   }
 
@@ -49,8 +46,6 @@ class CurrencyListModelAdapter extends TypeAdapter<CurrencyListModel> {
 
 CurrencyListModel _$CurrencyListModelFromJson(Map<String, dynamic> json) =>
     CurrencyListModel(
-      basePair:
-          CurrencyPairModel.fromJson(json['basePair'] as Map<String, dynamic>),
       currencyList: (json['currencyList'] as List<dynamic>)
           .map((e) => CurrencyModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -58,6 +53,5 @@ CurrencyListModel _$CurrencyListModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$CurrencyListModelToJson(CurrencyListModel instance) =>
     <String, dynamic>{
-      'basePair': instance.basePair,
       'currencyList': instance.currencyList,
     };

@@ -8,7 +8,6 @@ import 'package:currency_exchange/common/model/account_book_list_model.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/model/currency_list_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
-import 'package:currency_exchange/common/model/currency_pair_model.dart';
 import 'package:currency_exchange/common/view/root_tab.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +33,6 @@ void main() async {
   Hive.init(appDocumentDir.path);
 
   Hive.registerAdapter(CurrencyListModelAdapter());
-  Hive.registerAdapter(CurrencyPairModelAdapter());
   Hive.registerAdapter(CurrencyModelAdapter());
   Hive.registerAdapter(AccountBookBtnModelAdapter());
   Hive.registerAdapter(AccountBookModelAdapter());
@@ -60,7 +58,7 @@ void main() async {
 
     // Hive 재초기화
     Hive.init(hivePath);
-  } on HiveError catch (e) {
+  } on HiveError {
     await Hive.deleteFromDisk();
   }
 

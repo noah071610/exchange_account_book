@@ -19,4 +19,6 @@ final iconDictionary = {
   'card': FeatherIcons.creditCard,
   'qrCode': Icons.qr_code,
   'transfer': Icons.account_balance_wallet_outlined,
+  'spend': FeatherIcons.arrowUp, // 지출에 어울리는 아이콘
+  'income': FeatherIcons.arrowDown, // 수입에 어울리는 아이콘
 };

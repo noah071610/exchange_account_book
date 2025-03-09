@@ -21,14 +21,15 @@ class AccountBookModelAdapter extends TypeAdapter<AccountBookModel> {
       consumptionType: fields[1] as String,
       isSpend: fields[2] as bool,
       baseCurrency: fields[3] as CurrencyModel,
-      targetCurrency: fields[5] as CurrencyModel,
+      targetCurrency: fields[4] as CurrencyModel,
+      createdAt: fields[5] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, AccountBookModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.category)
       ..writeByte(1)
@@ -37,8 +38,10 @@ class AccountBookModelAdapter extends TypeAdapter<AccountBookModel> {
       ..write(obj.isSpend)
       ..writeByte(3)
       ..write(obj.baseCurrency)
+      ..writeByte(4)
+      ..write(obj.targetCurrency)
       ..writeByte(5)
-      ..write(obj.targetCurrency);
+      ..write(obj.createdAt);
   }
 
   @override
@@ -66,6 +69,7 @@ AccountBookModel _$AccountBookModelFromJson(Map<String, dynamic> json) =>
           CurrencyModel.fromJson(json['baseCurrency'] as Map<String, dynamic>),
       targetCurrency: CurrencyModel.fromJson(
           json['targetCurrency'] as Map<String, dynamic>),
+      createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$AccountBookModelToJson(AccountBookModel instance) =>
@@ -75,4 +79,5 @@ Map<String, dynamic> _$AccountBookModelToJson(AccountBookModel instance) =>
       'isSpend': instance.isSpend,
       'baseCurrency': instance.baseCurrency,
       'targetCurrency': instance.targetCurrency,
+      'createdAt': instance.createdAt.toIso8601String(),
     };

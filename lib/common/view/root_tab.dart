@@ -1,5 +1,5 @@
 import 'package:currency_exchange/analytics/view/analytics_screen.dart';
-import 'package:currency_exchange/calculator/view/calculator_screen.dart';
+import 'package:currency_exchange/exchange/view/exchange_screen.dart';
 import 'package:currency_exchange/calendar/view/calendar_screen.dart';
 import 'package:currency_exchange/setting/view/setting_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:currency_exchange/common/layout/default_layout.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:currency_exchange/common/provider/setting_provider.dart';
 
 class RootTab extends ConsumerStatefulWidget {
   const RootTab({
@@ -38,7 +37,7 @@ class _RootTabState extends ConsumerState<RootTab>
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      title: context.tr('타이틀'),
+      title: context.tr('안녕세계'),
       centerTitle: true,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _controller.index,
@@ -54,7 +53,7 @@ class _RootTabState extends ConsumerState<RootTab>
         unselectedLabelStyle: TextStyle(fontSize: 12),
         items: [
           BottomNavigationBarItem(
-              icon: Icon(Icons.library_books), label: context.tr('wordCard')),
+              icon: Icon(Icons.library_books), label: context.tr('ㅇㅇ')),
           BottomNavigationBarItem(
               icon: Icon(Icons.book), label: context.tr('list')),
           BottomNavigationBarItem(
@@ -71,9 +70,12 @@ class _RootTabState extends ConsumerState<RootTab>
         controller: _controller,
         physics: NeverScrollableScrollPhysics(),
         children: [
-          CalculatorScreen(),
+          ExchangeScreen(),
           CalenderScreen(),
-          AnalyticsScreen(),
+          AnalyticsScreen(
+            month: '03',
+            year: '2025',
+          ),
           SettingScreen(),
         ],
       ),

@@ -8,30 +8,30 @@ part 'currency_model.g.dart';
 class CurrencyModel {
   @JsonKey()
   @HiveField(0)
-  final String countryCode;
+  final String name;
 
   @JsonKey()
   @HiveField(1)
-  final double inputAmount;
+  final String countryCode;
 
   @JsonKey()
   @HiveField(2)
-  final double displayAmount;
+  final String currencyCode;
 
   @JsonKey()
   @HiveField(3)
-  final int index;
+  final String currencySymbol;
 
   @JsonKey()
   @HiveField(4)
-  final List<int> quickTag;
+  final double amount;
 
   CurrencyModel({
+    required this.name,
     required this.countryCode,
-    required this.inputAmount,
-    required this.displayAmount,
-    required this.index,
-    required this.quickTag,
+    required this.currencyCode,
+    required this.currencySymbol,
+    required this.amount,
   });
 
   factory CurrencyModel.fromJson(Map<String, dynamic> json) =>
@@ -40,18 +40,18 @@ class CurrencyModel {
   Map<String, dynamic> toJson() => _$CurrencyModelToJson(this);
 
   CurrencyModel copyWith({
+    String? name,
     String? countryCode,
-    double? inputAmount,
-    double? displayAmount,
-    int? index,
-    List<int>? quickTag,
+    String? currencyCode,
+    String? currencySymbol,
+    double? amount,
   }) {
     return CurrencyModel(
+      name: name ?? this.name,
       countryCode: countryCode ?? this.countryCode,
-      inputAmount: inputAmount ?? this.inputAmount,
-      displayAmount: displayAmount ?? this.displayAmount,
-      index: index ?? this.index,
-      quickTag: quickTag ?? this.quickTag,
+      currencyCode: currencyCode ?? this.currencyCode,
+      currencySymbol: currencySymbol ?? this.currencySymbol,
+      amount: amount ?? this.amount,
     );
   }
 }

@@ -1,8 +1,11 @@
-import 'package:currency_exchange/calculator/view/calculator_screen.dart';
+import 'package:currency_exchange/exchange/view/exchange_screen.dart';
 import 'package:currency_exchange/common/constant/category.dart';
 import 'package:currency_exchange/common/provider/category_list_provider.dart';
+import 'package:currency_exchange/common/provider/currency_list_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:currency_exchange/common/widgets/account_book_btn.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:currency_exchange/common/widgets/calculator_sheet.dart';
 
 class DefaultLayout extends ConsumerWidget {
   final String? title;
@@ -30,98 +33,37 @@ class DefaultLayout extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final categoryList = ref.watch(accountBookCategoryProvider).categoryList;
+    final currencyList = ref.watch(currencyListProvider);
+
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 30.0, horizontal: 20.0),
-                child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '입력한 금액 : ${123}',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        '카테고리',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          spacing: 12,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: categoryList.map((arr) {
-                            return Column(
-                              spacing: 6,
-                              children: arr.map((k) {
-                                return AccountBookTypeBtn(
-                                  color: k.color,
-                                  label: k.label,
-                                  icon: k.icon,
-                                );
-                              }).toList(),
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      Text(
-                        '지출 종류',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          spacing: 12,
-                          children: spendingCategory.map((k) {
-                            return AccountBookTypeBtn(
-                              color: k.color,
-                              label: k.label,
-                              icon: k.icon,
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        },
-        label: Text(
-          '현재 금액을 가계부에 추가',
-          style: TextStyle(fontSize: 15),
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30.0),
-        ),
-        extendedPadding: EdgeInsets.all(50.0),
-        elevation: 3.0,
-        foregroundColor: const Color.fromARGB(255, 72, 29, 147),
-        backgroundColor: const Color.fromARGB(255, 245, 242, 252),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     showModalBottomSheet(
+      //       context: context,
+      //       isScrollControlled: true,
+      //       builder: (BuildContext context) {
+      //         return CalculatorSheet(
+      //           baseData: currencyList.basePair.baseCurrency,
+      //           targetData: currencyList.basePair.targetCurrency,
+      //           initialBaseAmountForShortcut:
+      //               currencyList.basePair.baseCurrency.inputAmount.toString(),
+      //         );
+      //       },
+      //     );
+      //   },
+      //   label: Text(
+      //     '현재 금액을 가계부에 추가',
+      //     style: TextStyle(fontSize: 15),
+      //   ),
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(30.0),
+      //   ),
+      //   extendedPadding: EdgeInsets.all(50.0),
+      //   elevation: 3.0,
+      //   foregroundColor: const Color.fromARGB(255, 72, 29, 147),
+      //   backgroundColor: const Color.fromARGB(255, 245, 242, 252),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Container(
         decoration: BoxDecoration(
           image: bg != null

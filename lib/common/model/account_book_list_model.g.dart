@@ -17,8 +17,12 @@ class AccountBookListModelAdapter extends TypeAdapter<AccountBookListModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AccountBookListModel(
-      accountBookDic: (fields[0] as Map).map((dynamic k, dynamic v) =>
-          MapEntry(k as String, (v as List).cast<AccountBookModel>())),
+      accountBookDic: (fields[0] as Map).map((dynamic k, dynamic v) => MapEntry(
+          k as String,
+          (v as Map).map((dynamic k, dynamic v) => MapEntry(
+              k as String,
+              (v as Map).map((dynamic k, dynamic v) => MapEntry(
+                  k as String, (v as List).cast<AccountBookModel>())))))),
     );
   }
 
@@ -51,10 +55,18 @@ AccountBookListModel _$AccountBookListModelFromJson(
       accountBookDic: (json['accountBookDic'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(
             k,
-            (e as List<dynamic>)
-                .map(
-                    (e) => AccountBookModel.fromJson(e as Map<String, dynamic>))
-                .toList()),
+            (e as Map<String, dynamic>).map(
+              (k, e) => MapEntry(
+                  k,
+                  (e as Map<String, dynamic>).map(
+                    (k, e) => MapEntry(
+                        k,
+                        (e as List<dynamic>)
+                            .map((e) => AccountBookModel.fromJson(
+                                e as Map<String, dynamic>))
+                            .toList()),
+                  )),
+            )),
       ),
     );
 

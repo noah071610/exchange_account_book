@@ -1,10 +1,6 @@
 import 'package:currency_exchange/common/constant/category.dart';
 import 'package:currency_exchange/common/hive/category_hive.dart';
-import 'package:currency_exchange/common/hive/currency_hive.dart';
 import 'package:currency_exchange/common/model/account_book_category_model.dart';
-import 'package:currency_exchange/common/model/currency_list_model.dart';
-import 'package:currency_exchange/common/model/currency_model.dart';
-import 'package:currency_exchange/common/model/currency_pair_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final accountBookCategoryProvider = StateNotifierProvider<

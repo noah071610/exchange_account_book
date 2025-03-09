@@ -9,7 +9,7 @@ part 'account_book_category_model.g.dart';
 class AccountBookCategoryModel {
   @JsonKey()
   @HiveField(0)
-  final List<List<AccountBookBtnModel>> categoryList;
+  final List<AccountBookBtnModel> categoryList;
 
   AccountBookCategoryModel({
     required this.categoryList,
@@ -21,7 +21,7 @@ class AccountBookCategoryModel {
   Map<String, dynamic> toJson() => _$AccountBookCategoryModelToJson(this);
 
   AccountBookCategoryModel copyWith({
-    List<List<AccountBookBtnModel>>? categoryList,
+    List<AccountBookBtnModel>? categoryList,
   }) {
     return AccountBookCategoryModel(
       categoryList: categoryList ?? this.categoryList,
