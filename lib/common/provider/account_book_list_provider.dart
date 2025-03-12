@@ -66,7 +66,21 @@ class AccountBookListNotifier extends StateNotifier<AccountBookListModel> {
         },
       );
     }
+  }
 
-    updateAccountBookListInHive(_ref, state);
+  Future<void> deleteAccountBookList(
+      String year, String month, String day, String id) async {
+    if (state.accountBookDic[year] != null &&
+        state.accountBookDic[year]![month] != null &&
+        state.accountBookDic[year]![month]![day] != null) {
+      state.accountBookDic[year]![month]![day]!
+          .removeWhere((model) => model.id == id);
+      state = state.copyWith(
+        accountBookDic: {
+          ...state.accountBookDic,
+        },
+      );
+      updateAccountBookListInHive(_ref, state);
+    }
   }
 }

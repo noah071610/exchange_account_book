@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:currency_exchange/common/constant/toast.dart';
-import 'package:currency_exchange/common/widgets/list_item.dart';
+import 'package:currency_exchange/setting/widget/list_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -15,8 +15,9 @@ class SettingScreen extends StatelessWidget {
     return SingleChildScrollView(
       child: Container(
         height: MediaQuery.of(context).size.height,
+        color: const Color.fromARGB(8, 0, 0, 0),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
           child: Column(
             children: [
               CustomListSection(

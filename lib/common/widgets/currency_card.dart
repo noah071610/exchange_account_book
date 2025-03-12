@@ -1,4 +1,5 @@
 import 'package:currency_exchange/common/model/currency_model.dart';
+import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/utils/utils.dart';
 import 'package:currency_exchange/common/widgets/calculator_sheet.dart';
 import 'package:currency_exchange/common/widgets/country_image.dart';
@@ -37,7 +38,11 @@ class CurrencyCard extends ConsumerWidget {
               );
             },
       child: Container(
-        color: Colors.transparent,
+        padding: EdgeInsets.only(top: 12, bottom: 12, left: 10, right: 15),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Theme.of(context).extension<CustomColors>()!.containerBg,
+        ),
         child: Row(
           mainAxisAlignment: isSimple
               ? MainAxisAlignment.start
@@ -49,7 +54,10 @@ class CurrencyCard extends ConsumerWidget {
               spacing: 3.0,
               children: [
                 CountryImage(
-                    language: baseData.countryCode, isSimple: isSimple),
+                  language: baseData.countryCode,
+                  isSimple: isSimple,
+                  color: baseData.color,
+                ),
                 if (!isSimple)
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +85,7 @@ class CurrencyCard extends ConsumerWidget {
             ),
             if (isSimple)
               SizedBox(
-                width: 7,
+                width: 3,
               ),
             Column(
               mainAxisSize: MainAxisSize.max,
@@ -90,14 +98,16 @@ class CurrencyCard extends ConsumerWidget {
                       horizontal: isSimple ? 8 : 12.0, vertical: 4.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(isSimple ? 4.0 : 8.0),
-                    color: const Color.fromARGB(255, 191, 245, 190),
+                    color: Theme.of(context).extension<CustomColors>()?.greenBg,
                   ),
                   child: Text(
                     '${baseData.currencySymbol} ${formatDouble(baseData.amount)}',
                     style: TextStyle(
                       fontSize: isSimple ? 12 : 14,
                       fontWeight: FontWeight.w600,
-                      color: const Color.fromARGB(255, 24, 118, 28),
+                      color: Theme.of(context)
+                          .extension<CustomColors>()
+                          ?.greenText,
                       height: 1.2,
                     ),
                   ),
@@ -106,11 +116,13 @@ class CurrencyCard extends ConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 2.5),
                   child: Text(
-                    '${convertToKoreanNumber(baseData.amount, context)}${context.tr('currency.${baseData.countryCode}')}',
+                    convertToKoreanNumber(
+                        baseData.amount, context, baseData.countryCode),
                     style: TextStyle(
                       fontSize: isSimple ? 11 : 13,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black54,
+                      color:
+                          Theme.of(context).extension<CustomColors>()?.textGrey,
                     ),
                   ),
                 ),

@@ -22,13 +22,15 @@ class SettingModelAdapter extends TypeAdapter<SettingModel> {
       font: fields[2] as String,
       primaryColor: fields[3] as String,
       subColor: fields[4] as String,
+      selectedCountriesForCalender: (fields[5] as List).cast<String>(),
+      selectCountryForAnalytics: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, SettingModel obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.themeNum)
       ..writeByte(1)
@@ -38,7 +40,11 @@ class SettingModelAdapter extends TypeAdapter<SettingModel> {
       ..writeByte(3)
       ..write(obj.primaryColor)
       ..writeByte(4)
-      ..write(obj.subColor);
+      ..write(obj.subColor)
+      ..writeByte(5)
+      ..write(obj.selectedCountriesForCalender)
+      ..writeByte(6)
+      ..write(obj.selectCountryForAnalytics);
   }
 
   @override
@@ -62,6 +68,11 @@ SettingModel _$SettingModelFromJson(Map<String, dynamic> json) => SettingModel(
       font: json['font'] as String,
       primaryColor: json['primaryColor'] as String,
       subColor: json['subColor'] as String,
+      selectedCountriesForCalender:
+          (json['selectedCountriesForCalender'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList(),
+      selectCountryForAnalytics: json['selectCountryForAnalytics'] as String,
     );
 
 Map<String, dynamic> _$SettingModelToJson(SettingModel instance) =>
@@ -71,4 +82,6 @@ Map<String, dynamic> _$SettingModelToJson(SettingModel instance) =>
       'font': instance.font,
       'primaryColor': instance.primaryColor,
       'subColor': instance.subColor,
+      'selectedCountriesForCalender': instance.selectedCountriesForCalender,
+      'selectCountryForAnalytics': instance.selectCountryForAnalytics,
     };

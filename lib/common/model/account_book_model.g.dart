@@ -17,30 +17,36 @@ class AccountBookModelAdapter extends TypeAdapter<AccountBookModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AccountBookModel(
-      accountType: fields[0] as String,
-      subType: fields[1] as String,
-      isSpend: fields[4] as bool,
-      category: fields[2] as AccountBookBtnModel,
-      currency: fields[3] as CurrencyModel,
-      createdAt: fields[5] as DateTime,
+      id: fields[0] as String,
+      accountType: fields[1] as String,
+      subType: fields[2] as String,
+      category: fields[3] as AccountBookBtnModel,
+      currency: fields[4] as CurrencyModel,
+      targetCurrency: fields[5] as CurrencyModel,
+      isSpend: fields[6] as bool,
+      createdAt: fields[7] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, AccountBookModel obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(8)
       ..writeByte(0)
-      ..write(obj.accountType)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.subType)
+      ..write(obj.accountType)
       ..writeByte(2)
-      ..write(obj.category)
+      ..write(obj.subType)
       ..writeByte(3)
-      ..write(obj.currency)
+      ..write(obj.category)
       ..writeByte(4)
-      ..write(obj.isSpend)
+      ..write(obj.currency)
       ..writeByte(5)
+      ..write(obj.targetCurrency)
+      ..writeByte(6)
+      ..write(obj.isSpend)
+      ..writeByte(7)
       ..write(obj.createdAt);
   }
 
@@ -61,22 +67,27 @@ class AccountBookModelAdapter extends TypeAdapter<AccountBookModel> {
 
 AccountBookModel _$AccountBookModelFromJson(Map<String, dynamic> json) =>
     AccountBookModel(
+      id: json['id'] as String,
       accountType: json['accountType'] as String,
       subType: json['subType'] as String,
-      isSpend: json['isSpend'] as bool,
       category: AccountBookBtnModel.fromJson(
           json['category'] as Map<String, dynamic>),
       currency:
           CurrencyModel.fromJson(json['currency'] as Map<String, dynamic>),
+      targetCurrency: CurrencyModel.fromJson(
+          json['targetCurrency'] as Map<String, dynamic>),
+      isSpend: json['isSpend'] as bool,
       createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$AccountBookModelToJson(AccountBookModel instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'accountType': instance.accountType,
       'subType': instance.subType,
       'category': instance.category,
       'currency': instance.currency,
+      'targetCurrency': instance.targetCurrency,
       'isSpend': instance.isSpend,
       'createdAt': instance.createdAt.toIso8601String(),
     };

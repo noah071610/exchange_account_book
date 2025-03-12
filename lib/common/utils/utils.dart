@@ -1,15 +1,21 @@
 import 'dart:math';
+import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/constant/temp.dart';
+import 'package:currency_exchange/common/model/account_book_btn_model.dart';
+import 'package:currency_exchange/common/model/account_book_list_model.dart';
+import 'package:currency_exchange/common/model/account_book_model.dart';
+import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
+import 'package:intl/intl.dart';
 
 String generateRandomKey() {
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
   final random = Random();
   return String.fromCharCodes(Iterable.generate(
-      12, (_) => chars.codeUnitAt(random.nextInt(chars.length))));
+      7, (_) => chars.codeUnitAt(random.nextInt(chars.length))));
 }
 
 Size getTextSize(BuildContext context, String text, TextStyle style) {
@@ -55,7 +61,8 @@ Widget buildHighlightedText(String text, BuildContext context) {
   );
 }
 
-String convertToKoreanNumber(double value, BuildContext context) {
+String convertToKoreanNumber(
+    double value, BuildContext context, String? currency) {
   if (value == 0) return '0';
 
   String formattedNumber = value.toStringAsFixed(2); // 소수점 둘째자리까지 남김
@@ -87,7 +94,8 @@ String convertToKoreanNumber(double value, BuildContext context) {
     unitIndex++;
   }
   String finalResult = result.join() + decimalPart;
-  return finalResult;
+  return finalResult +
+      (currency == null ? '원' : context.tr('currency.$currency'));
 }
 
 double getExchangedAmount({
@@ -126,4 +134,76 @@ String formatDouble(double value, {bool isDecimal = true}) {
     result = result.replaceAllMapped(regExp, (Match match) => ',');
   }
   return result;
+}
+
+Map<String, dynamic> calculateCountryTotals(
+    List<AccountBookModel> dayList, String countryCode) {
+  final a =
+      dayList.where((e) => e.currency.countryCode == countryCode && e.isSpend);
+  final b =
+      dayList.where((e) => e.currency.countryCode == countryCode && !e.isSpend);
+
+  final List<List<dynamic>> x = a
+      .fold<Map<AccountBookBtnModel, List<dynamic>>>({}, (acc, e) {
+        if (acc[e.category] == null) {
+          acc[e.category] = [0.0, 0];
+        }
+        acc[e.category]![0] += e.currency.amount;
+        acc[e.category]![1] += 1;
+        return acc;
+      })
+      .entries
+      .map((entry) => [entry.key, entry.value[0], entry.value[1]])
+      .toList();
+
+  final List<List<dynamic>> y = b
+      .fold<Map<AccountBookBtnModel, List<dynamic>>>({}, (acc, e) {
+        if (acc[e.category] == null) {
+          acc[e.category] = [0.0, 0];
+        }
+        acc[e.category]![0] += e.currency.amount;
+        acc[e.category]![1] += 1;
+        return acc;
+      })
+      .entries
+      .map((entry) => [entry.key, entry.value[0], entry.value[1]])
+      .toList();
+
+  return {
+    'currency': currencyModels.firstWhere(
+      (model) => model.countryCode == countryCode,
+      orElse: () => currencyModels[0],
+    ),
+    'spendSum': a.fold(0.0, (sum, e) => sum + e.currency.amount),
+    'spend': x,
+    'incomeSum': b.fold(0.0, (sum, e) => sum + e.currency.amount),
+    'income': y,
+  };
+}
+
+List<AccountBookModel> getDayListForDate(
+    DateTime date, Map<String, dynamic> accountBookDic) {
+  final DateFormat yearFormatter = DateFormat('yyyy');
+  final DateFormat monthFormatter = DateFormat('MM');
+  final DateFormat dayFormatter = DateFormat('dd');
+
+  final String year = yearFormatter.format(date);
+  final String month = monthFormatter.format(date);
+  final String day = dayFormatter.format(date);
+
+  return accountBookDic[year]?[month]?[day] ?? [];
+}
+
+List<String> getActiveCountries(
+    AccountBookListModel accountBook, String year, String month) {
+  final monthMap = accountBook.accountBookDic[year]?[month] ?? {};
+  final List<List<String>> temp = [];
+  monthMap.forEach((key, value) {
+    final List<String> countryCodes =
+        monthMap[key]?.map((e) => e.currency.countryCode).toSet().toList() ??
+            [];
+    temp.add(countryCodes);
+  });
+
+  return temp.expand((i) => i).toSet().toList();
 }

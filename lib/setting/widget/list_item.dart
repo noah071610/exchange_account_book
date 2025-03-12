@@ -1,3 +1,4 @@
+import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:currency_exchange/common/constant/color.dart';
@@ -28,21 +29,19 @@ class CustomListSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 6, left: 2),
+          padding: const EdgeInsets.only(bottom: 7, left: 2),
           child: Text(
             title,
             style: TextStyle(
               fontSize: 14,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Theme.of(context)
-                .extension<CustomColors>()
-                ?.containerBackground,
+            borderRadius: BorderRadius.circular(5),
+            color: Theme.of(context).extension<CustomColors>()?.containerBg,
           ),
           child: ListView.separated(
             shrinkWrap: true,
@@ -50,8 +49,7 @@ class CustomListSection extends StatelessWidget {
             itemCount: items.length,
             separatorBuilder: (context, index) => Divider(
               height: 1,
-              indent: 30,
-              endIndent: 30,
+              color: Theme.of(context).extension<CustomColors>()!.divider100,
             ),
             itemBuilder: (context, index) => items[index],
           ),
@@ -93,14 +91,9 @@ class CustomListSectionCustom extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            color: Theme.of(context)
-                .extension<CustomColors>()
-                ?.containerBackground,
+            color: Theme.of(context).extension<CustomColors>()?.containerBg,
           ),
           child: child,
-        ),
-        SizedBox(
-          height: 20,
         )
       ],
     );
@@ -116,6 +109,7 @@ class CustomListItem extends StatelessWidget {
   final SettingType settingType;
   final bool? isToggled;
   final bool? isChecked;
+  final bool? noBorder;
 
   const CustomListItem({
     Key? key,
@@ -127,6 +121,7 @@ class CustomListItem extends StatelessWidget {
     required this.settingType,
     this.isToggled,
     this.isChecked,
+    this.noBorder,
   }) : super(key: key);
 
   @override
@@ -134,20 +129,29 @@ class CustomListItem extends StatelessWidget {
     final TextStyle? defaultTextStyle = Theme.of(context).textTheme.bodyMedium;
 
     return ListTile(
-      leading:
-          countryCode != null ? CountryImage(language: countryCode!) : null,
+      leading: countryCode != null
+          ? CountryImage(
+              language: countryCode!,
+              color: currencyModels[countryCode == 'KR'
+                      ? 0
+                      : countryCode == 'JP'
+                          ? 1
+                          : 2]
+                  .color,
+            )
+          : null,
       title: Text(
         title,
         style: font != null ? GoogleFonts.getFont(font!) : defaultTextStyle,
       ),
-      trailing: _buildTrailing(),
+      trailing: _buildTrailing(context),
       onTap: settingType == SettingType.checker && isChecked == true
           ? null
           : onTap,
     );
   }
 
-  Widget? _buildTrailing() {
+  Widget? _buildTrailing(BuildContext context) {
     switch (settingType) {
       case SettingType.toggle:
         return Switch(
@@ -158,7 +162,8 @@ class CustomListItem extends StatelessWidget {
         return Icon(Icons.chevron_right, color: BODY_TEXT_COLOR);
       case SettingType.checker:
         return isChecked == true
-            ? Icon(Icons.check, color: BUTTON_TEXT_COLOR)
+            ? Icon(Icons.check,
+                color: Theme.of(context).extension<CustomColors>()!.primary)
             : null;
       case SettingType.event:
         return null;

@@ -8,7 +8,11 @@ import 'package:currency_exchange/common/model/account_book_list_model.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/model/currency_list_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
+import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/view/root_tab.dart';
+import 'package:currency_exchange/setting/view/display_setting.dart';
+import 'package:currency_exchange/setting/view/font_setting.dart';
+import 'package:currency_exchange/setting/view/language_setting.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,26 +45,26 @@ void main() async {
 
   Hive.registerAdapter(SettingModelAdapter());
 
-  // await Hive.deleteFromDisk();
-  // try {
-  //   final appDocumentDir =
-  //       await path_provider.getApplicationDocumentsDirectory();
-  //   final hivePath = appDocumentDir.path;
+  await Hive.deleteFromDisk();
+  try {
+    final appDocumentDir =
+        await path_provider.getApplicationDocumentsDirectory();
+    final hivePath = appDocumentDir.path;
 
-  //   // Hive 닫기
-  //   await Hive.close();
+    // Hive 닫기
+    await Hive.close();
 
-  //   // Hive 디렉토리 삭제
-  //   final directory = Directory(hivePath);
-  //   if (await directory.exists()) {
-  //     await directory.delete(recursive: true);
-  //   }
+    // Hive 디렉토리 삭제
+    final directory = Directory(hivePath);
+    if (await directory.exists()) {
+      await directory.delete(recursive: true);
+    }
 
-  //   // Hive 재초기화
-  //   Hive.init(hivePath);
-  // } on HiveError {
-  //   await Hive.deleteFromDisk();
-  // }
+    // Hive 재초기화
+    Hive.init(hivePath);
+  } on HiveError {
+    await Hive.deleteFromDisk();
+  }
 
   runApp(
     ProviderScope(
@@ -97,6 +101,25 @@ class MyApp extends ConsumerWidget {
       title: 'Kanji Master',
       themeMode: setting.themeNum == 2 ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeData(
+        extensions: [
+          CustomColors(
+            containerBg: const Color.fromARGB(6, 0, 0, 0),
+            containerWhiteBg: Colors.white,
+            opposite: Colors.black87,
+            buttonBackground: PRIMARY_COLOR,
+            buttonTextColor: BUTTON_TEXT_COLOR,
+            text: const Color.fromARGB(255, 74, 24, 118),
+            primaryBg: const Color.fromARGB(82, 159, 124, 254),
+            active: const Color.fromARGB(255, 74, 24, 118),
+            icon: Colors.black38,
+            primary: const Color.fromARGB(255, 137, 95, 209),
+            sub: const Color.fromARGB(255, 74, 24, 118),
+            divider100: const Color.fromARGB(18, 0, 0, 0),
+            textGrey: const Color.fromRGBO(0, 0, 0, 0.541),
+            greenBg: const Color.fromARGB(255, 191, 245, 190),
+            greenText: const Color.fromARGB(255, 24, 118, 28),
+          ),
+        ],
         textTheme: GoogleFonts.getTextTheme(setting.font).apply(
           bodyColor: BLACK_COLOR, // 기본 텍스트 색상 설정
           displayColor: BLACK_COLOR, // 제목 등의 텍스트 색상 설정
@@ -150,6 +173,25 @@ class MyApp extends ConsumerWidget {
         ),
       ),
       darkTheme: ThemeData.dark().copyWith(
+        extensions: [
+          CustomColors(
+            containerBg: const Color.fromARGB(255, 20, 18, 23),
+            containerWhiteBg: const Color.fromARGB(255, 20, 18, 23),
+            opposite: Colors.white,
+            buttonBackground: PRIMARY_COLOR,
+            buttonTextColor: BUTTON_TEXT_COLOR,
+            text: const Color.fromARGB(255, 233, 212, 252),
+            primaryBg: const Color.fromARGB(137, 141, 101, 252),
+            active: const Color.fromARGB(255, 74, 24, 118),
+            icon: Colors.white,
+            primary: const Color.fromARGB(255, 137, 95, 209),
+            sub: const Color.fromARGB(255, 74, 24, 118),
+            divider100: const Color.fromARGB(101, 255, 255, 255),
+            textGrey: Colors.grey,
+            greenBg: const Color.fromARGB(255, 28, 70, 27),
+            greenText: const Color.fromARGB(255, 188, 235, 190),
+          ),
+        ],
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
           selectedItemColor:
               const Color.fromARGB(255, 153, 130, 255), // 선택된 아이템 색상 설정
@@ -206,6 +248,24 @@ final GoRouter _router = GoRouter(
         return RootTab();
       },
       routes: <RouteBase>[
+        GoRoute(
+          path: 'display-setting',
+          builder: (BuildContext context, GoRouterState state) {
+            return const DisplaySettingTab();
+          },
+        ),
+        GoRoute(
+          path: 'language-setting',
+          builder: (BuildContext context, GoRouterState state) {
+            return const LanguageSetting();
+          },
+        ),
+        GoRoute(
+          path: 'font-setting',
+          builder: (BuildContext context, GoRouterState state) {
+            return const FontSetting();
+          },
+        ),
         // GoRoute(
         //   path: 'levelOne',
         //   builder: (BuildContext context, GoRouterState state) {

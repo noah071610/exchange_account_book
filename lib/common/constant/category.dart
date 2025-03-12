@@ -24,7 +24,7 @@ final defaultSpendCategories = [
   AccountBookBtnModel(
     label: 'beauty',
     icon: 'scissors', // 미용비에 어울리는 아이콘
-    color: '#FF8A65', // 복숭아색 (70% 밝기)
+    color: '#FF4081', // 분홍색 (진한 색상)
   ),
   AccountBookBtnModel(
     label: 'entertainment',
@@ -44,17 +44,17 @@ final defaultSpendCategories = [
   AccountBookBtnModel(
     label: 'medical',
     icon: 'localHospitalOutlined', // 병원비에 어울리는 아이콘
-    color: '#E57373', // 장미색 (70% 밝기)
+    color: '#D32F2F', // 장미색 (진한 색상)
   ),
   AccountBookBtnModel(
     label: 'fee',
     icon: 'dollarSign', // 수수료에 어울리는 아이콘
-    color: '#C5E1A5', // 카키색 (70% 밝기)
+    color: '#8D9A5B', // 카키색 (진한 색상)
   ),
   AccountBookBtnModel(
     label: 'fixedCost',
     icon: 'receiptLongOutlined', // 고정비용에 어울리는 아이콘
-    color: '#BA68C8', // 보라색 (70% 밝기)
+    color: '#000000', // 검은색
   ),
   AccountBookBtnModel(
     label: 'etc',
@@ -82,7 +82,7 @@ final defaultIncomeCategories = [
   AccountBookBtnModel(
     label: 'allowance',
     icon: 'cardGiftcard', // 용돈에 어울리는 아이콘
-    color: '#FFEB3B', // 노란색 (70% 밝기)
+    color: '#FF5722', // 진한 주황색 (밝기 조정)
   ),
   AccountBookBtnModel(
     label: 'savings',

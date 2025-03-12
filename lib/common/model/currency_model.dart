@@ -26,12 +26,22 @@ class CurrencyModel {
   @HiveField(4)
   final double amount;
 
+  @JsonKey()
+  @HiveField(5)
+  final String color;
+
+  @JsonKey()
+  @HiveField(6)
+  final String subColor;
+
   CurrencyModel({
     required this.name,
     required this.countryCode,
     required this.currencyCode,
     required this.currencySymbol,
     required this.amount,
+    required this.color,
+    required this.subColor,
   });
 
   factory CurrencyModel.fromJson(Map<String, dynamic> json) =>
@@ -45,6 +55,8 @@ class CurrencyModel {
     String? currencyCode,
     String? currencySymbol,
     double? amount,
+    String? color,
+    String? subColor,
   }) {
     return CurrencyModel(
       name: name ?? this.name,
@@ -52,6 +64,8 @@ class CurrencyModel {
       currencyCode: currencyCode ?? this.currencyCode,
       currencySymbol: currencySymbol ?? this.currencySymbol,
       amount: amount ?? this.amount,
+      color: color ?? this.color,
+      subColor: subColor ?? this.subColor,
     );
   }
 }

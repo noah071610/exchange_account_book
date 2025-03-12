@@ -1,7 +1,11 @@
 import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/provider/account_book_list_provider.dart';
+import 'package:currency_exchange/common/provider/setting_provider.dart';
+import 'package:currency_exchange/common/theme/custom_colors.dart';
+import 'package:currency_exchange/common/utils/utils.dart';
 import 'package:currency_exchange/common/widgets/account_book_card.dart';
+import 'package:currency_exchange/common/widgets/account_total_by_day.dart';
 import 'package:currency_exchange/common/widgets/country_image.dart';
 import 'package:currency_exchange/common/widgets/line_chart.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -57,23 +61,27 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
     final accountBook = ref.watch(accountBookListProvider);
+    final setSelectedCountryForAnalytics =
+        ref.read(settingProvider.notifier).setSelectedCountryForAnalytics;
+    final selectCountryForAnalytics =
+        ref.watch(settingProvider).selectCountryForAnalytics;
 
     final DateFormat yearFormatter = DateFormat('yyyy');
     final DateFormat monthFormatter = DateFormat('MM');
-    final DateFormat dayFormatter = DateFormat('dd');
 
     final String year = yearFormatter.format(_selectedDay);
     final String month = monthFormatter.format(_selectedDay);
-    final String day = dayFormatter.format(_selectedDay);
 
-    final allListThisMonth = accountBook.accountBookDic[year]?[month]?.values
+    final Map<String, List<double>> thisMonthDetail = {};
+
+    final allListByMonth = accountBook.accountBookDic[year]?[month]?.values
             .expand((element) => element)
             .toList() ??
         [];
-
-    final Map<String, List<double>> thisMonthDetail = {};
-    final List<String> targetCountryCode =
-        allListThisMonth.map((e) => e.currency.countryCode).toSet().toList();
+    final monthTotalModel =
+        calculateCountryTotals(allListByMonth, selectCountryForAnalytics);
+    final List<String> activeCountries =
+        getActiveCountries(accountBook, year, month);
 
     // 예시로 주어진 연도와 월을 사용하여 주 목록을 생성
     List<List<DateTime>> weeks =
@@ -89,75 +97,66 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
     return Column(
       children: [
-        Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              if (isShowDetailOfTotal)
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 20.0,
-                    right: 20.0,
-                    top: 15.0,
-                    bottom: 10.0,
-                  ),
-                  child: Column(
-                    children: thisMonthDetail.entries.map((entry) {
-                      return Container(
-                        margin: EdgeInsets.only(bottom: 5.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              spacing: 3.0,
-                              children: [
-                                CountryImage(language: entry.key),
-                                Text(
-                                  '????',
-                                  style: TextStyle(
-                                    color: Colors.black54,
-                                  ),
-                                )
-                              ],
+        Padding(
+          padding: const EdgeInsets.only(left: 20.0, top: 20.0, right: 20.0),
+          child: Row(
+            spacing: 5.0,
+            children: activeCountries
+                .map(
+                  (e) => GestureDetector(
+                    onTap: () {
+                      setSelectedCountryForAnalytics(e);
+                    },
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 15, vertical: 6.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: selectCountryForAnalytics == e
+                            ? Theme.of(context)
+                                .extension<CustomColors>()
+                                ?.greenBg
+                            : const Color.fromARGB(12, 0, 0, 0),
+                      ),
+                      child: Row(
+                        spacing: 5.0,
+                        children: [
+                          CountryImage(
+                            language: e,
+                            noStyle: true,
+                          ),
+                          Text(
+                            context.tr('countries.$e'),
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: selectCountryForAnalytics == e
+                                  ? Theme.of(context)
+                                      .extension<CustomColors>()
+                                      ?.greenText
+                                  : Theme.of(context)
+                                      .extension<CustomColors>()
+                                      ?.textGrey,
+                              height: 1.2,
                             ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  entry.value[0].toString(),
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                  ),
-                                ),
-                                Container(
-                                  height: 14,
-                                  width: 1,
-                                  color: Colors.grey,
-                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                ),
-                                Text(
-                                  entry.value[1].toString(),
-                                  style: TextStyle(
-                                    color: Colors.blue,
-                                  ),
-                                )
-                              ],
-                            )
-                          ],
-                        ),
-                      );
-                    }).toList(),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-            ]),
+                )
+                .toList(),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+          child: AccountTotalByDay(model: monthTotalModel),
+        ),
         Expanded(
           // 리스트
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding:
+                const EdgeInsets.only(left: 20.0, right: 20.0, bottom: 20.0),
             child: ListView.builder(
               itemCount: formatWeeks.length,
               itemBuilder: (context, index) {
@@ -214,6 +213,8 @@ class _WeekItemState extends ConsumerState<WeekItem> {
   Widget build(BuildContext context) {
     final isExpanded = widget.openedIndex == widget.index;
     final accountBook = ref.watch(accountBookListProvider);
+    final selectCountryForAnalytics =
+        ref.watch(settingProvider).selectCountryForAnalytics;
 
     final map = accountBook.accountBookDic[widget.year]?[widget.month] ?? {};
 
@@ -235,14 +236,18 @@ class _WeekItemState extends ConsumerState<WeekItem> {
       final d = widget.targetDays[i]['day'];
       final double spendTargetDay = map[d] != null
           ? map[d]!
-              .where((e) => e.isSpend)
+              .where((e) =>
+                  e.isSpend &&
+                  selectCountryForAnalytics == e.currency.countryCode)
               .fold(0, (sum, item) => sum + item.currency.amount)
           : 0;
       chartList[t == 7 ? 0 : t][1] = spendTargetDay;
       weekIncome = weekIncome +
           (map[d] != null
               ? map[d]!
-                  .where((e) => !e.isSpend)
+                  .where((e) =>
+                      !e.isSpend &&
+                      selectCountryForAnalytics == e.currency.countryCode)
                   .fold(0, (sum, item) => sum + item.currency.amount.toInt())
               : 0);
       weekSpend = weekSpend + spendTargetDay;
@@ -287,7 +292,11 @@ class _WeekItemState extends ConsumerState<WeekItem> {
                       style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
-                          color: isExpanded ? Colors.black : Colors.black54),
+                          color: isExpanded
+                              ? null
+                              : Theme.of(context)
+                                  .extension<CustomColors>()
+                                  ?.textGrey),
                     ),
                     Icon(
                       isExpanded ? Icons.expand_less : Icons.expand_more,
@@ -316,7 +325,7 @@ class _WeekItemState extends ConsumerState<WeekItem> {
                             SizedBox(width: 5),
                             Text(
                               '지출: $weekSpend',
-                              style: TextStyle(color: Colors.red),
+                              style: TextStyle(color: Colors.redAccent),
                             ),
                           ],
                         ),
@@ -342,8 +351,11 @@ class _WeekItemState extends ConsumerState<WeekItem> {
                     ],
                   ),
                 ),
-                LineChartSample5(
+                AnalyticsChart(
                   allSpots: chartList.map((e) => FlSpot(e[0], e[1])).toList(),
+                  highest: chartList
+                      .map((e) => e[1].toInt())
+                      .reduce((a, b) => a > b ? a : b),
                 ),
               ],
             )

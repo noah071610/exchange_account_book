@@ -13,10 +13,12 @@ class DefaultLayout extends ConsumerWidget {
   final Color? color;
   final Widget child;
   final Widget? bottomNavigationBar;
+  final Widget? floatingButton;
   final List<Widget>? actions;
   final void Function()? onClickTitle;
   final bool centerTitle;
   final bool? showAppbar;
+  final bool bottomSafe;
 
   const DefaultLayout({
     required this.child,
@@ -25,45 +27,18 @@ class DefaultLayout extends ConsumerWidget {
     this.color,
     this.bottomNavigationBar,
     this.actions,
-    this.onClickTitle = null,
+    this.onClickTitle,
+    this.floatingButton,
     this.centerTitle = false,
     this.showAppbar = true,
+    this.bottomSafe = true,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, ref) {
-    final currencyList = ref.watch(currencyListProvider);
-
     return Scaffold(
-      // floatingActionButton: FloatingActionButton.extended(
-      //   onPressed: () {
-      //     showModalBottomSheet(
-      //       context: context,
-      //       isScrollControlled: true,
-      //       builder: (BuildContext context) {
-      //         return CalculatorSheet(
-      //           baseData: currencyList.basePair.baseCurrency,
-      //           targetData: currencyList.basePair.targetCurrency,
-      //           initialBaseAmountForShortcut:
-      //               currencyList.basePair.baseCurrency.inputAmount.toString(),
-      //         );
-      //       },
-      //     );
-      //   },
-      //   label: Text(
-      //     '현재 금액을 가계부에 추가',
-      //     style: TextStyle(fontSize: 15),
-      //   ),
-      //   shape: RoundedRectangleBorder(
-      //     borderRadius: BorderRadius.circular(30.0),
-      //   ),
-      //   extendedPadding: EdgeInsets.all(50.0),
-      //   elevation: 3.0,
-      //   foregroundColor: const Color.fromARGB(255, 72, 29, 147),
-      //   backgroundColor: const Color.fromARGB(255, 245, 242, 252),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: floatingButton,
       body: Container(
         decoration: BoxDecoration(
           image: bg != null
@@ -79,7 +54,7 @@ class DefaultLayout extends ConsumerWidget {
         ),
         child: SafeArea(
           top: true,
-          bottom: true,
+          bottom: bottomSafe,
           child: child,
         ),
       ),
@@ -95,7 +70,7 @@ class DefaultLayout extends ConsumerWidget {
       elevation: 0,
       title: Text(
         title!,
-        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w500),
+        style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600),
       ),
       actions: actions,
       centerTitle: centerTitle,

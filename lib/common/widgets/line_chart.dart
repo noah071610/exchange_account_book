@@ -1,16 +1,20 @@
+import 'package:currency_exchange/common/theme/custom_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class LineChartSample5 extends StatefulWidget {
-  const LineChartSample5({super.key, required this.allSpots});
+class AnalyticsChart extends StatefulWidget {
+  const AnalyticsChart(
+      {super.key, required this.allSpots, required this.highest});
 
   final List<FlSpot> allSpots;
+  final int highest;
 
   @override
-  State<LineChartSample5> createState() => _LineChartSample5State();
+  State<AnalyticsChart> createState() => _AnalyticsChartState();
 }
 
-class _LineChartSample5State extends State<LineChartSample5> {
+class _AnalyticsChartState extends State<AnalyticsChart> {
   late List<int> showingTooltipOnSpots;
 
   @override
@@ -29,31 +33,31 @@ class _LineChartSample5State extends State<LineChartSample5> {
   Widget bottomTitleWidgets(double value, TitleMeta meta, double chartWidth) {
     final style = TextStyle(
       fontWeight: FontWeight.bold,
-      color: Colors.pink,
+      color: Theme.of(context).extension<CustomColors>()?.text,
       fontSize: 12,
     );
     String text;
     switch (value.toInt()) {
       case 0:
-        text = '일';
+        text = context.tr('일');
         break;
       case 1:
-        text = '월';
+        text = context.tr('월');
         break;
       case 2:
-        text = '화';
+        text = context.tr('화');
         break;
       case 3:
-        text = '수';
+        text = context.tr('수');
         break;
       case 4:
-        text = '목';
+        text = context.tr('목');
         break;
       case 5:
-        text = '금';
+        text = context.tr('금');
         break;
       case 6:
-        text = '토';
+        text = context.tr('토');
         break;
       default:
         return Container();
@@ -73,13 +77,25 @@ class _LineChartSample5State extends State<LineChartSample5> {
         spots: widget.allSpots,
         isCurved: false,
         barWidth: 1,
+        color: const Color.fromARGB(255, 222, 184, 252), // barWidth의 색깔 조정
         belowBarData: BarAreaData(
           show: true,
+          gradient: LinearGradient(
+            colors: Theme.of(context).brightness == Brightness.dark
+                ? [
+                    const Color.fromARGB(0, 222, 184, 252),
+                    const Color.fromARGB(0, 222, 184, 252),
+                  ]
+                : [
+                    const Color.fromARGB(255, 222, 184, 252),
+                    const Color.fromARGB(255, 236, 213, 252),
+                    const Color.fromARGB(255, 250, 243, 255),
+                  ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
         ),
         dotData: const FlDotData(show: false),
-        // gradient: LinearGradient(
-        //   stops: const [0.1, 0.4, 0.9],
-        // ),
       ),
     ];
 
@@ -135,14 +151,14 @@ class _LineChartSample5State extends State<LineChartSample5> {
                   return spotIndexes.map((index) {
                     return TouchedSpotIndicatorData(
                       const FlLine(
-                        color: Colors.pink,
+                        color: const Color.fromARGB(255, 157, 64, 239),
                       ),
                       FlDotData(
                         show: true,
                         getDotPainter: (spot, percent, barData, index) =>
                             FlDotCirclePainter(
-                          radius: 6,
-                          color: Colors.pink,
+                          radius: 4,
+                          color: const Color.fromARGB(255, 157, 64, 239),
                           strokeWidth: 0,
                         ),
                       ),
@@ -152,13 +168,15 @@ class _LineChartSample5State extends State<LineChartSample5> {
                 touchTooltipData: LineTouchTooltipData(
                   tooltipPadding:
                       EdgeInsets.symmetric(horizontal: 11.0, vertical: 3.0),
-                  getTooltipColor: (touchedSpot) => Colors.blueAccent,
+                  getTooltipColor: (touchedSpot) =>
+                      Theme.of(context).extension<CustomColors>()?.primary ??
+                      Colors.transparent,
                   tooltipRoundedRadius: 5,
                   getTooltipItems: (List<LineBarSpot> lineBarsSpot) {
                     return lineBarsSpot.map((lineBarSpot) {
                       return LineTooltipItem(
                         lineBarSpot.y.toString(),
-                        const TextStyle(
+                        TextStyle(
                           color: Colors.white,
                           fontSize: 12.0,
                           fontWeight: FontWeight.bold,
@@ -170,6 +188,7 @@ class _LineChartSample5State extends State<LineChartSample5> {
               ),
               lineBarsData: lineBarsData,
               minY: 0,
+              maxY: widget.highest + (widget.highest / 3),
               titlesData: FlTitlesData(
                 leftTitles: const AxisTitles(
                   sideTitles: SideTitles(
