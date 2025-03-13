@@ -21,16 +21,14 @@ class CurrencyModelAdapter extends TypeAdapter<CurrencyModel> {
       countryCode: fields[1] as String,
       currencyCode: fields[2] as String,
       currencySymbol: fields[3] as String,
-      amount: fields[4] as double,
-      color: fields[5] as String,
-      subColor: fields[6] as String,
+      continent: fields[4] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, CurrencyModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -40,11 +38,7 @@ class CurrencyModelAdapter extends TypeAdapter<CurrencyModel> {
       ..writeByte(3)
       ..write(obj.currencySymbol)
       ..writeByte(4)
-      ..write(obj.amount)
-      ..writeByte(5)
-      ..write(obj.color)
-      ..writeByte(6)
-      ..write(obj.subColor);
+      ..write(obj.continent);
   }
 
   @override
@@ -68,9 +62,7 @@ CurrencyModel _$CurrencyModelFromJson(Map<String, dynamic> json) =>
       countryCode: json['countryCode'] as String,
       currencyCode: json['currencyCode'] as String,
       currencySymbol: json['currencySymbol'] as String,
-      amount: (json['amount'] as num).toDouble(),
-      color: json['color'] as String,
-      subColor: json['subColor'] as String,
+      continent: json['continent'] as String,
     );
 
 Map<String, dynamic> _$CurrencyModelToJson(CurrencyModel instance) =>
@@ -79,7 +71,5 @@ Map<String, dynamic> _$CurrencyModelToJson(CurrencyModel instance) =>
       'countryCode': instance.countryCode,
       'currencyCode': instance.currencyCode,
       'currencySymbol': instance.currencySymbol,
-      'amount': instance.amount,
-      'color': instance.color,
-      'subColor': instance.subColor,
+      'continent': instance.continent,
     };

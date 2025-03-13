@@ -46,8 +46,10 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
 
     final Map<String, Map<String, dynamic>> totalByCountry = {};
 
-    final List<String> countryCodes =
-        dayList.map((item) => item.currency.countryCode).toSet().toList();
+    final List<String> countryCodes = dayList
+        .map((item) => currencyModels[item.currency.name]!.countryCode)
+        .toSet()
+        .toList();
 
     for (var code in countryCodes) {
       totalByCountry[code] = calculateCountryTotals(dayList, code);
@@ -56,8 +58,8 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
     final List<String> activeCountries =
         getActiveCountries(accountBook, year, month);
     final filteredDayList = dayList
-        .where((e) =>
-            selectedCountriesForCalender.contains(e.currency.countryCode))
+        .where((e) => selectedCountriesForCalender
+            .contains(currencyModels[e.currency.name]!.countryCode))
         .toList();
     print(dayList);
     return Column(

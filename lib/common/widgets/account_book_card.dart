@@ -1,3 +1,4 @@
+import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/constant/icon.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/provider/account_book_list_provider.dart';
@@ -120,7 +121,8 @@ class AccountBookCard extends ConsumerWidget {
                           ),
                         ),
                         CountryImage(
-                          language: model.currency.countryCode,
+                          language:
+                              currencyModels[model.currency.name]!.countryCode,
                           isSimple: true,
                           noStyle: true,
                         )
@@ -159,7 +161,7 @@ class AccountBookCard extends ConsumerWidget {
                         width: 2,
                       ),
                       Text(
-                        model.currency.currencySymbol,
+                        currencyModels[model.currency.name]!.currencySymbol,
                         style: TextStyle(
                           fontSize: 18,
                           height: 1.0,
@@ -201,7 +203,7 @@ class AccountBookCard extends ConsumerWidget {
                       width: 2,
                     ),
                     Text(
-                      model.targetCurrency.currencySymbol,
+                      currencyModels[model.targetCurrency.name]!.currencySymbol,
                       style: TextStyle(
                         fontSize: 13,
                         fontWeight: FontWeight.bold,

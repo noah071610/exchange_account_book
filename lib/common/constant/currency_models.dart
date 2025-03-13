@@ -1,396 +1,839 @@
 import 'package:currency_exchange/common/model/currency_model.dart';
 
-final List<CurrencyModel> currencyModels = [
-  CurrencyModel(
+final Map<String, CurrencyModel> currencyModels = {
+  'korea': CurrencyModel(
       name: 'korea',
       countryCode: 'kr',
       currencyCode: 'KRW',
       currencySymbol: '₩',
-      amount: 0.0,
-      color: '#FFDDC1',
-      subColor: '#FFAB91'),
-  CurrencyModel(
-      name: 'japan',
-      countryCode: 'jp',
-      currencyCode: 'JPY',
-      currencySymbol: '¥',
-      amount: 0.0,
-      color: '#FFEBCC',
-      subColor: '#FFD180'),
-  CurrencyModel(
-      name: 'usa',
-      countryCode: 'us',
-      currencyCode: 'USD',
-      currencySymbol: '\$',
-      amount: 0.0,
-      color: '#CCE5FF',
-      subColor: '#82B1FF'),
-  CurrencyModel(
-      name: 'eurozone',
-      countryCode: 'eu',
-      currencyCode: 'EUR',
-      currencySymbol: '€',
-      amount: 0.0,
-      color: '#E6CCFF',
-      subColor: '#B388FF'),
-  CurrencyModel(
-      name: 'china',
-      countryCode: 'cn',
-      currencyCode: 'CNY',
-      currencySymbol: '¥',
-      amount: 0.0,
-      color: '#FFCCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
-      name: 'unitedkingdom',
-      countryCode: 'gb',
-      currencyCode: 'GBP',
-      currencySymbol: '£',
-      amount: 0.0,
-      color: '#D1E7DD',
-      subColor: '#A5D6A7'),
-  CurrencyModel(
-      name: 'switzerland',
-      countryCode: 'ch',
-      currencyCode: 'CHF',
-      currencySymbol: 'CHF',
-      amount: 0.0,
-      color: '#FFF3CD',
-      subColor: '#FFEB3B'),
-  CurrencyModel(
-      name: 'canada',
-      countryCode: 'ca',
-      currencyCode: 'CAD',
-      currencySymbol: '\$',
-      amount: 0.0,
-      color: '#FFD1DC',
-      subColor: '#FF80AB'),
-  CurrencyModel(
-      name: 'australia',
-      countryCode: 'au',
-      currencyCode: 'AUD',
-      currencySymbol: '\$',
-      amount: 0.0,
-      color: '#D9EAD3',
-      subColor: '#AED581'),
-  CurrencyModel(
-      name: 'hongkong',
-      countryCode: 'hk',
-      currencyCode: 'HKD',
-      currencySymbol: '\$',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
-      name: 'singapore',
-      countryCode: 'sg',
-      currencyCode: 'SGD',
-      currencySymbol: '\$',
-      amount: 0.0,
-      color: '#D9D2E9',
-      subColor: '#B39DDB'),
-  CurrencyModel(
-      name: 'sweden',
-      countryCode: 'se',
-      currencyCode: 'SEK',
-      currencySymbol: 'kr',
-      amount: 0.0,
-      color: '#FCE5CD',
-      subColor: '#FFCC80'),
-  CurrencyModel(
-      name: 'norway',
-      countryCode: 'no',
-      currencyCode: 'NOK',
-      currencySymbol: 'kr',
-      amount: 0.0,
-      color: '#D0E0E3',
-      subColor: '#90CAF9'),
-  CurrencyModel(
-      name: 'denmark',
-      countryCode: 'dk',
-      currencyCode: 'DKK',
-      currencySymbol: 'kr',
-      amount: 0.0,
-      color: '#F9CB9C',
-      subColor: '#FFAB91'),
-  CurrencyModel(
-      name: 'india',
-      countryCode: 'in',
-      currencyCode: 'INR',
-      currencySymbol: '₹',
-      amount: 0.0,
-      color: '#F6E3CE',
-      subColor: '#FFCC80'),
-  CurrencyModel(
-      name: 'brazil',
-      countryCode: 'br',
-      currencyCode: 'BRL',
-      currencySymbol: 'R\$',
-      amount: 0.0,
-      color: '#CFE2F3',
-      subColor: '#90CAF9'),
-  CurrencyModel(
-      name: 'mexico',
-      countryCode: 'mx',
-      currencyCode: 'MXN',
-      currencySymbol: '\$',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
-      name: 'russianfederation',
-      countryCode: 'ru',
-      currencyCode: 'RUB',
-      currencySymbol: '₽',
-      amount: 0.0,
-      color: '#D9D2E9',
-      subColor: '#B39DDB'),
-  CurrencyModel(
-      name: 'southafrica',
-      countryCode: 'za',
-      currencyCode: 'ZAR',
-      currencySymbol: 'R',
-      amount: 0.0,
-      color: '#D9EAD3',
-      subColor: '#AED581'),
-  CurrencyModel(
-      name: 'newzealand',
-      countryCode: 'nz',
-      currencyCode: 'NZD',
-      currencySymbol: '\$',
-      amount: 0.0,
-      color: '#FFF2CC',
-      subColor: '#FFEB3B'),
-  CurrencyModel(
-      name: 'turkey',
-      countryCode: 'tr',
-      currencyCode: 'TRY',
-      currencySymbol: '₺',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
+      continent: 'asia'),
+  'unitedarabemirates': CurrencyModel(
       name: 'unitedarabemirates',
       countryCode: 'ae',
       currencyCode: 'AED',
       currencySymbol: 'د.إ',
-      amount: 0.0,
-      color: '#D9D2E9',
-      subColor: '#B39DDB'),
-  CurrencyModel(
-      name: 'saudiarabia',
-      countryCode: 'sa',
-      currencyCode: 'SAR',
-      currencySymbol: '﷼',
-      amount: 0.0,
-      color: '#D9EAD3',
-      subColor: '#AED581'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'unitedstates': CurrencyModel(
+      name: 'unitedstates',
+      countryCode: 'us',
+      currencyCode: 'USD',
+      currencySymbol: '\$',
+      continent: 'northAmerica'),
+  // ... existing code ...
+  'eurozone': CurrencyModel(
+      name: 'eurozone',
+      countryCode: 'eu',
+      currencyCode: 'EUR',
+      currencySymbol: '€',
+      continent: 'europe'),
+  // ... existing code ...
+  'japan': CurrencyModel(
+      name: 'japan',
+      countryCode: 'jp',
+      currencyCode: 'JPY',
+      currencySymbol: '¥',
+      continent: 'asia'),
+  // ... existing code ...
+  'unitedkingdom': CurrencyModel(
+      name: 'unitedkingdom',
+      countryCode: 'gb',
+      currencyCode: 'GBP',
+      currencySymbol: '£',
+      continent: 'europe'),
+  // ... existing code ...
+  'canada': CurrencyModel(
+      name: 'canada',
+      countryCode: 'ca',
+      currencyCode: 'CAD',
+      currencySymbol: '\$',
+      continent: 'northAmerica'),
+  // ... existing code ...
+  'australia': CurrencyModel(
+      name: 'australia',
+      countryCode: 'au',
+      currencyCode: 'AUD',
+      currencySymbol: '\$',
+      continent: 'oceania'),
+  // ... existing code ...
+  'switzerland': CurrencyModel(
+      name: 'switzerland',
+      countryCode: 'ch',
+      currencyCode: 'CHF',
+      currencySymbol: 'CHF',
+      continent: 'europe'),
+  // ... existing code ...
+  'china': CurrencyModel(
+      name: 'china',
+      countryCode: 'cn',
+      currencyCode: 'CNY',
+      currencySymbol: '¥',
+      continent: 'asia'),
+  // ... existing code ...
+  'hongkong': CurrencyModel(
+      name: 'hongkong',
+      countryCode: 'hk',
+      currencyCode: 'HKD',
+      currencySymbol: '\$',
+      continent: 'asia'),
+  // ... existing code ...
+  'sweden': CurrencyModel(
+      name: 'sweden',
+      countryCode: 'se',
+      currencyCode: 'SEK',
+      currencySymbol: 'kr',
+      continent: 'europe'),
+  // ... existing code ...
+  'norway': CurrencyModel(
+      name: 'norway',
+      countryCode: 'no',
+      currencyCode: 'NOK',
+      currencySymbol: 'kr',
+      continent: 'europe'),
+  // ... existing code ...
+  'denmark': CurrencyModel(
+      name: 'denmark',
+      countryCode: 'dk',
+      currencyCode: 'DKK',
+      currencySymbol: 'kr',
+      continent: 'europe'),
+  // ... existing code ...
+  'india': CurrencyModel(
+      name: 'india',
+      countryCode: 'in',
+      currencyCode: 'INR',
+      currencySymbol: '₹',
+      continent: 'asia'),
+  // ... existing code ...
+  'brazil': CurrencyModel(
+      name: 'brazil',
+      countryCode: 'br',
+      currencyCode: 'BRL',
+      currencySymbol: 'R\$',
+      continent: 'southAmerica'),
+  // ... existing code ...
+  'mexico': CurrencyModel(
+      name: 'mexico',
+      countryCode: 'mx',
+      currencyCode: 'MXN',
+      currencySymbol: '\$',
+      continent: 'northAmerica'),
+  // ... existing code ...
+  'russianfederation': CurrencyModel(
+      name: 'russianfederation',
+      countryCode: 'ru',
+      currencyCode: 'RUB',
+      currencySymbol: '₽',
+      continent: 'europe'),
+  // ... existing code ...
+  'southafrica': CurrencyModel(
+      name: 'southafrica',
+      countryCode: 'za',
+      currencyCode: 'ZAR',
+      currencySymbol: 'R',
+      continent: 'africa'),
+  // ... existing code ...
+  'newzealand': CurrencyModel(
+      name: 'newzealand',
+      countryCode: 'nz',
+      currencyCode: 'NZD',
+      currencySymbol: '\$',
+      continent: 'oceania'),
+  // ... existing code ...
+  'turkey': CurrencyModel(
+      name: 'turkey',
+      countryCode: 'tr',
+      currencyCode: 'TRY',
+      currencySymbol: '₺',
+      continent: 'europe'),
+  // ... existing code ...
+  'thailand': CurrencyModel(
       name: 'thailand',
       countryCode: 'th',
       currencyCode: 'THB',
       currencySymbol: '฿',
-      amount: 0.0,
-      color: '#FFF2CC',
-      subColor: '#FFEB3B'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'indonesia': CurrencyModel(
       name: 'indonesia',
       countryCode: 'id',
       currencyCode: 'IDR',
       currencySymbol: 'Rp',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'malaysia': CurrencyModel(
       name: 'malaysia',
       countryCode: 'my',
       currencyCode: 'MYR',
       currencySymbol: 'RM',
-      amount: 0.0,
-      color: '#D9D2E9',
-      subColor: '#B39DDB'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'vietnam': CurrencyModel(
       name: 'vietnam',
       countryCode: 'vn',
       currencyCode: 'VND',
       currencySymbol: '₫',
-      amount: 0.0,
-      color: '#D9EAD3',
-      subColor: '#AED581'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'philippines': CurrencyModel(
       name: 'philippines',
       countryCode: 'ph',
       currencyCode: 'PHP',
       currencySymbol: '₱',
-      amount: 0.0,
-      color: '#FFF2CC',
-      subColor: '#FFEB3B'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'israel': CurrencyModel(
       name: 'israel',
       countryCode: 'il',
       currencyCode: 'ILS',
       currencySymbol: '₪',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'taiwan': CurrencyModel(
       name: 'taiwan',
       countryCode: 'tw',
       currencyCode: 'TWD',
       currencySymbol: 'NT\$',
-      amount: 0.0,
-      color: '#D9D2E9',
-      subColor: '#B39DDB'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'chile': CurrencyModel(
       name: 'chile',
       countryCode: 'cl',
       currencyCode: 'CLP',
       currencySymbol: '\$',
-      amount: 0.0,
-      color: '#D9EAD3',
-      subColor: '#AED581'),
-  CurrencyModel(
+      continent: 'southAmerica'),
+  // ... existing code ...
+  'colombia': CurrencyModel(
       name: 'colombia',
       countryCode: 'co',
       currencyCode: 'COP',
       currencySymbol: '\$',
-      amount: 0.0,
-      color: '#FFF2CC',
-      subColor: '#FFEB3B'),
-  CurrencyModel(
+      continent: 'southAmerica'),
+  // ... existing code ...
+  'argentina': CurrencyModel(
       name: 'argentina',
       countryCode: 'ar',
       currencyCode: 'ARS',
       currencySymbol: '\$',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
+      continent: 'southAmerica'),
+  // ... existing code ...
+  'peru': CurrencyModel(
       name: 'peru',
       countryCode: 'pe',
       currencyCode: 'PEN',
       currencySymbol: 'S/',
-      amount: 0.0,
-      color: '#D9D2E9',
-      subColor: '#B39DDB'),
-  CurrencyModel(
+      continent: 'southAmerica'),
+  // ... existing code ...
+  'czechrepublic': CurrencyModel(
       name: 'czechrepublic',
       countryCode: 'cz',
       currencyCode: 'CZK',
       currencySymbol: 'Kč',
-      amount: 0.0,
-      color: '#D9EAD3',
-      subColor: '#AED581'),
-  CurrencyModel(
+      continent: 'europe'),
+  // ... existing code ...
+  'hungary': CurrencyModel(
       name: 'hungary',
       countryCode: 'hu',
       currencyCode: 'HUF',
       currencySymbol: 'Ft',
-      amount: 0.0,
-      color: '#FFF2CC',
-      subColor: '#FFEB3B'),
-  CurrencyModel(
+      continent: 'europe'),
+  // ... existing code ...
+  'poland': CurrencyModel(
       name: 'poland',
       countryCode: 'pl',
       currencyCode: 'PLN',
       currencySymbol: 'zł',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
+      continent: 'europe'),
+  // ... existing code ...
+  'romania': CurrencyModel(
       name: 'romania',
       countryCode: 'ro',
       currencyCode: 'RON',
       currencySymbol: 'lei',
-      amount: 0.0,
-      color: '#D9D2E9',
-      subColor: '#B39DDB'),
-  CurrencyModel(
+      continent: 'europe'),
+  // ... existing code ...
+  'bulgaria': CurrencyModel(
       name: 'bulgaria',
       countryCode: 'bg',
       currencyCode: 'BGN',
       currencySymbol: 'лв',
-      amount: 0.0,
-      color: '#D9EAD3',
-      subColor: '#AED581'),
-  CurrencyModel(
+      continent: 'europe'),
+  // ... existing code ...
+  'qatar': CurrencyModel(
       name: 'qatar',
       countryCode: 'qa',
       currencyCode: 'QAR',
       currencySymbol: '﷼',
-      amount: 0.0,
-      color: '#FFF2CC',
-      subColor: '#FFEB3B'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'kuwait': CurrencyModel(
       name: 'kuwait',
       countryCode: 'kw',
       currencyCode: 'KWD',
       currencySymbol: 'د.ك',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'oman': CurrencyModel(
       name: 'oman',
       countryCode: 'om',
       currencyCode: 'OMR',
       currencySymbol: '﷼',
-      amount: 0.0,
-      color: '#D9D2E9',
-      subColor: '#B39DDB'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'egypt': CurrencyModel(
       name: 'egypt',
       countryCode: 'eg',
       currencyCode: 'EGP',
       currencySymbol: '£',
-      amount: 0.0,
-      color: '#D9EAD3',
-      subColor: '#AED581'),
-  CurrencyModel(
+      continent: 'africa'),
+  // ... existing code ...
+  'pakistan': CurrencyModel(
       name: 'pakistan',
       countryCode: 'pk',
       currencyCode: 'PKR',
       currencySymbol: '₨',
-      amount: 0.0,
-      color: '#FFF2CC',
-      subColor: '#FFEB3B'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'srilanka': CurrencyModel(
       name: 'srilanka',
       countryCode: 'lk',
       currencyCode: 'LKR',
       currencySymbol: '₨',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'bangladesh': CurrencyModel(
       name: 'bangladesh',
       countryCode: 'bd',
       currencyCode: 'BDT',
       currencySymbol: '৳',
-      amount: 0.0,
-      color: '#D9D2E9',
-      subColor: '#B39DDB'),
-  CurrencyModel(
+      continent: 'asia'),
+  // ... existing code ...
+  'nigeria': CurrencyModel(
       name: 'nigeria',
       countryCode: 'ng',
       currencyCode: 'NGN',
       currencySymbol: '₦',
-      amount: 0.0,
-      color: '#D9EAD3',
-      subColor: '#AED581'),
-  CurrencyModel(
+      continent: 'africa'),
+  // ... existing code ...
+  'morocco': CurrencyModel(
       name: 'morocco',
       countryCode: 'ma',
       currencyCode: 'MAD',
       currencySymbol: 'د.م.',
-      amount: 0.0,
-      color: '#FFF2CC',
-      subColor: '#FFEB3B'),
-  CurrencyModel(
+      continent: 'africa'),
+  // ... existing code ...
+  'kazakhstan': CurrencyModel(
       name: 'kazakhstan',
       countryCode: 'kz',
       currencyCode: 'KZT',
       currencySymbol: '₸',
-      amount: 0.0,
-      color: '#F4CCCC',
-      subColor: '#FF8A80'),
-];
+      continent: 'asia'),
+  // ... existing code ...
+  'albania': CurrencyModel(
+      name: 'albania',
+      countryCode: 'al',
+      currencyCode: 'ALL',
+      currencySymbol: 'L',
+      continent: 'europe'),
+  'armenia': CurrencyModel(
+      name: 'armenia',
+      countryCode: 'am',
+      currencyCode: 'AMD',
+      currencySymbol: '֏',
+      continent: 'asia'),
+  'angola': CurrencyModel(
+      name: 'angola',
+      countryCode: 'ao',
+      currencyCode: 'AOA',
+      currencySymbol: 'Kz',
+      continent: 'africa'),
+  'azerbaijan': CurrencyModel(
+      name: 'azerbaijan',
+      countryCode: 'az',
+      currencyCode: 'AZN',
+      currencySymbol: '₼',
+      continent: 'asia'),
+  'bosniaandherzegovina': CurrencyModel(
+      name: 'bosniaandherzegovina',
+      countryCode: 'ba',
+      currencyCode: 'BAM',
+      currencySymbol: 'KM',
+      continent: 'europe'),
+  'barbados': CurrencyModel(
+      name: 'barbados',
+      countryCode: 'bb',
+      currencyCode: 'BBD',
+      currencySymbol: '\$',
+      continent: 'northAmerica'),
+  'burundi': CurrencyModel(
+      name: 'burundi',
+      countryCode: 'bi',
+      currencyCode: 'BIF',
+      currencySymbol: 'FBu',
+      continent: 'africa'),
+  'bermuda': CurrencyModel(
+      name: 'bermuda',
+      countryCode: 'bm',
+      currencyCode: 'BMD',
+      currencySymbol: '\$',
+      continent: 'northAmerica'),
+  'brunei': CurrencyModel(
+      name: 'brunei',
+      countryCode: 'bn',
+      currencyCode: 'BND',
+      currencySymbol: '\$',
+      continent: 'asia'),
+  'bolivia': CurrencyModel(
+      name: 'bolivia',
+      countryCode: 'bo',
+      currencyCode: 'BOB',
+      currencySymbol: 'Bs.',
+      continent: 'southAmerica'),
+  'botswana': CurrencyModel(
+      name: 'botswana',
+      countryCode: 'bw',
+      currencyCode: 'BWP',
+      currencySymbol: 'P',
+      continent: 'africa'),
+  'belarus': CurrencyModel(
+      name: 'belarus',
+      countryCode: 'by',
+      currencyCode: 'BYN',
+      currencySymbol: 'Br',
+      continent: 'europe'),
+  'belize': CurrencyModel(
+      name: 'belize',
+      countryCode: 'bz',
+      currencyCode: 'BZD',
+      currencySymbol: 'BZ\$',
+      continent: 'northAmerica'),
+  'congo': CurrencyModel(
+      name: 'congo',
+      countryCode: 'cd',
+      currencyCode: 'CDF',
+      currencySymbol: 'FC',
+      continent: 'africa'),
+  'djibouti': CurrencyModel(
+      name: 'djibouti',
+      countryCode: 'dj',
+      currencyCode: 'DJF',
+      currencySymbol: 'Fdj',
+      continent: 'africa'),
+  'eritrea': CurrencyModel(
+      name: 'eritrea',
+      countryCode: 'er',
+      currencyCode: 'ERN',
+      currencySymbol: 'Nfk',
+      continent: 'africa'),
+  'ethiopia': CurrencyModel(
+      name: 'ethiopia',
+      countryCode: 'et',
+      currencyCode: 'ETB',
+      currencySymbol: 'Br',
+      continent: 'africa'),
+  'fiji': CurrencyModel(
+      name: 'fiji',
+      countryCode: 'fj',
+      currencyCode: 'FJD',
+      currencySymbol: '\$',
+      continent: 'oceania'),
+  'falklandislands': CurrencyModel(
+      name: 'falklandislands',
+      countryCode: 'fk',
+      currencyCode: 'FKP',
+      currencySymbol: '£',
+      continent: 'southAmerica'),
+  'georgia': CurrencyModel(
+      name: 'georgia',
+      countryCode: 'ge',
+      currencyCode: 'GEL',
+      currencySymbol: '₾',
+      continent: 'asia'),
+  'ghana': CurrencyModel(
+      name: 'ghana',
+      countryCode: 'gh',
+      currencyCode: 'GHS',
+      currencySymbol: '₵',
+      continent: 'africa'),
+  'gambia': CurrencyModel(
+      name: 'gambia',
+      countryCode: 'gm',
+      currencyCode: 'GMD',
+      currencySymbol: 'D',
+      continent: 'africa'),
+  'guinea': CurrencyModel(
+      name: 'guinea',
+      countryCode: 'gn',
+      currencyCode: 'GNF',
+      currencySymbol: 'FG',
+      continent: 'africa'),
+  'guatemala': CurrencyModel(
+      name: 'guatemala',
+      countryCode: 'gt',
+      currencyCode: 'GTQ',
+      currencySymbol: 'Q',
+      continent: 'northAmerica'),
+  'guyana': CurrencyModel(
+      name: 'guyana',
+      countryCode: 'gy',
+      currencyCode: 'GYD',
+      currencySymbol: '\$',
+      continent: 'southAmerica'),
+  'honduras': CurrencyModel(
+      name: 'honduras',
+      countryCode: 'hn',
+      currencyCode: 'HNL',
+      currencySymbol: 'L',
+      continent: 'northAmerica'),
+  'croatia': CurrencyModel(
+      name: 'croatia',
+      countryCode: 'hr',
+      currencyCode: 'HRK',
+      currencySymbol: 'kn',
+      continent: 'europe'),
+  'haiti': CurrencyModel(
+      name: 'haiti',
+      countryCode: 'ht',
+      currencyCode: 'HTG',
+      currencySymbol: 'G',
+      continent: 'northAmerica'),
+  'isleofman': CurrencyModel(
+      name: 'isleofman',
+      countryCode: 'im',
+      currencyCode: 'IMP',
+      currencySymbol: '£',
+      continent: 'europe'),
+  'iraq': CurrencyModel(
+      name: 'iraq',
+      countryCode: 'iq',
+      currencyCode: 'IQD',
+      currencySymbol: 'ع.د',
+      continent: 'asia'),
+  'iran': CurrencyModel(
+      name: 'iran',
+      countryCode: 'ir',
+      currencyCode: 'IRR',
+      currencySymbol: '﷼',
+      continent: 'asia'),
+  'iceland': CurrencyModel(
+      name: 'iceland',
+      countryCode: 'is',
+      currencyCode: 'ISK',
+      currencySymbol: 'kr',
+      continent: 'europe'),
+  'jersey': CurrencyModel(
+      name: 'jersey',
+      countryCode: 'je',
+      currencyCode: 'JEP',
+      currencySymbol: '£',
+      continent: 'europe'),
+  'jamaica': CurrencyModel(
+      name: 'jamaica',
+      countryCode: 'jm',
+      currencyCode: 'JMD',
+      currencySymbol: 'J\$',
+      continent: 'northAmerica'),
+  'jordan': CurrencyModel(
+      name: 'jordan',
+      countryCode: 'jo',
+      currencyCode: 'JOD',
+      currencySymbol: 'د.ا',
+      continent: 'asia'),
+  'kenya': CurrencyModel(
+      name: 'kenya',
+      countryCode: 'ke',
+      currencyCode: 'KES',
+      currencySymbol: 'KSh',
+      continent: 'africa'),
+  'kyrgyzstan': CurrencyModel(
+      name: 'kyrgyzstan',
+      countryCode: 'kg',
+      currencyCode: 'KGS',
+      currencySymbol: 'лв',
+      continent: 'asia'),
+  'cambodia': CurrencyModel(
+      name: 'cambodia',
+      countryCode: 'kh',
+      currencyCode: 'KHR',
+      currencySymbol: '៛',
+      continent: 'asia'),
+  'comoros': CurrencyModel(
+      name: 'comoros',
+      countryCode: 'km',
+      currencyCode: 'KMF',
+      currencySymbol: 'CF',
+      continent: 'africa'),
+  'laos': CurrencyModel(
+      name: 'laos',
+      countryCode: 'la',
+      currencyCode: 'LAK',
+      currencySymbol: '₭',
+      continent: 'asia'),
+  'lebanon': CurrencyModel(
+      name: 'lebanon',
+      countryCode: 'lb',
+      currencyCode: 'LBP',
+      currencySymbol: 'ل.ل',
+      continent: 'asia'),
+  'liberia': CurrencyModel(
+      name: 'liberia',
+      countryCode: 'lr',
+      currencyCode: 'LRD',
+      currencySymbol: '\$',
+      continent: 'africa'),
+  'lesotho': CurrencyModel(
+      name: 'lesotho',
+      countryCode: 'ls',
+      currencyCode: 'LSL',
+      currencySymbol: 'L',
+      continent: 'africa'),
+  'libya': CurrencyModel(
+      name: 'libya',
+      countryCode: 'ly',
+      currencyCode: 'LYD',
+      currencySymbol: 'ل.د',
+      continent: 'africa'),
+  'moldova': CurrencyModel(
+      name: 'moldova',
+      countryCode: 'md',
+      currencyCode: 'MDL',
+      currencySymbol: 'L',
+      continent: 'europe'),
+  'madagascar': CurrencyModel(
+      name: 'madagascar',
+      countryCode: 'mg',
+      currencyCode: 'MGA',
+      currencySymbol: 'Ar',
+      continent: 'africa'),
+  'macedonia': CurrencyModel(
+      name: 'macedonia',
+      countryCode: 'mk',
+      currencyCode: 'MKD',
+      currencySymbol: 'ден',
+      continent: 'europe'),
+  'myanmar': CurrencyModel(
+      name: 'myanmar',
+      countryCode: 'mm',
+      currencyCode: 'MMK',
+      currencySymbol: 'K',
+      continent: 'asia'),
+  'mongolia': CurrencyModel(
+      name: 'mongolia',
+      countryCode: 'mn',
+      currencyCode: 'MNT',
+      currencySymbol: '₮',
+      continent: 'asia'),
+  'macau': CurrencyModel(
+      name: 'macau',
+      countryCode: 'mo',
+      currencyCode: 'MOP',
+      currencySymbol: 'MOP\$',
+      continent: 'asia'),
+  'mauritania': CurrencyModel(
+      name: 'mauritania',
+      countryCode: 'mr',
+      currencyCode: 'MRU',
+      currencySymbol: 'UM',
+      continent: 'africa'),
+  'mauritius': CurrencyModel(
+      name: 'mauritius',
+      countryCode: 'mu',
+      currencyCode: 'MUR',
+      currencySymbol: '₨',
+      continent: 'africa'),
+  'maldives': CurrencyModel(
+      name: 'maldives',
+      countryCode: 'mv',
+      currencyCode: 'MVR',
+      currencySymbol: 'Rf',
+      continent: 'asia'),
+  'malawi': CurrencyModel(
+      name: 'malawi',
+      countryCode: 'mw',
+      currencyCode: 'MWK',
+      currencySymbol: 'MK',
+      continent: 'africa'),
+  'mozambique': CurrencyModel(
+      name: 'mozambique',
+      countryCode: 'mz',
+      currencyCode: 'MZN',
+      currencySymbol: 'MT',
+      continent: 'africa'),
+  'nicaragua': CurrencyModel(
+      name: 'nicaragua',
+      countryCode: 'ni',
+      currencyCode: 'NIO',
+      currencySymbol: 'C\$',
+      continent: 'northAmerica'),
+  'sierra leone': CurrencyModel(
+      name: 'sierra leone',
+      countryCode: 'sl',
+      currencyCode: 'SLL',
+      currencySymbol: 'Le',
+      continent: 'africa'),
+  'somalia': CurrencyModel(
+      name: 'somalia',
+      countryCode: 'so',
+      currencyCode: 'SOS',
+      currencySymbol: 'Sh',
+      continent: 'africa'),
+  'suriname': CurrencyModel(
+      name: 'suriname',
+      countryCode: 'sr',
+      currencyCode: 'SRD',
+      currencySymbol: '\$',
+      continent: 'southAmerica'),
+  'southsudan': CurrencyModel(
+      name: 'southsudan',
+      countryCode: 'ss',
+      currencyCode: 'SSP',
+      currencySymbol: '£',
+      continent: 'africa'),
+  'sao tome and principe': CurrencyModel(
+      name: 'sao tome and principe',
+      countryCode: 'st',
+      currencyCode: 'STN',
+      currencySymbol: 'Db',
+      continent: 'africa'),
+  'syria': CurrencyModel(
+      name: 'syria',
+      countryCode: 'sy',
+      currencyCode: 'SYP',
+      currencySymbol: '£',
+      continent: 'asia'),
+  'tanzania': CurrencyModel(
+      name: 'tanzania',
+      countryCode: 'tz',
+      currencyCode: 'TZS',
+      currencySymbol: 'Sh',
+      continent: 'africa'),
+  'tajikistan': CurrencyModel(
+      name: 'tajikistan',
+      countryCode: 'tj',
+      currencyCode: 'TJS',
+      currencySymbol: 'ЅМ',
+      continent: 'asia'),
+  'turkmenistan': CurrencyModel(
+      name: 'turkmenistan',
+      countryCode: 'tm',
+      currencyCode: 'TMT',
+      currencySymbol: 'm',
+      continent: 'asia'),
+  'tunisia': CurrencyModel(
+      name: 'tunisia',
+      countryCode: 'tn',
+      currencyCode: 'TND',
+      currencySymbol: 'د.ت',
+      continent: 'africa'),
+  'tonga': CurrencyModel(
+      name: 'tonga',
+      countryCode: 'to',
+      currencyCode: 'TOP',
+      currencySymbol: 'T\$',
+      continent: 'oceania'),
+  'ukraine': CurrencyModel(
+      name: 'ukraine',
+      countryCode: 'ua',
+      currencyCode: 'UAH',
+      currencySymbol: '₴',
+      continent: 'europe'),
+  'uganda': CurrencyModel(
+      name: 'uganda',
+      countryCode: 'ug',
+      currencyCode: 'UGX',
+      currencySymbol: 'USh',
+      continent: 'africa'),
+  'uruguay': CurrencyModel(
+      name: 'uruguay',
+      countryCode: 'uy',
+      currencyCode: 'UYU',
+      currencySymbol: '\$',
+      continent: 'southAmerica'),
+  'uzbekistan': CurrencyModel(
+      name: 'uzbekistan',
+      countryCode: 'uz',
+      currencyCode: 'UZS',
+      currencySymbol: 'лв',
+      continent: 'asia'),
+  'venezuela': CurrencyModel(
+      name: 'venezuela',
+      countryCode: 've',
+      currencyCode: 'VES',
+      currencySymbol: 'Bs.',
+      continent: 'southAmerica'),
+  'vanuatu': CurrencyModel(
+      name: 'vanuatu',
+      countryCode: 'vu',
+      currencyCode: 'VUV',
+      currencySymbol: 'VT',
+      continent: 'oceania'),
+  'samoa': CurrencyModel(
+      name: 'samoa',
+      countryCode: 'ws',
+      currencyCode: 'WST',
+      currencySymbol: 'T',
+      continent: 'oceania'),
+  'centralafricanfranc': CurrencyModel(
+      name: 'centralafricanfranc',
+      countryCode: 'cf',
+      currencyCode: 'XAF',
+      currencySymbol: 'FCFA',
+      continent: 'africa'),
+  'eastcaribbean': CurrencyModel(
+      name: 'eastcaribbean',
+      countryCode: 'ag',
+      currencyCode: 'XCD',
+      currencySymbol: '\$',
+      continent: 'northAmerica'),
+  // 'specialdrawingrights': CurrencyModel(
+  //     name: 'specialdrawingrights',
+  //     countryCode: 'sd',
+  //     currencyCode: 'XDR',
+  //     currencySymbol: 'SDR',
+  //     continent: 'international'),
+  'westafricanfranc': CurrencyModel(
+      name: 'westafricanfranc',
+      countryCode: 'bj',
+      currencyCode: 'XOF',
+      currencySymbol: 'CFA',
+      continent: 'africa'),
+  'cfpfranc': CurrencyModel(
+      name: 'cfpfranc',
+      countryCode: 'pf',
+      currencyCode: 'XPF',
+      currencySymbol: '₣',
+      continent: 'oceania'),
+  'yemen': CurrencyModel(
+      name: 'yemen',
+      countryCode: 'ye',
+      currencyCode: 'YER',
+      currencySymbol: '﷼',
+      continent: 'asia'),
+  'zambia': CurrencyModel(
+      name: 'zambia',
+      countryCode: 'zm',
+      currencyCode: 'ZMW',
+      currencySymbol: 'ZK',
+      continent: 'africa'),
+  'zimbabwe': CurrencyModel(
+      name: 'zimbabwe',
+      countryCode: 'zw',
+      currencyCode: 'ZWL',
+      currencySymbol: 'Z\$',
+      continent: 'africa'),
+};
+
+final currencyList = currencyModels.values.toList();
+
+final Map<String, List<CurrencyModel>> continentList = {
+  'asia': currencyList.where((e) => e.continent == 'asia').toList(),
+  'europe': currencyList.where((e) => e.continent == 'europe').toList(),
+  'northAmerica':
+      currencyList.where((e) => e.continent == 'northAmerica').toList(),
+  'southAmerica':
+      currencyList.where((e) => e.continent == 'southAmerica').toList(),
+  'oceania': currencyList.where((e) => e.continent == 'oceania').toList(),
+  'africa': currencyList.where((e) => e.continent == 'africa').toList(),
+  // 'international':
+  //     currencyList.where((e) => e.continent == 'international').toList(),
+};

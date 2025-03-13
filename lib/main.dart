@@ -6,10 +6,12 @@ import 'package:currency_exchange/common/model/account_book_btn_model.dart';
 import 'package:currency_exchange/common/model/account_book_category_model.dart';
 import 'package:currency_exchange/common/model/account_book_list_model.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
+import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/model/currency_list_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/view/root_tab.dart';
+import 'package:currency_exchange/setting/view/currency_setting.dart';
 import 'package:currency_exchange/setting/view/display_setting.dart';
 import 'package:currency_exchange/setting/view/font_setting.dart';
 import 'package:currency_exchange/setting/view/language_setting.dart';
@@ -38,6 +40,7 @@ void main() async {
 
   Hive.registerAdapter(CurrencyListModelAdapter());
   Hive.registerAdapter(CurrencyModelAdapter());
+  Hive.registerAdapter(CurrencyCardModelAdapter());
   Hive.registerAdapter(AccountBookBtnModelAdapter());
   Hive.registerAdapter(AccountBookModelAdapter());
   Hive.registerAdapter(AccountBookCategoryModelAdapter());
@@ -264,6 +267,12 @@ final GoRouter _router = GoRouter(
           path: 'font-setting',
           builder: (BuildContext context, GoRouterState state) {
             return const FontSetting();
+          },
+        ),
+        GoRoute(
+          path: 'currency-setting',
+          builder: (BuildContext context, GoRouterState state) {
+            return const CurrencySetting();
           },
         ),
         // GoRoute(

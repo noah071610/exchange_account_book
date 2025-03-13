@@ -1,32 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'currency_list_model.dart';
+part of 'currency_card_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class CurrencyListModelAdapter extends TypeAdapter<CurrencyListModel> {
+class CurrencyCardModelAdapter extends TypeAdapter<CurrencyCardModel> {
   @override
-  final int typeId = 1;
+  final int typeId = 28;
 
   @override
-  CurrencyListModel read(BinaryReader reader) {
+  CurrencyCardModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return CurrencyListModel(
-      currencyList: (fields[0] as List).cast<CurrencyCardModel>(),
+    return CurrencyCardModel(
+      name: fields[0] as String,
+      amount: fields[1] as double,
     );
   }
 
   @override
-  void write(BinaryWriter writer, CurrencyListModel obj) {
+  void write(BinaryWriter writer, CurrencyCardModel obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(2)
       ..writeByte(0)
-      ..write(obj.currencyList);
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.amount);
   }
 
   @override
@@ -35,7 +38,7 @@ class CurrencyListModelAdapter extends TypeAdapter<CurrencyListModel> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CurrencyListModelAdapter &&
+      other is CurrencyCardModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -44,14 +47,14 @@ class CurrencyListModelAdapter extends TypeAdapter<CurrencyListModel> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-CurrencyListModel _$CurrencyListModelFromJson(Map<String, dynamic> json) =>
-    CurrencyListModel(
-      currencyList: (json['currencyList'] as List<dynamic>)
-          .map((e) => CurrencyCardModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+CurrencyCardModel _$CurrencyCardModelFromJson(Map<String, dynamic> json) =>
+    CurrencyCardModel(
+      name: json['name'] as String,
+      amount: (json['amount'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$CurrencyListModelToJson(CurrencyListModel instance) =>
+Map<String, dynamic> _$CurrencyCardModelToJson(CurrencyCardModel instance) =>
     <String, dynamic>{
-      'currencyList': instance.currencyList,
+      'name': instance.name,
+      'amount': instance.amount,
     };

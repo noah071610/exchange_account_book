@@ -1,5 +1,7 @@
+import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/model/account_book_btn_model.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
+import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/provider/account_book_list_provider.dart';
 import 'package:currency_exchange/common/provider/setting_provider.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
@@ -240,8 +242,8 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
       targetCode: widget.targetData.currencyCode,
     );
 
-    final isBaseCard =
-        currencyList[0].countryCode == widget.baseData.countryCode;
+    final isBaseCard = currencyModels[currencyList[0].name]!.countryCode ==
+        widget.baseData.countryCode;
 
     setCurrency(targetIndex: isBaseCard ? 0 : 1, amount: result);
     setCurrency(
@@ -256,7 +258,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
           amount: getExchangedAmount(
             amount: result,
             baseCode: widget.baseData.currencyCode,
-            targetCode: currencyList[i].currencyCode,
+            targetCode: currencyModels[currencyList[i].name]!.currencyCode,
           ),
         );
       }
@@ -277,7 +279,8 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
         accountBook.addAccountBookList(
           AccountBookModel(
             id: generateRandomKey(),
-            targetCurrency: widget.targetData.copyWith(amount: exchangeAmount),
+            targetCurrency: CurrencyCardModel(
+                name: widget.targetData.name, amount: exchangeAmount),
             accountType: accountType,
             subType: 'exchange',
             category: AccountBookBtnModel(
@@ -285,7 +288,8 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
               icon: 'swap_horiz', // 환전에 어울리는 아이콘
               color: '#E57373', // 핑크색 (70% 밝기)
             ),
-            currency: widget.baseData.copyWith(
+            currency: CurrencyCardModel(
+              name: widget.baseData.name,
               amount: result,
             ),
             isSpend: true,
@@ -295,7 +299,10 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
         accountBook.addAccountBookList(
           AccountBookModel(
             id: generateRandomKey(),
-            targetCurrency: widget.targetData.copyWith(amount: result),
+            targetCurrency: CurrencyCardModel(
+              name: widget.targetData.name,
+              amount: result,
+            ),
             accountType: accountType,
             subType: 'exchange',
             category: AccountBookBtnModel(
@@ -303,7 +310,8 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
               icon: 'swap_horiz', // 환전에 어울리는 아이콘
               color: '#64B5F6', // 파란색 (70% 밝기)
             ),
-            currency: widget.targetData.copyWith(
+            currency: CurrencyCardModel(
+              name: widget.targetData.name,
               amount: double.parse(_controller.text),
             ),
             isSpend: false,
@@ -316,13 +324,13 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
         accountBook.addAccountBookList(
           AccountBookModel(
             id: generateRandomKey(),
-            targetCurrency: widget.targetData.copyWith(amount: exchangeAmount),
+            targetCurrency: CurrencyCardModel(
+                name: widget.targetData.name, amount: exchangeAmount),
             accountType: accountType,
             subType: accountType == 'income' ? 'income' : consumptionType,
             category: selectedCategory!,
-            currency: widget.baseData.copyWith(
-              amount: result,
-            ),
+            currency:
+                CurrencyCardModel(name: widget.baseData.name, amount: result),
             isSpend: accountType != 'income',
             createdAt: DateTime.now(),
           ),
@@ -390,7 +398,6 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                   children: [
                     CountryImage(
                       language: widget.baseData.countryCode,
-                      color: widget.baseData.color,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,3 +1,4 @@
+import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -9,7 +10,7 @@ part 'currency_list_model.g.dart';
 class CurrencyListModel {
   @JsonKey()
   @HiveField(0)
-  final List<CurrencyModel> currencyList;
+  final List<CurrencyCardModel> currencyList;
 
   CurrencyListModel({
     required this.currencyList,
@@ -21,7 +22,7 @@ class CurrencyListModel {
   Map<String, dynamic> toJson() => _$CurrencyListModelToJson(this);
 
   CurrencyListModel copyWith({
-    List<CurrencyModel>? currencyList,
+    List<CurrencyCardModel>? currencyList,
   }) {
     return CurrencyListModel(
       currencyList: currencyList ?? this.currencyList,

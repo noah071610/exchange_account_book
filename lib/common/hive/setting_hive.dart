@@ -1,4 +1,4 @@
-import 'package:currency_exchange/common/constant/dafulat_data.dart';
+import 'package:currency_exchange/common/constant/dafault_data.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:currency_exchange/common/hive/hive.dart';
 import 'package:currency_exchange/common/model/setting_model.dart';

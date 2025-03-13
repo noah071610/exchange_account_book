@@ -21,8 +21,8 @@ class AccountBookModelAdapter extends TypeAdapter<AccountBookModel> {
       accountType: fields[1] as String,
       subType: fields[2] as String,
       category: fields[3] as AccountBookBtnModel,
-      currency: fields[4] as CurrencyModel,
-      targetCurrency: fields[5] as CurrencyModel,
+      currency: fields[4] as CurrencyCardModel,
+      targetCurrency: fields[5] as CurrencyCardModel,
       isSpend: fields[6] as bool,
       createdAt: fields[7] as DateTime,
     );
@@ -73,8 +73,8 @@ AccountBookModel _$AccountBookModelFromJson(Map<String, dynamic> json) =>
       category: AccountBookBtnModel.fromJson(
           json['category'] as Map<String, dynamic>),
       currency:
-          CurrencyModel.fromJson(json['currency'] as Map<String, dynamic>),
-      targetCurrency: CurrencyModel.fromJson(
+          CurrencyCardModel.fromJson(json['currency'] as Map<String, dynamic>),
+      targetCurrency: CurrencyCardModel.fromJson(
           json['targetCurrency'] as Map<String, dynamic>),
       isSpend: json['isSpend'] as bool,
       createdAt: DateTime.parse(json['createdAt'] as String),

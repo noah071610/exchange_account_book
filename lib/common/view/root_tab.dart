@@ -1,4 +1,5 @@
 import 'package:currency_exchange/analytics/view/analytics_screen.dart';
+import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/provider/currency_list_provider.dart';
 import 'package:currency_exchange/common/widgets/calculator_sheet.dart';
 import 'package:currency_exchange/exchange/view/exchange_screen.dart';
@@ -24,6 +25,8 @@ class _RootTabState extends ConsumerState<RootTab>
     with SingleTickerProviderStateMixin {
   late TabController _controller;
   final PageController pageController = PageController();
+  int year = int.parse(DateFormat('yyyy').format(DateTime.now()));
+  int month = int.parse(DateFormat('MM').format(DateTime.now()));
 
   @override
   void initState() {
@@ -49,8 +52,8 @@ class _RootTabState extends ConsumerState<RootTab>
             isScrollControlled: true,
             builder: (BuildContext context) {
               return CalculatorSheet(
-                baseData: currencyList[0],
-                targetData: currencyList[1],
+                baseData: currencyModels[currencyList[0].name]!,
+                targetData: currencyModels[currencyList[1].name]!,
                 initialBaseAmountForShortcut: _controller.index == 0
                     ? currencyList[0].amount.toStringAsFixed(2)
                     : null,
@@ -76,7 +79,7 @@ class _RootTabState extends ConsumerState<RootTab>
           : _controller.index == 1
               ? context.tr('캘린더')
               : _controller.index == 2
-                  ? context.tr('3월')
+                  ? ('$year${context.tr('년')} $month${context.tr('월')}')
                   : context.tr('설정'),
       centerTitle: true,
       bottomNavigationBar: BottomNavigationBar(
@@ -113,7 +116,45 @@ class _RootTabState extends ConsumerState<RootTab>
           );
         }).toList(),
       ),
-      actions: [],
+      leading: _controller.index == 2
+          ? IconButton(
+              icon: Icon(Icons.chevron_left),
+              onPressed: () {
+                setState(() {
+                  if (month == 1) {
+                    month = 12;
+                    year--;
+                  } else {
+                    month--;
+                  }
+                });
+              },
+            )
+          : null,
+      actions: _controller.index == 0
+          ? [
+              IconButton(
+                icon: Icon(FeatherIcons.settings, size: 20),
+                onPressed: () {},
+              ),
+            ]
+          : _controller.index == 2
+              ? [
+                  IconButton(
+                    icon: Icon(Icons.chevron_right),
+                    onPressed: () {
+                      setState(() {
+                        if (month == 12) {
+                          month = 1;
+                          year++;
+                        } else {
+                          month++;
+                        }
+                      });
+                    },
+                  ),
+                ]
+              : [],
       child: TabBarView(
         controller: _controller,
         physics: NeverScrollableScrollPhysics(),
@@ -121,9 +162,27 @@ class _RootTabState extends ConsumerState<RootTab>
           ExchangeScreen(),
           CalenderScreen(),
           AnalyticsScreen(
-            month: '03',
-            year: '2025',
-          ),
+              month: month.toString(),
+              year: year.toString(),
+              onSwipe: (isLeft) {
+                setState(() {
+                  if (isLeft) {
+                    if (month == 1) {
+                      month = 12;
+                      year--;
+                    } else {
+                      month--;
+                    }
+                  } else {
+                    if (month == 12) {
+                      month = 1;
+                      year++;
+                    } else {
+                      month++;
+                    }
+                  }
+                });
+              }),
           SettingScreen(),
         ],
       ),

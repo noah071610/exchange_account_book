@@ -1,10 +1,8 @@
 import 'package:currency_exchange/common/constant/currency_models.dart';
-import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/provider/account_book_list_provider.dart';
 import 'package:currency_exchange/common/provider/setting_provider.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/utils/utils.dart';
-import 'package:currency_exchange/common/widgets/account_book_card.dart';
 import 'package:currency_exchange/common/widgets/account_total_by_day.dart';
 import 'package:currency_exchange/common/widgets/country_image.dart';
 import 'package:currency_exchange/common/widgets/line_chart.dart';
@@ -13,16 +11,17 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:table_calendar/table_calendar.dart';
 
 class AnalyticsScreen extends ConsumerStatefulWidget {
   final String year;
   final String month;
+  final Function(bool isLeft) onSwipe;
 
   const AnalyticsScreen({
     super.key,
     required this.year,
     required this.month,
+    required this.onSwipe,
   });
 
   @override
@@ -30,9 +29,8 @@ class AnalyticsScreen extends ConsumerStatefulWidget {
 }
 
 class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
-  DateTime _selectedDay = DateTime.now();
   bool isShowDetailOfTotal = false;
-  int openedIndex = -1;
+  int? openedIndex;
 
   List<List<DateTime>> getWeeksInMonth(int year, int month) {
     List<List<DateTime>> weeks = [];
@@ -66,22 +64,15 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     final selectCountryForAnalytics =
         ref.watch(settingProvider).selectCountryForAnalytics;
 
-    final DateFormat yearFormatter = DateFormat('yyyy');
-    final DateFormat monthFormatter = DateFormat('MM');
-
-    final String year = yearFormatter.format(_selectedDay);
-    final String month = monthFormatter.format(_selectedDay);
-
-    final Map<String, List<double>> thisMonthDetail = {};
-
-    final allListByMonth = accountBook.accountBookDic[year]?[month]?.values
+    final allListByMonth = accountBook
+            .accountBookDic[widget.year]?[widget.month]?.values
             .expand((element) => element)
             .toList() ??
         [];
     final monthTotalModel =
         calculateCountryTotals(allListByMonth, selectCountryForAnalytics);
     final List<String> activeCountries =
-        getActiveCountries(accountBook, year, month);
+        getActiveCountries(accountBook, widget.year, widget.month);
 
     // 예시로 주어진 연도와 월을 사용하여 주 목록을 생성
     List<List<DateTime>> weeks =
@@ -94,6 +85,23 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               {'day': DateFormat('dd').format(k), 'weekDay': k.weekday.toInt()})
           .toList();
     }).toList();
+
+    int todayIndex = -1;
+
+    if (int.parse(DateFormat('MM').format(DateTime.now())) ==
+        int.parse(widget.month)) {
+      for (int i = 0; i < formatWeeks.length; i++) {
+        for (int j = 0; j < formatWeeks[i].length; j++) {
+          if (formatWeeks[i][j]['day'] ==
+              DateFormat('dd').format(DateTime.now())) {
+            todayIndex = i;
+            break;
+          }
+        }
+        if (todayIndex != -1) break;
+      }
+    }
+    if (todayIndex != -1) openedIndex ??= todayIndex;
 
     return Column(
       children: [
@@ -163,8 +171,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 final targetDays = formatWeeks[index];
                 return WeekItem(
                   targetDays: targetDays,
-                  month: month,
-                  year: year,
+                  month: widget.month,
+                  year: widget.year,
+                  isToday: todayIndex == index,
                   onTab: (int i) {
                     setState(() {
                       if (openedIndex == i) {
@@ -175,7 +184,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                     });
                   },
                   index: index,
-                  openedIndex: openedIndex,
+                  openedIndex: openedIndex ?? -1,
                 );
               },
             ),
@@ -191,6 +200,7 @@ class WeekItem extends ConsumerStatefulWidget {
   final String year;
   final String month;
   final int index;
+  final bool isToday;
   final int openedIndex;
   final void Function(int) onTab;
 
@@ -199,6 +209,7 @@ class WeekItem extends ConsumerStatefulWidget {
     required this.targetDays,
     required this.year,
     required this.month,
+    required this.isToday,
     required this.onTab,
     required this.index,
     required this.openedIndex,
@@ -209,6 +220,11 @@ class WeekItem extends ConsumerStatefulWidget {
 }
 
 class _WeekItemState extends ConsumerState<WeekItem> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isExpanded = widget.openedIndex == widget.index;
@@ -238,7 +254,8 @@ class _WeekItemState extends ConsumerState<WeekItem> {
           ? map[d]!
               .where((e) =>
                   e.isSpend &&
-                  selectCountryForAnalytics == e.currency.countryCode)
+                  selectCountryForAnalytics ==
+                      currencyModels[e.currency.name]!.countryCode)
               .fold(0, (sum, item) => sum + item.currency.amount)
           : 0;
       chartList[t == 7 ? 0 : t][1] = spendTargetDay;
@@ -247,7 +264,8 @@ class _WeekItemState extends ConsumerState<WeekItem> {
               ? map[d]!
                   .where((e) =>
                       !e.isSpend &&
-                      selectCountryForAnalytics == e.currency.countryCode)
+                      selectCountryForAnalytics ==
+                          currencyModels[e.currency.name]!.countryCode)
                   .fold(0, (sum, item) => sum + item.currency.amount.toInt())
               : 0);
       weekSpend = weekSpend + spendTargetDay;
@@ -285,18 +303,29 @@ class _WeekItemState extends ConsumerState<WeekItem> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      widget.targetDays.length == 1
-                          ? '${widget.month}월 ${widget.targetDays[0]['day']}일'
-                          : '${widget.month}월 ${widget.targetDays[0]['day']}일 - ${widget.month}월 ${widget.targetDays[widget.targetDays.length - 1]['day']}일',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: isExpanded
-                              ? null
-                              : Theme.of(context)
-                                  .extension<CustomColors>()
-                                  ?.textGrey),
+                    Row(
+                      spacing: 3.0,
+                      children: [
+                        Text(
+                          widget.targetDays.length == 1
+                              ? '${widget.month}월 ${widget.targetDays[0]['day']}일'
+                              : '${widget.month}월 ${widget.targetDays[0]['day']}일 - ${widget.month}월 ${widget.targetDays[widget.targetDays.length - 1]['day']}일',
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: isExpanded
+                                  ? null
+                                  : Theme.of(context)
+                                      .extension<CustomColors>()
+                                      ?.textGrey),
+                        ),
+                        if (widget.isToday)
+                          Icon(
+                            Icons.star,
+                            color: const Color.fromARGB(255, 246, 221, 1),
+                            size: 18,
+                          ),
+                      ],
                     ),
                     Icon(
                       isExpanded ? Icons.expand_less : Icons.expand_more,

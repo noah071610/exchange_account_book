@@ -138,10 +138,11 @@ String formatDouble(double value, {bool isDecimal = true}) {
 
 Map<String, dynamic> calculateCountryTotals(
     List<AccountBookModel> dayList, String countryCode) {
-  final a =
-      dayList.where((e) => e.currency.countryCode == countryCode && e.isSpend);
-  final b =
-      dayList.where((e) => e.currency.countryCode == countryCode && !e.isSpend);
+  final a = dayList.where((e) =>
+      currencyModels[e.currency.name]!.countryCode == countryCode && e.isSpend);
+  final b = dayList.where((e) =>
+      currencyModels[e.currency.name]!.countryCode == countryCode &&
+      !e.isSpend);
 
   final List<List<dynamic>> x = a
       .fold<Map<AccountBookBtnModel, List<dynamic>>>({}, (acc, e) {
@@ -170,9 +171,9 @@ Map<String, dynamic> calculateCountryTotals(
       .toList();
 
   return {
-    'currency': currencyModels.firstWhere(
+    'currency': currencyList.firstWhere(
       (model) => model.countryCode == countryCode,
-      orElse: () => currencyModels[0],
+      orElse: () => currencyList[0],
     ),
     'spendSum': a.fold(0.0, (sum, e) => sum + e.currency.amount),
     'spend': x,
@@ -199,9 +200,11 @@ List<String> getActiveCountries(
   final monthMap = accountBook.accountBookDic[year]?[month] ?? {};
   final List<List<String>> temp = [];
   monthMap.forEach((key, value) {
-    final List<String> countryCodes =
-        monthMap[key]?.map((e) => e.currency.countryCode).toSet().toList() ??
-            [];
+    final List<String> countryCodes = monthMap[key]
+            ?.map((e) => currencyModels[e.currency.name]!.countryCode)
+            .toSet()
+            .toList() ??
+        [];
     temp.add(countryCodes);
   });
 

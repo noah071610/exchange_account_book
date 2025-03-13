@@ -1,8 +1,6 @@
 import 'package:currency_exchange/common/constant/icon.dart';
-import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
-import 'package:currency_exchange/common/utils/utils.dart';
 import 'package:currency_exchange/common/widgets/country_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';

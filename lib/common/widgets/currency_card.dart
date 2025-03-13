@@ -1,3 +1,5 @@
+import 'package:currency_exchange/common/constant/currency_models.dart';
+import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/utils/utils.dart';
@@ -9,19 +11,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CurrencyCard extends ConsumerWidget {
-  final CurrencyModel baseData;
-  final CurrencyModel targetData;
+  final CurrencyCardModel cardBaseData;
+  final CurrencyCardModel cardTargetData;
   final bool isSimple;
 
-  const CurrencyCard({
+  CurrencyCard({
     super.key,
     this.isSimple = false,
-    required this.baseData,
-    required this.targetData,
+    required this.cardBaseData,
+    required this.cardTargetData,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final CurrencyModel baseData = currencyModels[cardBaseData.name]!;
+    final CurrencyModel targetData = currencyModels[cardTargetData.name]!;
+
     return GestureDetector(
       onTap: isSimple
           ? () {}
@@ -56,7 +61,6 @@ class CurrencyCard extends ConsumerWidget {
                 CountryImage(
                   language: baseData.countryCode,
                   isSimple: isSimple,
-                  color: baseData.color,
                 ),
                 if (!isSimple)
                   Column(
@@ -101,7 +105,7 @@ class CurrencyCard extends ConsumerWidget {
                     color: Theme.of(context).extension<CustomColors>()?.greenBg,
                   ),
                   child: Text(
-                    '${baseData.currencySymbol} ${formatDouble(baseData.amount)}',
+                    '${baseData.currencySymbol} ${formatDouble(cardBaseData.amount)}',
                     style: TextStyle(
                       fontSize: isSimple ? 12 : 14,
                       fontWeight: FontWeight.w600,
@@ -117,7 +121,7 @@ class CurrencyCard extends ConsumerWidget {
                   padding: const EdgeInsets.only(right: 2.5),
                   child: Text(
                     convertToKoreanNumber(
-                        baseData.amount, context, baseData.countryCode),
+                        cardBaseData.amount, context, baseData.countryCode),
                     style: TextStyle(
                       fontSize: isSimple ? 11 : 13,
                       fontWeight: FontWeight.w500,

@@ -1,5 +1,6 @@
-import 'package:currency_exchange/common/constant/dafulat_data.dart';
+import 'package:currency_exchange/common/constant/dafault_data.dart';
 import 'package:currency_exchange/common/hive/currency_hive.dart';
+import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/model/currency_list_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,7 +30,8 @@ class CurrencyListNotifier extends StateNotifier<CurrencyListModel> {
       amount: amount,
     );
 
-    final updatedCurrencyList = List<CurrencyModel>.from(state.currencyList);
+    final updatedCurrencyList =
+        List<CurrencyCardModel>.from(state.currencyList);
     updatedCurrencyList[targetIndex] = updatedCurrency;
 
     state = state.copyWith(currencyList: updatedCurrencyList);

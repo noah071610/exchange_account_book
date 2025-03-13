@@ -1,4 +1,5 @@
 import 'package:currency_exchange/common/model/account_book_btn_model.dart';
+import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -26,11 +27,11 @@ class AccountBookModel {
 
   @JsonKey()
   @HiveField(4)
-  final CurrencyModel currency;
+  final CurrencyCardModel currency;
 
   @JsonKey()
   @HiveField(5)
-  final CurrencyModel targetCurrency;
+  final CurrencyCardModel targetCurrency;
 
   @JsonKey()
   @HiveField(6)
@@ -61,8 +62,8 @@ class AccountBookModel {
     String? accountType,
     String? subType,
     AccountBookBtnModel? category,
-    CurrencyModel? currency,
-    CurrencyModel? targetCurrency,
+    CurrencyCardModel? currency,
+    CurrencyCardModel? targetCurrency,
     bool? isSpend,
     DateTime? createdAt,
   }) {

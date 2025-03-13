@@ -1,6 +1,8 @@
+import 'package:currency_exchange/setting/widget/setting_detail_layout.dart';
+import 'package:currency_exchange/setting/widget/setting_section.dart';
 import 'package:flutter/material.dart';
 import 'package:currency_exchange/common/constant/toast.dart';
-import 'package:currency_exchange/setting/widget/list_item.dart';
+import 'package:currency_exchange/setting/widget/setting_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -12,78 +14,80 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        height: MediaQuery.of(context).size.height,
-        color: const Color.fromARGB(8, 0, 0, 0),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          child: Column(
-            children: [
-              CustomListSection(
-                title: context.tr('settings'),
-                items: [
-                  CustomListItem(
-                    title: context.tr('font_settings'),
-                    icon: Icons.font_download,
-                    settingType: SettingType.navigator,
-                    onTap: () {
-                      context.go('/font-setting');
-                    },
-                  ),
-                  CustomListItem(
-                    title: context.tr('language_settings'),
-                    icon: Icons.language,
-                    settingType: SettingType.navigator,
-                    onTap: () {
-                      context.go('/language-setting');
-                    },
-                  ),
-                  CustomListItem(
-                    title: context.tr('display_settings'),
-                    icon: Icons.brightness_6,
-                    settingType: SettingType.navigator,
-                    onTap: () {
-                      context.go('/display-setting');
-                    },
-                  ),
-                ],
-              ),
-              CustomListSection(
-                title: context.tr('etc'),
-                items: [
-                  CustomListItem(
-                    title: context.tr('feedback_and_requests'),
-                    icon: Icons.feedback,
-                    onTap: () => _launchEmail(context),
-                    settingType: SettingType.event,
-                  ),
-                  CustomListItem(
-                    title: context.tr('version_info'),
-                    icon: Icons.info,
-                    settingType: SettingType.event,
-                    onTap: () {
-                      showCustomToast(context: context, message: 'v1.0.0');
-                    },
-                  ),
-                ],
-              ),
-            ],
+    return SettingDetailLayout(child: [
+      SettingSection(
+        title: context.tr('settings'),
+        items: [
+          SettingItem(
+            title: context.tr('font_settings'),
+            icon: Icons.font_download,
+            settingType: SettingType.navigator,
+            onTap: () {
+              context.go('/currency-setting');
+            },
           ),
-        ),
+        ],
       ),
-    );
+      SettingSection(
+        title: context.tr('settings'),
+        items: [
+          SettingItem(
+            title: context.tr('font_settings'),
+            icon: Icons.font_download,
+            settingType: SettingType.navigator,
+            onTap: () {
+              context.go('/font-setting');
+            },
+          ),
+          SettingItem(
+            title: context.tr('language_settings'),
+            icon: Icons.language,
+            settingType: SettingType.navigator,
+            onTap: () {
+              context.go('/language-setting');
+            },
+          ),
+          SettingItem(
+            title: context.tr('display_settings'),
+            icon: Icons.brightness_6,
+            settingType: SettingType.navigator,
+            onTap: () {
+              context.go('/display-setting');
+            },
+          ),
+        ],
+      ),
+      SettingSection(
+        title: context.tr('etc'),
+        items: [
+          SettingItem(
+            title: context.tr('feedback_and_requests'),
+            icon: Icons.feedback,
+            onTap: () => _launchEmail(context),
+            settingType: SettingType.event,
+          ),
+          SettingItem(
+            title: context.tr('version_info'),
+            icon: Icons.info,
+            settingType: SettingType.event,
+            onTap: () {
+              showCustomToast(context: context, message: 'v1.0.0');
+            },
+          ),
+        ],
+      ),
+    ]);
   }
 
-  Future<void> _launchAppStore() async {
-    final Uri url = Uri.parse(
-      'https://apps.apple.com/app/id[YOUR_APP_ID]', // iOS 앱스토어 링크
-      // 'https://play.google.com/store/apps/details?id=[YOUR_PACKAGE_NAME]', // 안드로이드 플레이스토어 링크
-    );
-    if (!await launchUrl(url)) {
-      throw Exception('앱스토어를 열 수 없습니다');
-    }
-  }
+  // Future<void> _launchAppStore() async {
+  //   final Uri url = Uri.parse(
+  //     'https://apps.apple.com/app/id[YOUR_APP_ID]', // iOS 앱스토어 링크
+  //     // 'https://play.google.com/store/apps/details?id=[YOUR_PACKAGE_NAME]', // 안드로이드 플레이스토어 링크
+  //   );
+  //   if (!await launchUrl(url)) {
+  //     throw Exception('앱스토어를 열 수 없습니다');
+  //   }
+  // }
 
   Future<void> _launchEmail(BuildContext context) async {
     final Uri emailLaunchUri = Uri(

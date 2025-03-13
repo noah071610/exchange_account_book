@@ -14,6 +14,7 @@ class DefaultLayout extends ConsumerWidget {
   final Widget child;
   final Widget? bottomNavigationBar;
   final Widget? floatingButton;
+  final Widget? leading;
   final List<Widget>? actions;
   final void Function()? onClickTitle;
   final bool centerTitle;
@@ -27,6 +28,7 @@ class DefaultLayout extends ConsumerWidget {
     this.color,
     this.bottomNavigationBar,
     this.actions,
+    this.leading,
     this.onClickTitle,
     this.floatingButton,
     this.centerTitle = false,
@@ -38,7 +40,6 @@ class DefaultLayout extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     return Scaffold(
-      floatingActionButton: floatingButton,
       body: Container(
         decoration: BoxDecoration(
           image: bg != null
@@ -74,6 +75,7 @@ class DefaultLayout extends ConsumerWidget {
       ),
       actions: actions,
       centerTitle: centerTitle,
+      leading: leading,
     );
   }
 }

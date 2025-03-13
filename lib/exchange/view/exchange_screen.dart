@@ -28,12 +28,12 @@ class ExchangeScreen extends ConsumerWidget {
                   spacing: 8,
                   children: [
                     CurrencyCard(
-                      baseData: currencyList[0],
-                      targetData: currencyList[1],
+                      cardBaseData: currencyList[0],
+                      cardTargetData: currencyList[1],
                     ),
                     CurrencyCard(
-                      baseData: currencyList[1],
-                      targetData: currencyList[0],
+                      cardBaseData: currencyList[1],
+                      cardTargetData: currencyList[0],
                     ),
                   ],
                 ),
@@ -46,8 +46,9 @@ class ExchangeScreen extends ConsumerWidget {
                       children: currencyList
                           .sublist(2)
                           .map((currency) => CurrencyCard(
-                                baseData: currency,
-                                targetData: currencyList[0], // base currency
+                                cardBaseData: currency,
+                                cardTargetData:
+                                    currencyList[0], // base currency
                                 isSimple: true,
                               ))
                           .toList(),

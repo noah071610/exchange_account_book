@@ -41,9 +41,7 @@ class CountryImage extends StatelessWidget {
         : Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: color == null
-                  ? const Color.fromARGB(255, 177, 205, 253)
-                  : Color(int.parse(color.replaceFirst('#', '0xff'))),
+              color: const Color.fromARGB(255, 177, 205, 253),
             ),
             child: Padding(
               padding: EdgeInsets.all(paddingValue),
