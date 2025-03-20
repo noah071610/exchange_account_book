@@ -210,3 +210,45 @@ List<String> getActiveCountries(
 
   return temp.expand((i) => i).toSet().toList();
 }
+
+List<List<DateTime>> getWeeksInMonth(int year, int month) {
+  List<List<DateTime>> weeks = [];
+  DateTime firstDayOfMonth = DateTime(year, month, 1);
+  DateTime lastDayOfMonth = DateTime(year, month + 1, 0);
+
+  DateTime currentDay = firstDayOfMonth;
+  while (currentDay.weekday != DateTime.sunday) {
+    currentDay = currentDay.subtract(Duration(days: 1));
+  }
+
+  while (currentDay.isBefore(lastDayOfMonth) ||
+      currentDay.isAtSameMomentAs(lastDayOfMonth)) {
+    List<DateTime> week = [];
+    for (int i = 0; i < 7; i++) {
+      if (currentDay.isAfter(lastDayOfMonth)) break;
+      week.add(currentDay);
+      currentDay = currentDay.add(Duration(days: 1));
+    }
+    weeks.add(week);
+  }
+
+  return weeks;
+}
+
+void incrementMonthAndYear({required int month, required int year}) {
+  if (month == 12) {
+    month = 1;
+    year++;
+  } else {
+    month++;
+  }
+}
+
+void decrementMonthAndYear({required int month, required int year}) {
+  if (month == 1) {
+    month = 12;
+    year--;
+  } else {
+    month--;
+  }
+}

@@ -1,8 +1,11 @@
 import 'package:currency_exchange/common/constant/dafault_data.dart';
+import 'package:currency_exchange/common/constant/toast.dart';
 import 'package:currency_exchange/common/hive/currency_hive.dart';
 import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/model/currency_list_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final currencyListProvider =
@@ -39,40 +42,29 @@ class CurrencyListNotifier extends StateNotifier<CurrencyListModel> {
     await updateCurrencyListInHive(_ref, state);
   }
 
-  // void setTargetCurrencyList({
-  //   String? countryCode,
-  //   double? inputAmount,
-  //   double? displayAmount,
-  //   int? index,
-  //   List<int>? quickTag,
-  // }) async {
-  //   final List<CurrencyModel> updatedCurrencyList =
-  //       state.currencyList.map((currency) {
-  //     return currency.copyWith(
-  //       countryCode: countryCode,
-  //       inputAmount: inputAmount,
-  //       displayAmount: displayAmount,
-  //       index: index,
-  //       quickTag: quickTag,
-  //     );
-  //   }).toList();
+  void addCurrency(CurrencyCardModel newCurrency, BuildContext context) {
+    final updatedCurrencyList = List<CurrencyCardModel>.from(state.currencyList)
+      ..add(newCurrency);
 
-  //   state = state.copyWith(
-  //     currencyList: updatedCurrencyList,
-  //   );
+    state = state.copyWith(currencyList: updatedCurrencyList);
+    updateCurrencyListInHive(_ref, state);
+  }
 
-  //   updateCurrencyListInHive(_ref, state);
-  // }
+  void removeCurrency(String name, BuildContext context) {
+    final updatedCurrencyList = List<CurrencyCardModel>.from(state.currencyList)
+      ..removeWhere((e) => e.name == name);
 
-  // void toggleBasePair() async {
-  //   final exchange = state.basePair.copyWith(
-  //     baseCurrency: state.basePair.targetCurrency,
-  //     targetCurrency: state.basePair.baseCurrency,
-  //   );
-  //   state = state.copyWith(
-  //     basePair: exchange,
-  //   );
+    state = state.copyWith(currencyList: updatedCurrencyList);
+    updateCurrencyListInHive(_ref, state);
+  }
 
-  //   updateCurrencyListInHive(_ref, state);
-  // }
+  void reorderCurrencyList(int oldIndex, int newIndex) {
+    final updatedCurrencyList =
+        List<CurrencyCardModel>.from(state.currencyList);
+    final item = updatedCurrencyList.removeAt(oldIndex);
+    updatedCurrencyList.insert(newIndex, item);
+
+    state = state.copyWith(currencyList: updatedCurrencyList);
+    updateCurrencyListInHive(_ref, state);
+  }
 }

@@ -11,6 +11,8 @@ import 'package:currency_exchange/common/model/currency_list_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/view/root_tab.dart';
+import 'package:currency_exchange/setting/view/category_setting.dart';
+import 'package:currency_exchange/setting/view/category_setting_detail.dart';
 import 'package:currency_exchange/setting/view/currency_setting.dart';
 import 'package:currency_exchange/setting/view/display_setting.dart';
 import 'package:currency_exchange/setting/view/font_setting.dart';
@@ -275,12 +277,22 @@ final GoRouter _router = GoRouter(
             return const CurrencySetting();
           },
         ),
-        // GoRoute(
-        //   path: 'levelOne',
-        //   builder: (BuildContext context, GoRouterState state) {
-        //     return const LevelOneView();
-        //   },
-        // ),
+        GoRoute(
+          path: 'category-setting',
+          builder: (BuildContext context, GoRouterState state) {
+            return const CategorySetting();
+          },
+          routes: [
+            GoRoute(
+              path: ':type/:index',
+              builder: (BuildContext context, GoRouterState state) {
+                final type = state.pathParameters['type']!;
+                final index = int.parse(state.pathParameters['index']!);
+                return CategorySettingDetail(type: type, index: index);
+              },
+            )
+          ],
+        ),
       ],
     ),
   ],

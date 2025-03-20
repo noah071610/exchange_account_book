@@ -27,15 +27,6 @@ void showCustomToast(
     child: toast,
     gravity: ToastGravity.TOP,
     toastDuration: Duration(seconds: 2),
-    positionedToastBuilder: (context, child) {
-      final safeAreaTop = MediaQuery.of(context).padding.top;
-      return Positioned(
-        top: 16.0 + safeAreaTop,
-        left: 16.0,
-        right: 16.0,
-        child: _ToastAnimation(child: child),
-      );
-    } as PositionedToastBuilder?,
   );
 }
 

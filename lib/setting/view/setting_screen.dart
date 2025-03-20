@@ -19,11 +19,19 @@ class SettingScreen extends StatelessWidget {
         title: context.tr('settings'),
         items: [
           SettingItem(
-            title: context.tr('font_settings'),
+            title: context.tr('currency_settings'),
             icon: Icons.font_download,
             settingType: SettingType.navigator,
             onTap: () {
               context.go('/currency-setting');
+            },
+          ),
+          SettingItem(
+            title: context.tr('category_settings'),
+            icon: Icons.font_download,
+            settingType: SettingType.navigator,
+            onTap: () {
+              context.go('/category-setting');
             },
           ),
         ],

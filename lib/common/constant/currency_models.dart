@@ -67,7 +67,7 @@ final Map<String, CurrencyModel> currencyModels = {
       name: 'china',
       countryCode: 'cn',
       currencyCode: 'CNY',
-      currencySymbol: '¥',
+      currencySymbol: '元',
       continent: 'asia'),
   // ... existing code ...
   'hongkong': CurrencyModel(

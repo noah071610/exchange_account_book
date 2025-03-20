@@ -61,7 +61,8 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
         .where((e) => selectedCountriesForCalender
             .contains(currencyModels[e.currency.name]!.countryCode))
         .toList();
-    print(dayList);
+    print(year);
+    print(month);
     return Column(
       children: [
         Column(

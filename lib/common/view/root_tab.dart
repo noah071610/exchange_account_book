@@ -11,6 +11,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:currency_exchange/common/layout/default_layout.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:go_router/go_router.dart';
 
 class RootTab extends ConsumerStatefulWidget {
   const RootTab({
@@ -27,6 +28,7 @@ class _RootTabState extends ConsumerState<RootTab>
   final PageController pageController = PageController();
   int year = int.parse(DateFormat('yyyy').format(DateTime.now()));
   int month = int.parse(DateFormat('MM').format(DateTime.now()));
+  int? openedIndex;
 
   @override
   void initState() {
@@ -127,6 +129,7 @@ class _RootTabState extends ConsumerState<RootTab>
                   } else {
                     month--;
                   }
+                  openedIndex = null;
                 });
               },
             )
@@ -135,7 +138,9 @@ class _RootTabState extends ConsumerState<RootTab>
           ? [
               IconButton(
                 icon: Icon(FeatherIcons.settings, size: 20),
-                onPressed: () {},
+                onPressed: () {
+                  context.go('/currency-setting');
+                },
               ),
             ]
           : _controller.index == 2
@@ -150,6 +155,7 @@ class _RootTabState extends ConsumerState<RootTab>
                         } else {
                           month++;
                         }
+                        openedIndex = null;
                       });
                     },
                   ),
@@ -162,7 +168,8 @@ class _RootTabState extends ConsumerState<RootTab>
           ExchangeScreen(),
           CalenderScreen(),
           AnalyticsScreen(
-              month: month.toString(),
+              openedIndex: openedIndex,
+              month: month < 10 ? '0$month' : month.toString(),
               year: year.toString(),
               onSwipe: (isLeft) {
                 setState(() {
@@ -173,6 +180,7 @@ class _RootTabState extends ConsumerState<RootTab>
                     } else {
                       month--;
                     }
+                    openedIndex = null;
                   } else {
                     if (month == 12) {
                       month = 1;
@@ -180,6 +188,7 @@ class _RootTabState extends ConsumerState<RootTab>
                     } else {
                       month++;
                     }
+                    openedIndex = null;
                   }
                 });
               }),
