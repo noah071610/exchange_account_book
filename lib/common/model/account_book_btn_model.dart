@@ -33,7 +33,6 @@ class AccountBookBtnModel {
     String? label,
     String? icon,
     String? color,
-    bool? favorite,
   }) {
     return AccountBookBtnModel(
       label: label ?? this.label,

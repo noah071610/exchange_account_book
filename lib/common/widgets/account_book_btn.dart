@@ -41,7 +41,9 @@ class AccountBookBtn extends StatelessWidget {
           height: 3,
         ),
         Text(
-          context.tr('category.${model.label}'),
+          model.label.contains('category.')
+              ? context.tr(model.label)
+              : model.label,
           style: TextStyle(
             fontSize: 12,
             color: isActive

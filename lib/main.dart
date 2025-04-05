@@ -287,8 +287,14 @@ final GoRouter _router = GoRouter(
               path: ':type/:index',
               builder: (BuildContext context, GoRouterState state) {
                 final type = state.pathParameters['type']!;
-                final index = int.parse(state.pathParameters['index']!);
-                return CategorySettingDetail(type: type, index: index);
+                final paramsIndex = state.pathParameters['index']!;
+                final index =
+                    paramsIndex == 'add' ? -1 : int.parse(paramsIndex);
+                return CategorySettingDetail(
+                  type: type,
+                  index: index,
+                  isAdd: index == -1,
+                );
               },
             )
           ],

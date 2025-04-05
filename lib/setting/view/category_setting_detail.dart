@@ -1,146 +1,412 @@
-import 'package:currency_exchange/common/constant/color.dart';
-import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/constant/icon.dart';
 import 'package:currency_exchange/common/constant/toast.dart';
-import 'package:currency_exchange/common/model/currency_card_model.dart';
-import 'package:currency_exchange/common/model/currency_model.dart';
+import 'package:currency_exchange/common/model/account_book_btn_model.dart';
 import 'package:currency_exchange/common/provider/category_list_provider.dart';
-import 'package:currency_exchange/common/provider/currency_list_provider.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
-import 'package:currency_exchange/common/widgets/account_book_setting_card.dart';
-import 'package:currency_exchange/common/widgets/country_image.dart';
+import 'package:currency_exchange/setting/widget/setting_category_detail.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:async';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
-class CategorySettingDetail extends ConsumerWidget {
+class CategorySettingDetail extends ConsumerStatefulWidget {
   final int index;
   final String type;
+  final bool isAdd;
 
   const CategorySettingDetail({
     super.key,
     required this.index,
     required this.type,
+    this.isAdd = false,
   });
+  @override
+  ConsumerState<CategorySettingDetail> createState() =>
+      _CategorySettingDetailState();
+}
+
+class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
+  late String selectedLabel = '';
+  late String selectedColor;
+  late String selectedIcon;
+  late TextEditingController textController;
+  late final AccountBookCategoryNotifier _notifier;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final provider = ref.watch(accountBookCategoryProvider);
-    final notifier = ref.read(accountBookCategoryProvider.notifier);
-    final categories =
-        type == 'income' ? provider.incomeCategories : provider.spendCategories;
-    final target = categories[index];
+  void initState() {
+    super.initState();
+    _notifier = ref.read(accountBookCategoryProvider.notifier);
 
-    String selectedLabel = target.label;
-    String selectedColor = target.color;
-    String selectedIcon = target.icon;
+    if (!widget.isAdd && widget.index > -1) {
+      final provider = ref.read(accountBookCategoryProvider);
+      final categories = widget.type == 'income'
+          ? provider.incomeCategories
+          : provider.spendCategories;
+      final target = categories[widget.index];
 
+      selectedLabel = target.label;
+      selectedColor = target.color;
+      selectedIcon = target.icon;
+      textController = TextEditingController(text: target.label);
+    } else {
+      selectedLabel = '';
+      selectedColor = '#BDBDBD';
+      selectedIcon = 'plusCircle';
+      textController = TextEditingController(text: '');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${target.label} 설정'),
+        title: Text(
+            '${selectedLabel.contains('category.') ? context.tr(selectedLabel) : selectedLabel} 설정'),
       ),
       body: Container(
         color: Theme.of(context).extension<CustomColors>()?.containerWhiteBg,
         padding: EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 라벨 변경
-              Text('라벨 변경', style: TextStyle(fontWeight: FontWeight.bold)),
-              TextField(
-                controller: TextEditingController(text: selectedLabel),
-                onChanged: (value) {
-                  selectedLabel = value;
-                },
-                decoration: InputDecoration(
-                  hintText: '새로운 라벨 입력',
-                ),
-              ),
-              SizedBox(height: 20),
-
-              // 색상 변경
-              Text('색상 변경', style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 7),
-              GridView.count(
-                crossAxisCount: 8,
-                crossAxisSpacing: 3,
-                mainAxisSpacing: 3,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  for (var color in categoryColors)
-                    GestureDetector(
-                      onTap: () {
-                        selectedColor = color;
-                      },
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color:
-                              Color(int.parse(color.replaceFirst('#', '0xff'))),
-                          borderRadius: BorderRadius.circular(10),
-                          border: selectedColor == color
-                              ? Border.all(color: Colors.purple, width: 2)
-                              : null,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-
-              // 아이콘 변경
-              Text('아이콘 변경', style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 7),
-              Container(
-                child: GridView.count(
-                  crossAxisCount: 8,
-                  crossAxisSpacing: 3,
-                  mainAxisSpacing: 3,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    for (var icon in iconKeys)
-                      GestureDetector(
-                        onTap: () {
-                          selectedIcon = icon;
-                        },
-                        child: Opacity(
-                          opacity: selectedIcon == icon ? 1.0 : 0.4,
-                          child: Icon(
-                            iconDictionary[icon],
-                            size: 30,
-                            color: selectedIcon == icon
-                                ? Theme.of(context)
-                                    .extension<CustomColors>()
-                                    ?.primary
-                                : Theme.of(context)
-                                    .extension<CustomColors>()
-                                    ?.opposite,
+                    SizedBox(height: 5.0),
+                    Column(
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 20,
+                      children: [
+                        // 첫 번째 열 (100px 고정)
+                        SizedBox(
+                          width: 100,
+                          child: Column(
+                            children: [
+                              Container(
+                                width: 130,
+                                height: 130,
+                                decoration: BoxDecoration(
+                                  color: Color(int.parse(
+                                      selectedColor.replaceFirst('#', '0xff'))),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Icon(
+                                  iconDictionary[selectedIcon],
+                                  color: Colors.white,
+                                  size: 50.0,
+                                ),
+                              ),
+                              Text(
+                                selectedLabel.isEmpty
+                                    ? context.tr('empty_label')
+                                    : selectedLabel.contains('category.')
+                                        ? context.tr(selectedLabel)
+                                        : selectedLabel,
+                                style: TextStyle(
+                                  fontSize: 20.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
+                        // 두 번째 열 (나머지 공간 전체)
+                        Column(
+                          children: [
+                            SettingCategoryDetail(
+                              label: context.tr('색상 변경'),
+                              onPressed: () {
+                                Color pickerColor = Color(int.parse(
+                                    selectedColor.replaceFirst('#', '0xff')));
+
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
+                                    title: const Text('색상 변경',
+                                        style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold)),
+                                    content: SingleChildScrollView(
+                                      child: ColorPicker(
+                                        pickerColor: pickerColor,
+                                        onColorChanged: (Color color) {
+                                          pickerColor = color;
+                                        },
+                                        pickerAreaHeightPercent: 0.8,
+                                        enableAlpha: false,
+                                        labelTypes: [], // 라벨 숨기기
+                                        displayThumbColor: true,
+                                        paletteType: PaletteType.hsvWithHue,
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('취소'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('선택'),
+                                        onPressed: () {
+                                          setState(() {
+                                            selectedColor =
+                                                '#${pickerColor.value.toRadixString(16).substring(2)}';
+                                          });
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                            SizedBox(height: 10),
+                            SettingCategoryDetail(
+                              label: context.tr('아이콘 변경'),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
+                                    title: const Text('아이콘 변경',
+                                        style: TextStyle(
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold)),
+                                    content: Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.8,
+                                      child: SingleChildScrollView(
+                                        child: GridView.count(
+                                          crossAxisCount: 6,
+                                          crossAxisSpacing: 3,
+                                          mainAxisSpacing: 3,
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          children: [
+                                            for (var icon in iconKeys)
+                                              GestureDetector(
+                                                onTap: () {
+                                                  setState(() {
+                                                    selectedIcon = icon;
+                                                    Navigator.of(context).pop();
+                                                  });
+                                                },
+                                                child: Opacity(
+                                                  opacity: selectedIcon == icon
+                                                      ? 1.0
+                                                      : 0.4,
+                                                  child: Icon(
+                                                    iconDictionary[icon],
+                                                    size: 30,
+                                                    color: selectedIcon == icon
+                                                        ? Theme.of(context)
+                                                            .extension<
+                                                                CustomColors>()
+                                                            ?.primary
+                                                        : Theme.of(context)
+                                                            .extension<
+                                                                CustomColors>()
+                                                            ?.opposite,
+                                                  ),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('취소'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                            SizedBox(height: 10),
+                            SettingCategoryDetail(
+                              label: context.tr('라벨 변경'),
+                              isEnabled: !selectedLabel.contains('category.'),
+                              onPressed: !selectedLabel.contains('category.')
+                                  ? () {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) =>
+                                            AlertDialog(
+                                          title: const Text('라벨 변경',
+                                              style: TextStyle(
+                                                  fontSize: 16.0,
+                                                  fontWeight: FontWeight.bold)),
+                                          content: TextField(
+                                            controller: textController,
+                                            onChanged: (text) {
+                                              if (text.characters.length > 7) {
+                                                textController.text = text
+                                                    .characters
+                                                    .take(7)
+                                                    .toString();
+                                              }
+                                            },
+                                            decoration: InputDecoration(
+                                              hintText: '새로운 라벨 입력',
+                                              border: OutlineInputBorder(),
+                                              enabled: !selectedLabel
+                                                  .contains('category.'),
+                                            ),
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('취소'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              onPressed: !selectedLabel
+                                                      .contains('category.')
+                                                  ? () {
+                                                      setState(() {
+                                                        selectedLabel =
+                                                            textController.text;
+                                                      });
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    }
+                                                  : null,
+                                              child: const Text('변경'),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }
+                                  : null,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
-              SizedBox(height: 20),
-
-              // 변경하기 버튼
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    // 변경 사항 적용 로직
-                    // 예: notifier.updateCategory(index, selectedLabel, selectedColor, selectedIcon);
-                  },
-                  child: Text('변경하기'),
+            ),
+            SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    const Color.fromARGB(255, 30, 161, 69),
+                    const Color.fromARGB(255, 91, 187, 120),
+                    const Color.fromARGB(255, 88, 183, 116),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TextButton(
+                onPressed: () {
+                  if (!widget.isAdd && widget.index > -1) {
+                    if (widget.type == 'income') {
+                      _notifier.updateIncomeCategory(
+                        widget.index,
+                        AccountBookBtnModel(
+                          label: selectedLabel,
+                          icon: selectedIcon,
+                          color: selectedColor,
+                        ),
+                      );
+                    } else {
+                      _notifier.updateSpendCategory(
+                        widget.index,
+                        AccountBookBtnModel(
+                          label: selectedLabel,
+                          icon: selectedIcon,
+                          color: selectedColor,
+                        ),
+                      );
+                    }
+                    showCustomToast(
+                        context: context, message: context.tr('save_category'));
+                  } else {
+                    if (selectedLabel.isEmpty) {
+                      return showCustomToast(
+                          context: context, message: context.tr('need_label'));
+                    }
+                    if (widget.type == 'income') {
+                      _notifier.addIncomeCategory(
+                        AccountBookBtnModel(
+                          label: selectedLabel,
+                          icon: selectedIcon,
+                          color: selectedColor,
+                        ),
+                      );
+                    } else {
+                      _notifier.addSpendCategory(
+                        AccountBookBtnModel(
+                          label: selectedLabel,
+                          icon: selectedIcon,
+                          color: selectedColor,
+                        ),
+                      );
+                    }
+                    showCustomToast(
+                        context: context, message: context.tr('add_category'));
+                  }
+                  Navigator.pop(context);
+                },
+                style: TextButton.styleFrom(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 17.0, horizontal: 30.0),
+                ),
+                child: Text(
+                  context.tr('save_category'),
+                  style: TextStyle(
+                    fontSize: 19,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+            if (!widget.isAdd)
+              SizedBox(
+                child: TextButton(
+                  onPressed: () {
+                    if (widget.type == 'income') {
+                      _notifier.removeIncomeCategory(
+                        widget.index,
+                      );
+                    } else {
+                      _notifier.removeSpendCategory(
+                        widget.index,
+                      );
+                    }
+                    showCustomToast(
+                        context: context,
+                        message: context.tr('remove_category'));
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    context.tr('delete_category'),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ),
+            SizedBox(height: 30),
+          ],
         ),
       ),
     );

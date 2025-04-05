@@ -84,8 +84,6 @@ class _WeekItemState extends ConsumerState<WeekItem> {
       weekSpend = weekSpend + spendTargetDay;
     }
 
-    // print(widget.targetDays);
-
     // final spendList = allListThisMonth.where((item) => item.isSpend).toList();
     // final incomeList = allListThisMonth.where((item) => !item.isSpend).toList();
     // final totalSpend = spendList.fold(

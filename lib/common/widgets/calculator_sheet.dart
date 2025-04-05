@@ -567,6 +567,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                       spacing: 8,
                       children: accountTypeLabels.map((k) {
                         return AccountBookTag(
+                          isNotMainCategory: true,
                           label: k,
                           onTap: (String label) {
                             setState(() {
@@ -613,6 +614,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                         spacing: 8,
                         children: spendingCategoryLabels.map((k) {
                           return AccountBookTag(
+                            isNotMainCategory: true,
                             label: k,
                             onTap: (String label) {
                               setState(() {

@@ -6,12 +6,14 @@ import 'package:flutter/cupertino.dart';
 class AccountBookTag extends StatelessWidget {
   final String label;
   final bool isActive;
+  final bool isNotMainCategory;
   final void Function(String) onTap;
 
   const AccountBookTag({
     super.key,
     required this.label,
     required this.onTap,
+    this.isNotMainCategory = false,
     this.isActive = false,
   });
 
@@ -30,7 +32,11 @@ class AccountBookTag extends StatelessWidget {
         ),
         padding: EdgeInsets.symmetric(vertical: 8, horizontal: 15),
         child: Text(
-          context.tr('category.${label}'),
+          isNotMainCategory
+              ? context.tr('category.$label')
+              : label.contains('category.')
+                  ? context.tr(label)
+                  : label,
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.bold,

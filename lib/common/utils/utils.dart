@@ -182,7 +182,7 @@ Map<String, dynamic> calculateCountryTotals(
   };
 }
 
-List<AccountBookModel> getDayListForDate(
+List<AccountBookModel> getDailyAccounts(
     DateTime date, Map<String, dynamic> accountBookDic) {
   final DateFormat yearFormatter = DateFormat('yyyy');
   final DateFormat monthFormatter = DateFormat('MM');

@@ -1,6 +1,7 @@
 import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/provider/account_book_list_provider.dart';
+import 'package:currency_exchange/common/provider/currency_list_provider.dart';
 import 'package:currency_exchange/common/provider/setting_provider.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/utils/utils.dart';
@@ -27,42 +28,30 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
   DateTime _selectedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.week; // 초기 포맷 설정
   bool isShowList = true;
+  List<String> selectedCountries = [];
 
   @override
   Widget build(BuildContext context) {
     final accountBook = ref.watch(accountBookListProvider);
-    final selectedCountriesForCalender =
-        ref.watch(settingProvider).selectedCountriesForCalender;
-    final setSelectedCountriesForCalendar =
-        ref.read(settingProvider.notifier).setSelectedCountriesForCalendar;
+    final currencyList = ref.watch(currencyListProvider).currencyList;
 
     final DateFormat yearFormatter = DateFormat('yyyy');
     final DateFormat monthFormatter = DateFormat('MM');
 
-    final String year = yearFormatter.format(_selectedDay);
-    final String month = monthFormatter.format(_selectedDay);
-
-    final dayList = getDayListForDate(_selectedDay, accountBook.accountBookDic);
+    final dailyAccounts =
+        getDailyAccounts(_selectedDay, accountBook.accountBookDic);
 
     final Map<String, Map<String, dynamic>> totalByCountry = {};
 
-    final List<String> countryCodes = dayList
-        .map((item) => currencyModels[item.currency.name]!.countryCode)
-        .toSet()
-        .toList();
+    List<String> countryCodes = ([
+      ...dailyAccounts
+          .map((item) => currencyModels[item.currency.name]!.countryCode),
+    ]).toSet().toList();
 
     for (var code in countryCodes) {
-      totalByCountry[code] = calculateCountryTotals(dayList, code);
+      totalByCountry[code] = calculateCountryTotals(dailyAccounts, code);
     }
 
-    final List<String> activeCountries =
-        getActiveCountries(accountBook, year, month);
-    final filteredDayList = dayList
-        .where((e) => selectedCountriesForCalender
-            .contains(currencyModels[e.currency.name]!.countryCode))
-        .toList();
-    print(year);
-    print(month);
     return Column(
       children: [
         Column(
@@ -189,10 +178,10 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
             )
           ],
         ),
-        if (dayList.isNotEmpty)
+        if (dailyAccounts.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(
-                left: 12.0, right: 12.0, top: 8.0, bottom: 15.0),
+                left: 12.0, right: 12.0, top: 8.0, bottom: 10.0),
             child: Row(
               children: [
                 Expanded(
@@ -256,64 +245,65 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
               ],
             ),
           ),
-        if (isShowList &&
-            activeCountries.isNotEmpty &&
-            filteredDayList.isNotEmpty)
-          Padding(
-            padding:
-                const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
-            child: Row(
-              spacing: 5.0,
-              children: activeCountries
-                  .map(
-                    (e) => GestureDetector(
-                      onTap: () {
-                        setSelectedCountriesForCalendar(e);
-                      },
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 14, vertical: 5.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                          color: selectedCountriesForCalender.contains(e)
-                              ? Theme.of(context)
-                                  .extension<CustomColors>()
-                                  ?.greenBg
-                              : Theme.of(context)
-                                  .extension<CustomColors>()
-                                  ?.containerBg,
-                        ),
-                        child: Row(
-                          spacing: 5.0,
-                          children: [
-                            CountryImage(
-                              language: e,
-                              noStyle: true,
-                            ),
-                            Text(
-                              context.tr('countries.$e'),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: selectedCountriesForCalender.contains(e)
-                                    ? Theme.of(context)
-                                        .extension<CustomColors>()
-                                        ?.greenText
-                                    : Theme.of(context)
-                                        .extension<CustomColors>()
-                                        ?.textGrey,
-                                height: 1.2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
-            ),
-          ),
-        if (dayList.isEmpty)
+        // if (isShowList && dailyAccounts.isNotEmpty)
+        //   Padding(
+        //     padding:
+        //         const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+        //     child: SingleChildScrollView(
+        //       scrollDirection: Axis.horizontal,
+        //       child: Row(
+        //         children: countryCodes
+        //             .map(
+        //               (e) => GestureDetector(
+        //                 onTap: () {
+        //                   setSelectedCountriesForCalendar(e);
+        //                 },
+        //                 child: Container(
+        //                   margin: EdgeInsets.symmetric(horizontal: 2.5),
+        //                   padding: EdgeInsets.symmetric(
+        //                       horizontal: 14, vertical: 5.0),
+        //                   decoration: BoxDecoration(
+        //                     borderRadius: BorderRadius.circular(4),
+        //                     color: countryCodes.contains(e)
+        //                         ? Theme.of(context)
+        //                             .extension<CustomColors>()
+        //                             ?.greenBg
+        //                         : Theme.of(context)
+        //                             .extension<CustomColors>()
+        //                             ?.containerBg,
+        //                   ),
+        //                   child: Row(
+        //                     children: [
+        //                       CountryImage(
+        //                         language: e,
+        //                         noStyle: true,
+        //                       ),
+        //                       SizedBox(width: 5.0),
+        //                       Text(
+        //                         context.tr('countries.$e'),
+        //                         style: TextStyle(
+        //                           fontSize: 14,
+        //                           fontWeight: FontWeight.w600,
+        //                           color: countryCodes.contains(e)
+        //                               ? Theme.of(context)
+        //                                   .extension<CustomColors>()
+        //                                   ?.greenText
+        //                               : Theme.of(context)
+        //                                   .extension<CustomColors>()
+        //                                   ?.textGrey,
+        //                           height: 1.2,
+        //                         ),
+        //                       ),
+        //                     ],
+        //                   ),
+        //                 ),
+        //               ),
+        //             )
+        //             .toList(),
+        //       ),
+        //     ),
+        //   ),
+        if (dailyAccounts.isEmpty)
           Container(
             height: 150,
             alignment: Alignment.center,
@@ -341,10 +331,10 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
             ? Expanded(
                 // 리스트
                 child: ListView.builder(
-                  itemCount: filteredDayList.length, // 예시로 20개의 아이템을 생성
+                  itemCount: dailyAccounts.length, // 예시로 20개의 아이템을 생성
                   itemBuilder: (context, index) {
                     return AccountBookCard(
-                        model: filteredDayList[index], onTap: (a) {});
+                        model: dailyAccounts[index], onTap: (a) {});
                   },
                 ),
               )

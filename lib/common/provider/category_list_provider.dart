@@ -34,25 +34,6 @@ class AccountBookCategoryNotifier
     updateAccountBookCategoryInHive(_ref, state);
   }
 
-  void removeSpendCategory(String category) {
-    final updatedSpendCategories =
-        List<AccountBookBtnModel>.from(state.spendCategories)
-          ..removeWhere((e) => e.label == category);
-
-    state = state.copyWith(spendCategories: updatedSpendCategories);
-    updateAccountBookCategoryInHive(_ref, state);
-  }
-
-  void reorderSpendCategories(int oldIndex, int newIndex) {
-    final updatedSpendCategories =
-        List<AccountBookBtnModel>.from(state.spendCategories);
-    final item = updatedSpendCategories.removeAt(oldIndex);
-    updatedSpendCategories.insert(newIndex, item);
-
-    state = state.copyWith(spendCategories: updatedSpendCategories);
-    updateAccountBookCategoryInHive(_ref, state);
-  }
-
   void addIncomeCategory(AccountBookBtnModel category) {
     final updatedIncomeCategories =
         List<AccountBookBtnModel>.from(state.incomeCategories)..add(category);
@@ -61,20 +42,45 @@ class AccountBookCategoryNotifier
     updateAccountBookCategoryInHive(_ref, state);
   }
 
-  void removeIncomeCategory(String category) {
+  void removeSpendCategory(int index) {
+    final updatedSpendCategories =
+        List<AccountBookBtnModel>.from(state.spendCategories)..removeAt(index);
+
+    state = state.copyWith(spendCategories: updatedSpendCategories);
+    updateAccountBookCategoryInHive(_ref, state);
+  }
+
+  void reorderSpendCategories(List<AccountBookBtnModel> reorderedList) {
+    state = state.copyWith(spendCategories: reorderedList);
+    updateAccountBookCategoryInHive(_ref, state);
+  }
+
+  void removeIncomeCategory(int index) {
     final updatedIncomeCategories =
-        List<AccountBookBtnModel>.from(state.incomeCategories)
-          ..removeWhere((e) => e.label == category);
+        List<AccountBookBtnModel>.from(state.incomeCategories)..removeAt(index);
 
     state = state.copyWith(incomeCategories: updatedIncomeCategories);
     updateAccountBookCategoryInHive(_ref, state);
   }
 
-  void reorderIncomeCategories(int oldIndex, int newIndex) {
+  void reorderIncomeCategories(List<AccountBookBtnModel> reorderedList) {
+    state = state.copyWith(incomeCategories: reorderedList);
+    updateAccountBookCategoryInHive(_ref, state);
+  }
+
+  void updateSpendCategory(int targetIndex, AccountBookBtnModel model) {
+    final updatedSpendCategories =
+        List<AccountBookBtnModel>.from(state.spendCategories);
+    updatedSpendCategories[targetIndex] = model;
+
+    state = state.copyWith(spendCategories: updatedSpendCategories);
+    updateAccountBookCategoryInHive(_ref, state);
+  }
+
+  void updateIncomeCategory(int targetIndex, AccountBookBtnModel model) {
     final updatedIncomeCategories =
         List<AccountBookBtnModel>.from(state.incomeCategories);
-    final item = updatedIncomeCategories.removeAt(oldIndex);
-    updatedIncomeCategories.insert(newIndex, item);
+    updatedIncomeCategories[targetIndex] = model;
 
     state = state.copyWith(incomeCategories: updatedIncomeCategories);
     updateAccountBookCategoryInHive(_ref, state);

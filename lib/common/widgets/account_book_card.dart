@@ -103,7 +103,9 @@ class AccountBookCard extends ConsumerWidget {
                             color:
                                 Theme.of(context).brightness == Brightness.dark
                                     ? Colors.white24
-                                    : Colors.black12,
+                                    : Theme.of(context)
+                                        .extension<CustomColors>()
+                                        ?.primaryBg,
                           ),
                           child: Text(
                             context.tr('category.${model.subType}'),
@@ -125,11 +127,23 @@ class AccountBookCard extends ConsumerWidget {
                               currencyModels[model.currency.name]!.countryCode,
                           isSimple: true,
                           noStyle: true,
-                        )
+                        ),
+                        Text(
+                          DateFormat('HH:mm').format(model.createdAt),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.grey[600],
+                          ),
+                        ),
                       ],
                     ),
                     Text(
-                      context.tr('category.${model.category.label}'),
+                      model.category.label.contains('category.')
+                          ? context.tr(model.category.label)
+                          : model.category.label,
                       style: TextStyle(fontSize: 14),
                     )
                   ],

@@ -15,7 +15,7 @@ final iconDictionary = {
   'dollarSign': FeatherIcons.dollarSign,
   'receiptLongOutlined': Icons.receipt_long_outlined,
   'moreHorizontal': FeatherIcons.moreHorizontal,
-  'plusCircle': FeatherIcons.plusCircle,
+  'plusCircle': FeatherIcons.plus,
   'cash': Icons.money_outlined,
   'card': FeatherIcons.creditCard,
   'qrCode': Icons.qr_code,

@@ -34,7 +34,6 @@ class SettingNotifier extends StateNotifier<SettingModel> {
     final list = List<String>.from(state.selectedCountriesForCalender);
 
     if (list.contains(target)) {
-      print(list);
       if (list.length == 1) {
         return;
       }

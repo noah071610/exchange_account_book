@@ -1,3 +1,4 @@
+import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 
@@ -7,13 +8,11 @@ class CountryImage extends StatelessWidget {
     required this.language,
     this.isSimple = false,
     this.noStyle = false,
-    this.color = '#F4CCCC',
   });
 
   final String language;
   final bool isSimple;
   final bool noStyle;
-  final String color;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +40,7 @@ class CountryImage extends StatelessWidget {
         : Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color.fromARGB(255, 177, 205, 253),
+              color: Theme.of(context).extension<CustomColors>()?.primaryBg,
             ),
             child: Padding(
               padding: EdgeInsets.all(paddingValue),

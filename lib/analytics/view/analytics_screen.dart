@@ -49,8 +49,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         calculateCountryTotals(allListByMonth, selectCountryForAnalytics);
     final List<String> activeCountries =
         getActiveCountries(accountBook, widget.year, widget.month);
-    print(widget.year);
-    print(widget.month);
+
     // 예시로 주어진 연도와 월을 사용하여 주 목록을 생성
     List<List<DateTime>> weeks =
         getWeeksInMonth(int.parse(widget.year), int.parse(widget.month));

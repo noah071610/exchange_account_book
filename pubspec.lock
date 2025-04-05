@@ -315,6 +315,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.2"
+  flutter_colorpicker:
+    dependency: "direct main"
+    description:
+      name: flutter_colorpicker
+      sha256: "969de5f6f9e2a570ac660fb7b501551451ea2a1ab9e2097e89475f60e07816ea"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   flutter_dotenv:
     dependency: "direct main"
     description:
@@ -400,6 +408,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_reorderable_grid_view:
+    dependency: "direct main"
+    description:
+      name: flutter_reorderable_grid_view
+      sha256: f5db90ae62f8307daef9a884e09ed2d883838592e92185017a4431fe8e78899e
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.5.0"
   flutter_riverpod:
     dependency: "direct main"
     description:
