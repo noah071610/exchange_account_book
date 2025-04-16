@@ -1,6 +1,5 @@
 import 'package:currency_exchange/common/model/account_book_btn_model.dart';
 import 'package:currency_exchange/common/model/currency_card_model.dart';
-import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 

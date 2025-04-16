@@ -41,13 +41,13 @@ class _CurrencySettingState extends ConsumerState<CurrencySetting> {
         color: Theme.of(context).extension<CustomColors>()?.containerWhiteBg,
         child: CustomScrollView(
           slivers: [
-            const SliverAppBar(
+            SliverAppBar(
               backgroundColor: Color.fromARGB(255, 245, 242, 252),
               surfaceTintColor: Color.fromARGB(255, 245, 242, 252),
               pinned: true, // 스크롤 시 AppBar 고정
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(
-                  "Search Bar Example",
+                  context.tr('settings.currency_settings'),
                   style: TextStyle(fontSize: 18.0),
                 ),
               ),
@@ -70,7 +70,7 @@ class _CurrencySettingState extends ConsumerState<CurrencySetting> {
                 alignment: Alignment.centerLeft,
                 color: Color.fromARGB(255, 245, 242, 252),
                 child: Text(
-                  '선택된 국가',
+                  context.tr('settings.selected_country'),
                   style: TextStyle(
                     color:
                         Theme.of(context).extension<CustomColors>()?.textGrey,
@@ -81,7 +81,7 @@ class _CurrencySettingState extends ConsumerState<CurrencySetting> {
             ),
             SliverToBoxAdapter(
               child: SizedBox(
-                height: 55.0 * 6 + 8.0 * 6 + 10,
+                height: selectedCurrencyList.length * 63.0, // 각 항목의 높이 합산
                 child: ReorderableListView(
                   physics: NeverScrollableScrollPhysics(), // 스크롤 비활성화
                   onReorder: (int oldIndex, int newIndex) {
@@ -102,6 +102,14 @@ class _CurrencySettingState extends ConsumerState<CurrencySetting> {
                             SlidableAction(
                               flex: 1,
                               onPressed: (context) {
+                                if (selectedCurrencyList.length <= 2) {
+                                  showCustomToast(
+                                    context: context,
+                                    message:
+                                        context.tr('at_least_two_currency'),
+                                  );
+                                  return;
+                                }
                                 notifier.removeCurrency(
                                     selectedCurrencyList[index].name, context);
                               },
@@ -118,18 +126,10 @@ class _CurrencySettingState extends ConsumerState<CurrencySetting> {
                               currencyModels[selectedCurrencyList[index].name]!,
                           initialIsChecked: true,
                           isSelectedList: true,
-                          isPrimaryCountry: index == 0 || index == 1,
+                          isPrimaryCountry: index == 0,
                           isLast: index == selectedCurrencyList.length - 1,
                         ),
                       ),
-                    if (selectedCurrencyList.length < 5)
-                      for (int index = selectedCurrencyList.length;
-                          index < 5;
-                          index++)
-                        Container(
-                          key: Key('placeholder_$index'),
-                          height: 63.0, // Country 위젯의 높이와 동일하게 설정
-                        ),
                   ],
                 ),
               ),
@@ -191,14 +191,6 @@ class Country extends ConsumerStatefulWidget {
 }
 
 class _CountryState extends ConsumerState<Country> {
-  bool isChecked = false;
-
-  @override
-  void initState() {
-    super.initState();
-    isChecked = widget.initialIsChecked;
-  }
-
   @override
   Widget build(BuildContext context) {
     final selectedCurrencyList = ref.watch(currencyListProvider).currencyList;
@@ -208,7 +200,7 @@ class _CountryState extends ConsumerState<Country> {
         if (widget.isSelectedList) {
           return;
         } else {
-          if (isChecked) {
+          if (widget.initialIsChecked) {
             if (selectedCurrencyList.length <= 2) {
               // 리스트가 2개 이하일 때는 삭제 불가
               showCustomToast(
@@ -217,7 +209,6 @@ class _CountryState extends ConsumerState<Country> {
               return;
             }
             notifier.removeCurrency(widget.entry.name, context);
-            isChecked = false;
           } else {
             if (selectedCurrencyList.length >= 6) {
               // 리스트가 5개 이상일 때는 추가 불가
@@ -228,7 +219,6 @@ class _CountryState extends ConsumerState<Country> {
             notifier.addCurrency(
                 CurrencyCardModel(name: widget.entry.name, amount: 0.0),
                 context);
-            isChecked = true;
           }
         }
       },
@@ -260,7 +250,7 @@ class _CountryState extends ConsumerState<Country> {
                   Icons.drag_handle,
                   color: Theme.of(context).extension<CustomColors>()?.icon,
                 )
-              : isChecked == true
+              : widget.initialIsChecked == true
                   ? Icon(Icons.check,
                       color:
                           Theme.of(context).extension<CustomColors>()!.primary)
@@ -313,7 +303,7 @@ class SearchBarDelegate extends SliverPersistentHeaderDelegate {
           });
         },
         decoration: InputDecoration(
-          hintText: context.tr('나라이름, 통화 코드...'),
+          hintText: context.tr('settings.country_search'),
           prefixIcon: const Icon(Icons.search),
           suffixIcon: controller.text.isNotEmpty
               ? IconButton(

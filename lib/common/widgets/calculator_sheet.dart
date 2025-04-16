@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:logger/logger.dart';
 
 var gridList = [
   ...[
@@ -46,6 +47,8 @@ var gridList = [
   ],
 ];
 
+final logger = Logger();
+
 class CalculatorSheet extends ConsumerStatefulWidget {
   const CalculatorSheet({
     super.key,
@@ -53,11 +56,15 @@ class CalculatorSheet extends ConsumerStatefulWidget {
     required this.targetData,
     this.initialBaseAmountForShortcut,
     this.isForAccountBook = false,
+    this.isForAccountOnly = false,
+    this.selectedCountry,
   });
 
   final CurrencyModel baseData;
   final CurrencyModel targetData;
   final String? initialBaseAmountForShortcut;
+  final bool? isForAccountOnly;
+  final String? selectedCountry;
   final bool isForAccountBook;
 
   @override
@@ -71,6 +78,9 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
   String? activeCalc;
   bool isPageOfAccountBook = false;
   String consumptionType = 'cash';
+  String? selectedCountry;
+  late CurrencyModel _currentBaseData;
+  late CurrencyModel _currentTargetData;
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -78,7 +88,12 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
     super.initState();
     firstNumSet = widget.initialBaseAmountForShortcut ?? '0';
     isQuickAdd = widget.initialBaseAmountForShortcut is String;
-    isPageOfAccountBook = widget.initialBaseAmountForShortcut is String;
+    isPageOfAccountBook = widget.isForAccountOnly == true
+        ? false
+        : widget.initialBaseAmountForShortcut is String;
+    selectedCountry = widget.selectedCountry;
+    _currentBaseData = widget.baseData;
+    _currentTargetData = widget.targetData;
   }
 
   AccountBookBtnModel? selectedCategory;
@@ -142,6 +157,9 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
             ? firstNumSet.substring(0, firstNumSet.length - 2)
             : firstNumSet;
         secondNumSet = '';
+        if (value == 'equal') {
+          activeCalc = null;
+        }
       });
     }
 
@@ -198,14 +216,8 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
     }
   }
 
-  void _calculateAndSetCurrency() {
-    final setCurrency = ref.read(currencyListProvider.notifier).setCurrency;
-    final accountBook = ref.read(accountBookListProvider.notifier);
-    final currencyList = ref.watch(currencyListProvider).currencyList;
-    final settingNotifier = ref.read(settingProvider.notifier);
-    final settings = ref.watch(settingProvider);
-
-    // 숫자 계산
+  double calculateLeft() {
+// 숫자 계산
     double result = double.parse(firstNumSet);
     if (activeCalc is String && secondNumSet.isNotEmpty) {
       switch (activeCalc) {
@@ -234,30 +246,36 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
     resultStr = resultStr.endsWith('.0')
         ? resultStr.substring(0, resultStr.length - 2)
         : resultStr;
+    firstNumSet = resultStr;
     result = double.parse(resultStr);
+
+    return result;
+  }
+
+  void calculateAndSetCurrency() {
+    final setCurrency = ref.read(currencyListProvider.notifier).setCurrency;
+    final accountBook = ref.read(accountBookListProvider.notifier);
+    final currencyList = ref.watch(currencyListProvider).currencyList;
+    final settingNotifier = ref.read(settingProvider.notifier);
+    final settings = ref.watch(settingProvider);
+
+    // 숫자 계산
+    double result = calculateLeft();
 
     double exchangeAmount = getExchangedAmount(
       amount: result,
-      baseCode: widget.baseData.currencyCode,
-      targetCode: widget.targetData.currencyCode,
+      baseCode: _currentBaseData.currencyCode,
+      targetCode: _currentTargetData.currencyCode,
     );
 
-    final isBaseCard = currencyModels[currencyList[0].name]!.countryCode ==
-        widget.baseData.countryCode;
-
-    setCurrency(targetIndex: isBaseCard ? 0 : 1, amount: result);
-    setCurrency(
-      targetIndex: isBaseCard ? 1 : 0,
-      amount: exchangeAmount,
-    );
-    for (var i = 2; i < 5; i++) {
+    for (var i = 0; i < currencyList.length; i++) {
       // ignore: unnecessary_null_comparison
       if (currencyList[i] != null) {
         setCurrency(
           targetIndex: i,
           amount: getExchangedAmount(
             amount: result,
-            baseCode: widget.baseData.currencyCode,
+            baseCode: _currentBaseData.currencyCode,
             targetCode: currencyModels[currencyList[i].name]!.currencyCode,
           ),
         );
@@ -265,14 +283,9 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
     }
 
     if (isPageOfAccountBook) {
-      if (settings.selectedCountriesForCalender.isEmpty) {
-        settingNotifier
-            .setSelectedCountriesForCalendar(widget.baseData.countryCode);
-      }
-
       if (settings.selectCountryForAnalytics == '') {
         settingNotifier
-            .setSelectedCountryForAnalytics(widget.baseData.countryCode);
+            .setSelectedCountryForAnalytics(_currentBaseData.countryCode);
       }
 
       if (accountType == 'exchange' && _controller.text.isNotEmpty) {
@@ -280,7 +293,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
           AccountBookModel(
             id: generateRandomKey(),
             targetCurrency: CurrencyCardModel(
-                name: widget.targetData.name, amount: exchangeAmount),
+                name: _currentTargetData.name, amount: exchangeAmount),
             accountType: accountType,
             subType: 'exchange',
             category: AccountBookBtnModel(
@@ -289,7 +302,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
               color: '#E57373', // 핑크색 (70% 밝기)
             ),
             currency: CurrencyCardModel(
-              name: widget.baseData.name,
+              name: _currentBaseData.name,
               amount: result,
             ),
             isSpend: true,
@@ -300,7 +313,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
           AccountBookModel(
             id: generateRandomKey(),
             targetCurrency: CurrencyCardModel(
-              name: widget.targetData.name,
+              name: _currentTargetData.name,
               amount: result,
             ),
             accountType: accountType,
@@ -311,7 +324,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
               color: '#64B5F6', // 파란색 (70% 밝기)
             ),
             currency: CurrencyCardModel(
-              name: widget.targetData.name,
+              name: _currentTargetData.name,
               amount: double.parse(_controller.text),
             ),
             isSpend: false,
@@ -325,17 +338,22 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
           AccountBookModel(
             id: generateRandomKey(),
             targetCurrency: CurrencyCardModel(
-                name: widget.targetData.name, amount: exchangeAmount),
+                name: _currentTargetData.name, amount: exchangeAmount),
             accountType: accountType,
             subType: accountType == 'income' ? 'income' : consumptionType,
             category: selectedCategory!,
             currency:
-                CurrencyCardModel(name: widget.baseData.name, amount: result),
+                CurrencyCardModel(name: _currentBaseData.name, amount: result),
             isSpend: accountType != 'income',
             createdAt: DateTime.now(),
           ),
         );
       }
+      settingNotifier
+          .setCurCurrency(CurrencyCardModel(name: 'none', amount: 0.0));
+    } else {
+      settingNotifier.setCurCurrency(
+          CurrencyCardModel(name: _currentBaseData.name, amount: result));
     }
   }
 
@@ -346,6 +364,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
         ref.watch(accountBookCategoryProvider).spendCategories;
     final incomeCategories =
         ref.watch(accountBookCategoryProvider).incomeCategories;
+    final userCurrencyList = ref.watch(currencyListProvider).currencyList;
 
     if (selectedCategory == null) {
       setState(() {
@@ -360,16 +379,6 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
     return Container(
       decoration: BoxDecoration(
         color: color.containerWhiteBg,
-        // gradient: LinearGradient(
-        //   colors: [
-        //     const Color(0xFF360033), // #360033
-        //     const Color(0xFF0b8793), // #0b8793
-        //   ],
-
-        //   begin: Alignment.topLeft,
-        //   end: Alignment.bottomRight,
-        //   stops: [0.1, 1.0], // 첫번째 컬러에 20% 비중
-        // ),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(25),
           topRight: Radius.circular(25),
@@ -386,18 +395,88 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
             color: Colors.transparent,
             constraints: BoxConstraints(
               minHeight: 0,
-              maxHeight: 620,
+              maxHeight: (widget.isForAccountOnly == true &&
+                      widget.selectedCountry != null)
+                  ? 700
+                  : 620,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if ((widget.isForAccountOnly == true &&
+                    widget.selectedCountry != null))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 18.0),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: userCurrencyList.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final e = entry.value;
+                          final countryCode =
+                              currencyModels[e.name]!.countryCode;
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedCountry = countryCode;
+                                _currentBaseData = index == 0
+                                    ? currencyModels[userCurrencyList[0].name]!
+                                    : currencyModels[e.name]!;
+                                _currentTargetData = index == 0
+                                    ? currencyModels[userCurrencyList[1].name]!
+                                    : currencyModels[userCurrencyList[0].name]!;
+                              });
+                              // setSelectedCountryForAnalytics(e);
+                            },
+                            child: Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 15, vertical: 6.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: selectedCountry == countryCode
+                                    ? Theme.of(context)
+                                        .extension<CustomColors>()
+                                        ?.greenBg
+                                    : const Color.fromARGB(12, 0, 0, 0),
+                              ),
+                              child: Row(
+                                children: [
+                                  CountryImage(
+                                    language: countryCode,
+                                    noStyle: true,
+                                  ),
+                                  SizedBox(width: 5.0),
+                                  Text(
+                                    context.tr('countries.${countryCode}'),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: selectedCountry == countryCode
+                                          ? Theme.of(context)
+                                              .extension<CustomColors>()
+                                              ?.greenText
+                                          : Theme.of(context)
+                                              .extension<CustomColors>()
+                                              ?.textGrey,
+                                      height: 1.2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
                 Row(
                   spacing: 3.0,
                   children: [
                     CountryImage(
-                      language: widget.baseData.countryCode,
+                      language: _currentBaseData.countryCode,
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,7 +484,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                       children: [
                         Text(
                           context
-                              .tr('countries.${widget.baseData.countryCode}'),
+                              .tr('countries.${_currentBaseData.countryCode}'),
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -413,7 +492,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                           ),
                         ),
                         Text(
-                          widget.baseData.currencyCode,
+                          _currentBaseData.currencyCode,
                           style: TextStyle(
                             fontSize: 14,
                             color: Colors.grey,
@@ -445,7 +524,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          widget.baseData.currencySymbol,
+                          _currentBaseData.currencySymbol,
                           style: TextStyle(
                             fontSize: 26,
                             fontWeight: FontWeight.bold,
@@ -478,7 +557,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        widget.targetData.currencySymbol,
+                        _currentTargetData.currencySymbol,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -491,8 +570,8 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                       Text(
                         formatDouble(getExchangedAmount(
                           amount: double.parse(firstNumSet),
-                          baseCode: widget.baseData.currencyCode,
-                          targetCode: widget.targetData.currencyCode,
+                          baseCode: _currentBaseData.currencyCode,
+                          targetCode: _currentTargetData.currencyCode,
                         )),
                         style: TextStyle(
                           fontSize: 26,
@@ -554,7 +633,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                 ],
                 if (isPageOfAccountBook) ...[
                   Text(
-                    context.tr('분류'),
+                    context.tr('category.category'),
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -583,9 +662,9 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                                   _controller.text = formatDouble(
                                       getExchangedAmount(
                                         amount: double.parse(firstNumSet),
-                                        baseCode: widget.baseData.currencyCode,
+                                        baseCode: _currentBaseData.currencyCode,
                                         targetCode:
-                                            widget.targetData.currencyCode,
+                                            _currentTargetData.currencyCode,
                                       ),
                                       isDecimal: false);
                                   break;
@@ -601,7 +680,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                   if (accountType == 'spend') ...[
                     SizedBox(height: 7),
                     Text(
-                      '지출 종류',
+                      context.tr('spend_category'),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -630,7 +709,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                   SizedBox(height: 10),
                   if (accountType == 'exchange') ...[
                     Text(
-                      '환전액 (환전 화폐)',
+                      context.tr('exchange_amount'),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -654,7 +733,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                       suffix: Padding(
                         padding: const EdgeInsets.only(right: 12.0),
                         child: Text(
-                          widget.targetData.currencySymbol,
+                          _currentTargetData.currencySymbol,
                           style: TextStyle(
                             fontSize: 18.0,
                             color: color.textGrey,
@@ -666,7 +745,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                   ],
                   if (accountType != 'exchange') ...[
                     Text(
-                      context.tr('카테고리'),
+                      context.tr('category.category'),
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -757,7 +836,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                               });
                               return;
                             }
-                            _calculateAndSetCurrency();
+                            calculateAndSetCurrency();
                             Navigator.pop(context);
                           },
                           style: TextButton.styleFrom(
@@ -765,7 +844,13 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                                 vertical: 15.0, horizontal: 30.0),
                           ),
                           child: Text(
-                            isPageOfAccountBook ? '가계부 저장' : '환율 계산',
+                            isPageOfAccountBook
+                                ? context.tr('calculator.save_account_book')
+                                : widget.initialBaseAmountForShortcut is String
+                                    ? context
+                                        .tr('calculator.go_to_account_book')
+                                    : context.tr(
+                                        'calculator.calculate_exchange_rate'),
                             style: TextStyle(
                               fontSize: 19,
                               color: Colors.white,
@@ -786,6 +871,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                         ),
                         child: IconButton(
                             onPressed: () {
+                              onPressedCalcBtn('equal');
                               setState(() {
                                 isPageOfAccountBook = !isPageOfAccountBook;
                               });

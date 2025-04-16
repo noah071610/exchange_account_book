@@ -13,11 +13,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CurrencyCard extends ConsumerWidget {
   final CurrencyCardModel cardBaseData;
   final CurrencyCardModel cardTargetData;
+  final bool isBase;
   final bool isSimple;
 
   CurrencyCard({
     super.key,
     this.isSimple = false,
+    this.isBase = false,
     required this.cardBaseData,
     required this.cardTargetData,
   });

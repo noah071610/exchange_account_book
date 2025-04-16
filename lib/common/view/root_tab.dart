@@ -1,6 +1,7 @@
 import 'package:currency_exchange/analytics/view/analytics_screen.dart';
 import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/provider/currency_list_provider.dart';
+import 'package:currency_exchange/common/provider/setting_provider.dart';
 import 'package:currency_exchange/common/widgets/calculator_sheet.dart';
 import 'package:currency_exchange/exchange/view/exchange_screen.dart';
 import 'package:currency_exchange/calendar/view/calendar_screen.dart';
@@ -45,44 +46,80 @@ class _RootTabState extends ConsumerState<RootTab>
   @override
   Widget build(BuildContext context) {
     final currencyList = ref.watch(currencyListProvider).currencyList;
+    final curCurrency = ref.watch(settingProvider).curCurrency;
 
     return DefaultLayout(
-      floatingButton: FloatingActionButton(
-        onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (BuildContext context) {
-              return CalculatorSheet(
-                baseData: currencyModels[currencyList[0].name]!,
-                targetData: currencyModels[currencyList[1].name]!,
-                initialBaseAmountForShortcut: _controller.index == 0
-                    ? currencyList[0].amount.toStringAsFixed(2)
-                    : null,
-                isForAccountBook: _controller.index != 0,
-              );
-            },
-          );
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.0),
-        ),
-        elevation: 3.0,
-        foregroundColor: const Color.fromARGB(255, 72, 29, 147),
-        backgroundColor: const Color.fromARGB(255, 245, 242, 252),
-        child: Icon(
-          Icons.add,
-          size: 26.0,
-          color: Colors.black38,
-        ),
-      ),
+      floatingActionButton: _controller.index == 1
+          ? FloatingActionButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (BuildContext context) {
+                    return CalculatorSheet(
+                      baseData: currencyModels[currencyList[0].name]!,
+                      targetData: currencyModels[currencyList[1].name]!,
+                      initialBaseAmountForShortcut: '0',
+                      isForAccountBook: true,
+                      isForAccountOnly: true,
+                      selectedCountry:
+                          currencyModels[currencyList[0].name]!.countryCode,
+                    );
+                  },
+                );
+              },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              elevation: 3.0,
+              child: Icon(
+                Icons.add,
+                size: 26.0,
+                color: Theme.of(context).brightness == Brightness.light
+                    ? Colors.black38
+                    : Colors.white,
+              ),
+            )
+          : curCurrency?.name != 'none' &&
+                  curCurrency != null &&
+                  _controller.index == 0
+              ? FloatingActionButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return CalculatorSheet(
+                          baseData: currencyModels[curCurrency.name]!,
+                          targetData: currencyModels[currencyList[0].name]!,
+                          initialBaseAmountForShortcut:
+                              curCurrency.amount.toStringAsFixed(2),
+                          isForAccountBook: true,
+                          selectedCountry: null,
+                        );
+                      },
+                    );
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  elevation: 3.0,
+                  child: Icon(
+                    Icons.add,
+                    size: 26.0,
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.black38
+                        : Colors.white,
+                  ),
+                )
+              : null,
       title: _controller.index == 0
-          ? context.tr('환율 계산기')
+          ? context.tr('exchange_calculator')
           : _controller.index == 1
-              ? context.tr('캘린더')
+              ? context.tr('calendar.calendar')
               : _controller.index == 2
-                  ? ('$year${context.tr('년')} $month${context.tr('월')}')
-                  : context.tr('설정'),
+                  ? ('$year${context.tr('year')} ${context.tr('month.$month')}')
+                  : context.tr('settings.settings'),
       centerTitle: true,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _controller.index,
@@ -97,10 +134,16 @@ class _RootTabState extends ConsumerState<RootTab>
         selectedLabelStyle: TextStyle(fontSize: 12),
         unselectedLabelStyle: TextStyle(fontSize: 12),
         items: [
-          {'icon': FeatherIcons.airplay, 'label': context.tr('환율')},
-          {'icon': FeatherIcons.calendar, 'label': context.tr('캘린더')},
-          {'icon': FeatherIcons.pieChart, 'label': context.tr('분석')},
-          {'icon': FeatherIcons.settings, 'label': context.tr('설정')},
+          {'icon': FeatherIcons.airplay, 'label': context.tr('exchange')},
+          {
+            'icon': FeatherIcons.calendar,
+            'label': context.tr('calendar.calendar')
+          },
+          {'icon': FeatherIcons.pieChart, 'label': context.tr('analytics')},
+          {
+            'icon': FeatherIcons.settings,
+            'label': context.tr('settings.settings')
+          },
         ].map((item) {
           return BottomNavigationBarItem(
             icon: Column(
@@ -114,7 +157,7 @@ class _RootTabState extends ConsumerState<RootTab>
                 )
               ],
             ),
-            label: context.tr(item['label'] as String),
+            label: item['label'] as String,
           );
         }).toList(),
       ),

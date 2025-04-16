@@ -20,7 +20,7 @@ class _FontSettingState extends ConsumerState<FontSetting> {
     final curFont = ref.watch(settingProvider).font;
 
     return SettingDetailLayout(
-      title: context.tr('font_settings'),
+      title: context.tr('settings.font_settings'),
       child: [
         'Noto Sans',
         'Lato',

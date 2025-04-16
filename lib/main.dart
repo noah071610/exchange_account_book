@@ -176,6 +176,10 @@ class MyApp extends ConsumerWidget {
         bottomSheetTheme: BottomSheetThemeData(
           backgroundColor: WHITE_COLOR, // BottomSheet 배경 색상 설정
         ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          foregroundColor: const Color.fromARGB(255, 72, 29, 147),
+          backgroundColor: const Color.fromARGB(255, 245, 242, 252),
+        ),
       ),
       darkTheme: ThemeData.dark().copyWith(
         extensions: [
@@ -201,6 +205,9 @@ class MyApp extends ConsumerWidget {
           selectedItemColor:
               const Color.fromARGB(255, 153, 130, 255), // 선택된 아이템 색상 설정
           unselectedItemColor: WHITE_COLOR, // 선택되지 않은 아이템 색상 설정
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          foregroundColor: const Color.fromARGB(255, 153, 123, 224),
         ),
         radioTheme: RadioThemeData(
           fillColor:
@@ -263,12 +270,6 @@ final GoRouter _router = GoRouter(
           path: 'language-setting',
           builder: (BuildContext context, GoRouterState state) {
             return const LanguageSetting();
-          },
-        ),
-        GoRoute(
-          path: 'font-setting',
-          builder: (BuildContext context, GoRouterState state) {
-            return const FontSetting();
           },
         ),
         GoRoute(

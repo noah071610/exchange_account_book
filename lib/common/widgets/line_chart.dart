@@ -39,25 +39,25 @@ class _AnalyticsChartState extends State<AnalyticsChart> {
     String text;
     switch (value.toInt()) {
       case 0:
-        text = context.tr('일');
+        text = context.tr('week.sun');
         break;
       case 1:
-        text = context.tr('월');
+        text = context.tr('week.mon');
         break;
       case 2:
-        text = context.tr('화');
+        text = context.tr('week.tue');
         break;
       case 3:
-        text = context.tr('수');
+        text = context.tr('week.wed');
         break;
       case 4:
-        text = context.tr('목');
+        text = context.tr('week.thu');
         break;
       case 5:
-        text = context.tr('금');
+        text = context.tr('week.fri');
         break;
       case 6:
-        text = context.tr('토');
+        text = context.tr('week.sat');
         break;
       default:
         return Container();

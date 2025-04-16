@@ -1,10 +1,7 @@
 import 'package:currency_exchange/common/constant/dafault_data.dart';
-import 'package:currency_exchange/common/constant/toast.dart';
 import 'package:currency_exchange/common/hive/currency_hive.dart';
 import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/model/currency_list_model.dart';
-import 'package:currency_exchange/common/model/currency_model.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

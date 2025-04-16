@@ -3,6 +3,7 @@ import 'package:currency_exchange/common/provider/account_book_list_provider.dar
 import 'package:currency_exchange/common/provider/setting_provider.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/widgets/line_chart.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -119,8 +120,8 @@ class _WeekItemState extends ConsumerState<WeekItem> {
                       children: [
                         Text(
                           widget.targetDays.length == 1
-                              ? '${widget.month}월 ${widget.targetDays[0]['day']}일'
-                              : '${widget.month}월 ${widget.targetDays[0]['day']}일 - ${widget.month}월 ${widget.targetDays[widget.targetDays.length - 1]['day']}일',
+                              ? '${context.tr('month.${int.parse(widget.month)}')} ${widget.targetDays[0]['day']}${context.tr('day')}'
+                              : '${context.tr('month.${int.parse(widget.month)}')} ${widget.targetDays[0]['day']}${context.tr('day')} - ${context.tr('month.${int.parse(widget.month)}')} ${widget.targetDays[widget.targetDays.length - 1]['day']}${context.tr('day')}',
                           style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
@@ -164,7 +165,7 @@ class _WeekItemState extends ConsumerState<WeekItem> {
                                 color: Colors.red),
                             SizedBox(width: 5),
                             Text(
-                              '지출: $weekSpend',
+                              '${context.tr('spend')}: $weekSpend',
                               style: TextStyle(color: Colors.redAccent),
                             ),
                           ],
@@ -182,7 +183,7 @@ class _WeekItemState extends ConsumerState<WeekItem> {
                             Icon(Icons.trending_up, color: Colors.blue),
                             SizedBox(width: 5),
                             Text(
-                              '수입: $weekIncome',
+                              '${context.tr('income')}: $weekIncome',
                               style: TextStyle(color: Colors.blue),
                             ),
                           ],

@@ -1,4 +1,3 @@
-import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:currency_exchange/common/layout/default_layout.dart';

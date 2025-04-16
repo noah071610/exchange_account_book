@@ -20,8 +20,16 @@ class _DisplaySettingTabState extends ConsumerState<DisplaySettingTab> {
     final currentThemeMode = ref.watch(settingProvider).themeNum;
 
     return SettingDetailLayout(
-      title: context.tr('display_settings'),
+      title: context.tr('settings.display_settings'),
       child: [
+        SettingDetailItem(
+          title: context.tr('system'),
+          icon: Icons.light_mode,
+          settingType: SettingType.checker,
+          isChecked: currentThemeMode == 0,
+          onTap: () => _updateThemeMode(0),
+          noBorder: false,
+        ),
         SettingDetailItem(
           title: context.tr('light'),
           icon: Icons.light_mode,

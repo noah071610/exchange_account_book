@@ -209,7 +209,7 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
                         isShowList = true;
                       });
                     },
-                    child: Text('리스트 보기',
+                    child: Text(context.tr('calendar.view_list'),
                         style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
@@ -238,7 +238,7 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
                         isShowList = false;
                       });
                     },
-                    child: Text('통계 보기',
+                    child: Text(context.tr('calendar.view_statistics'),
                         style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ),
@@ -316,7 +316,7 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  '아직 가계부가 없어요',
+                  context.tr('calendar.empty_account'),
                   style: TextStyle(
                     fontSize: 16,
                     color:

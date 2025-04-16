@@ -1,3 +1,4 @@
+import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -27,12 +28,12 @@ class SettingModel {
   final String subColor;
 
   @JsonKey()
-  @HiveField(5)
-  final List<String> selectedCountriesForCalender;
-
-  @JsonKey()
   @HiveField(6)
   final String selectCountryForAnalytics;
+
+  @JsonKey()
+  @HiveField(7)
+  final CurrencyCardModel? curCurrency;
 
   SettingModel({
     required this.themeNum,
@@ -40,8 +41,8 @@ class SettingModel {
     required this.font,
     required this.primaryColor,
     required this.subColor,
-    required this.selectedCountriesForCalender,
     required this.selectCountryForAnalytics,
+    this.curCurrency,
   });
 
   factory SettingModel.fromJson(Map<String, dynamic> json) =>
@@ -55,8 +56,8 @@ class SettingModel {
     int? themeNum,
     String? primaryColor,
     String? subColor,
-    List<String>? selectedCountriesForCalender,
     String? selectCountryForAnalytics,
+    CurrencyCardModel? curCurrency,
   }) {
     return SettingModel(
       language: language ?? this.language,
@@ -64,10 +65,9 @@ class SettingModel {
       font: font ?? this.font,
       primaryColor: primaryColor ?? this.primaryColor,
       subColor: subColor ?? this.subColor,
-      selectedCountriesForCalender:
-          selectedCountriesForCalender ?? this.selectedCountriesForCalender,
       selectCountryForAnalytics:
           selectCountryForAnalytics ?? this.selectCountryForAnalytics,
+      curCurrency: curCurrency ?? this.curCurrency,
     );
   }
 }

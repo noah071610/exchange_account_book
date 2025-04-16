@@ -1,4 +1,3 @@
-import 'package:currency_exchange/common/constant/icon.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/widgets/country_image.dart';
@@ -74,7 +73,7 @@ class AccountTotalByDay extends StatelessWidget {
                               ?.primaryBg,
                         ),
                         child: Text(
-                          context.tr('총합'),
+                          context.tr('total'),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
@@ -130,7 +129,7 @@ class AccountTotalByDay extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        context.tr('수입'),
+                        context.tr('income'),
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -164,7 +163,7 @@ class AccountTotalByDay extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
-                        context.tr('지출'),
+                        context.tr('spend'),
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
@@ -198,62 +197,62 @@ class AccountTotalByDay extends StatelessWidget {
               )
             ],
           ),
-          if (false)
-            Container(
-              padding: EdgeInsets.only(left: 5.0, top: 12.0, bottom: 20.0),
-              child: Wrap(
-                spacing: 5.0,
-                runSpacing: 5.0,
-                alignment: WrapAlignment.start,
-                children: [...model['income'], ...model['spend']]
-                    .map<Widget>(
-                      (e) => Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 13.0, vertical: 5.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(7.0),
-                          color: Color(
-                              int.parse(e[0].color.replaceFirst('#', '0xff'))),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              iconDictionary[e[0].icon],
-                              size: 14,
-                              color: Colors.white,
-                            ),
-                            SizedBox(
-                              width: 3,
-                            ),
-                            Text(
-                              context.tr('category.${e[0].label}'),
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                height: 1.0,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 3,
-                            ),
-                            Text(
-                              '(${e[2]}건)',
-                              style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                height: 1.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ),
+          // if (false)
+          //   Container(
+          //     padding: EdgeInsets.only(left: 5.0, top: 12.0, bottom: 20.0),
+          //     child: Wrap(
+          //       spacing: 5.0,
+          //       runSpacing: 5.0,
+          //       alignment: WrapAlignment.start,
+          //       children: [...model['income'], ...model['spend']]
+          //           .map<Widget>(
+          //             (e) => Container(
+          //               padding: EdgeInsets.symmetric(
+          //                   horizontal: 13.0, vertical: 5.0),
+          //               decoration: BoxDecoration(
+          //                 borderRadius: BorderRadius.circular(7.0),
+          //                 color: Color(
+          //                     int.parse(e[0].color.replaceFirst('#', '0xff'))),
+          //               ),
+          //               child: Row(
+          //                 mainAxisSize: MainAxisSize.min,
+          //                 children: [
+          //                   Icon(
+          //                     iconDictionary[e[0].icon],
+          //                     size: 14,
+          //                     color: Colors.white,
+          //                   ),
+          //                   SizedBox(
+          //                     width: 3,
+          //                   ),
+          //                   Text(
+          //                     context.tr('category.${e[0].label}'),
+          //                     style: TextStyle(
+          //                       fontSize: 12,
+          //                       fontWeight: FontWeight.w600,
+          //                       color: Colors.white,
+          //                       height: 1.0,
+          //                     ),
+          //                   ),
+          //                   SizedBox(
+          //                     width: 3,
+          //                   ),
+          //                   Text(
+          //                     '(${e[2]}건)',
+          //                     style: TextStyle(
+          //                       fontSize: 12,
+          //                       fontWeight: FontWeight.w600,
+          //                       color: Colors.white,
+          //                       height: 1.0,
+          //                     ),
+          //                   ),
+          //                 ],
+          //               ),
+          //             ),
+          //           )
+          //           .toList(),
+          //     ),
+          //   ),
         ],
       ),
     );

@@ -18,7 +18,7 @@ class _LanguageSettingState extends ConsumerState<LanguageSetting> {
   @override
   Widget build(BuildContext context) {
     return SettingDetailLayout(
-      title: context.tr('language_settings'),
+      title: context.tr('settings.language_settings'),
       child: supportLang
           .map((e) => SettingDetailItem(
                 title: e['label']!,

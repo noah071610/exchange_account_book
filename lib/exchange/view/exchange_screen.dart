@@ -1,5 +1,7 @@
 import 'package:currency_exchange/common/provider/currency_list_provider.dart';
+import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/widgets/currency_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -27,50 +29,65 @@ class ExchangeScreen extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.max,
                   spacing: 8,
                   children: [
+                    Container(
+                      height: 20.0,
+                      padding: EdgeInsets.symmetric(horizontal: 3.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        context.tr('main_country'),
+                        style: TextStyle(
+                          color: Theme.of(context)
+                              .extension<CustomColors>()
+                              ?.textGrey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                     CurrencyCard(
                       cardBaseData: currencyList[0],
                       cardTargetData: currencyList[1],
+                      isBase: true,
                     ),
                     CurrencyCard(
                       cardBaseData: currencyList[1],
                       cardTargetData: currencyList[0],
                     ),
-                  ],
-                ),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 2.0),
-                    child: Row(
-                      spacing: 10,
-                      children: currencyList
-                          .sublist(2)
-                          .map((currency) => CurrencyCard(
-                                cardBaseData: currency,
-                                cardTargetData:
-                                    currencyList[0], // base currency
-                                isSimple: true,
-                              ))
-                          .toList(),
+                    Container(
+                      height: 20.0,
+                      padding: EdgeInsets.symmetric(horizontal: 3.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        context.tr('another_country'),
+                        style: TextStyle(
+                          color: Theme.of(context)
+                              .extension<CustomColors>()
+                              ?.textGrey,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
+                    ...currencyList.sublist(2).map((currency) => CurrencyCard(
+                          cardBaseData: currency,
+                          cardTargetData: currencyList[0],
+                        ))
+                  ],
                 ),
               ],
             ),
             SizedBox(
               height: 15,
             ),
-            Divider(
-              height: 15,
-              thickness: 0,
-              indent: 0,
-              endIndent: 0,
-              color: Colors.black38,
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            BottomWidget(),
+            // Divider(
+            //   height: 15,
+            //   thickness: 0,
+            //   indent: 0,
+            //   endIndent: 0,
+            //   color: Colors.black38,
+            // ),
+            // SizedBox(
+            //   height: 15,
+            // ),
+            // BottomWidget(),
           ],
         ),
       ),

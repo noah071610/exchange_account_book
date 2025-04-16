@@ -1,4 +1,5 @@
 import 'package:currency_exchange/common/constant/dafault_data.dart';
+import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:currency_exchange/common/hive/setting_hive.dart';
 import 'package:currency_exchange/common/model/setting_model.dart';
@@ -30,18 +31,8 @@ class SettingNotifier extends StateNotifier<SettingModel> {
     await updateSettingInHive(_ref, state);
   }
 
-  void setSelectedCountriesForCalendar(String target) async {
-    final list = List<String>.from(state.selectedCountriesForCalender);
-
-    if (list.contains(target)) {
-      if (list.length == 1) {
-        return;
-      }
-      list.remove(target);
-    } else {
-      list.add(target);
-    }
-    state = state.copyWith(selectedCountriesForCalender: list);
+  void setCurCurrency(CurrencyCardModel? model) async {
+    state = state.copyWith(curCurrency: model);
     await updateSettingInHive(_ref, state);
   }
 

@@ -22,8 +22,8 @@ class SettingModelAdapter extends TypeAdapter<SettingModel> {
       font: fields[2] as String,
       primaryColor: fields[3] as String,
       subColor: fields[4] as String,
-      selectedCountriesForCalender: (fields[5] as List).cast<String>(),
       selectCountryForAnalytics: fields[6] as String,
+      curCurrency: fields[7] as CurrencyCardModel?,
     );
   }
 
@@ -41,10 +41,10 @@ class SettingModelAdapter extends TypeAdapter<SettingModel> {
       ..write(obj.primaryColor)
       ..writeByte(4)
       ..write(obj.subColor)
-      ..writeByte(5)
-      ..write(obj.selectedCountriesForCalender)
       ..writeByte(6)
-      ..write(obj.selectCountryForAnalytics);
+      ..write(obj.selectCountryForAnalytics)
+      ..writeByte(7)
+      ..write(obj.curCurrency);
   }
 
   @override
@@ -68,11 +68,11 @@ SettingModel _$SettingModelFromJson(Map<String, dynamic> json) => SettingModel(
       font: json['font'] as String,
       primaryColor: json['primaryColor'] as String,
       subColor: json['subColor'] as String,
-      selectedCountriesForCalender:
-          (json['selectedCountriesForCalender'] as List<dynamic>)
-              .map((e) => e as String)
-              .toList(),
       selectCountryForAnalytics: json['selectCountryForAnalytics'] as String,
+      curCurrency: json['curCurrency'] == null
+          ? null
+          : CurrencyCardModel.fromJson(
+              json['curCurrency'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$SettingModelToJson(SettingModel instance) =>
@@ -82,6 +82,6 @@ Map<String, dynamic> _$SettingModelToJson(SettingModel instance) =>
       'font': instance.font,
       'primaryColor': instance.primaryColor,
       'subColor': instance.subColor,
-      'selectedCountriesForCalender': instance.selectedCountriesForCalender,
       'selectCountryForAnalytics': instance.selectCountryForAnalytics,
+      'curCurrency': instance.curCurrency,
     };

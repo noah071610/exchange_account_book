@@ -61,7 +61,7 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            '${selectedLabel.contains('category.') ? context.tr(selectedLabel) : selectedLabel} 설정'),
+            '${selectedLabel.contains('category.') ? context.tr(selectedLabel) : selectedLabel} ${context.tr('settings.settings')}'),
       ),
       body: Container(
         color: Theme.of(context).extension<CustomColors>()?.containerWhiteBg,
@@ -101,7 +101,7 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                               ),
                               Text(
                                 selectedLabel.isEmpty
-                                    ? context.tr('empty_label')
+                                    ? context.tr('category_setting.empty_label')
                                     : selectedLabel.contains('category.')
                                         ? context.tr(selectedLabel)
                                         : selectedLabel,
@@ -117,7 +117,8 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                         Column(
                           children: [
                             SettingCategoryDetail(
-                              label: context.tr('색상 변경'),
+                              label:
+                                  context.tr('category_setting.change_color'),
                               onPressed: () {
                                 Color pickerColor = Color(int.parse(
                                     selectedColor.replaceFirst('#', '0xff')));
@@ -126,7 +127,9 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                                   context: context,
                                   builder: (BuildContext context) =>
                                       AlertDialog(
-                                    title: const Text('색상 변경',
+                                    title: Text(
+                                        context.tr(
+                                            'category_setting.change_color'),
                                         style: TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold)),
@@ -145,13 +148,15 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                                     ),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: const Text('취소'),
+                                        child: Text(context
+                                            .tr('category_setting.cancel')),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
                                       ),
                                       TextButton(
-                                        child: const Text('선택'),
+                                        child: Text(context
+                                            .tr('category_setting.select')),
                                         onPressed: () {
                                           setState(() {
                                             selectedColor =
@@ -167,13 +172,15 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                             ),
                             SizedBox(height: 10),
                             SettingCategoryDetail(
-                              label: context.tr('아이콘 변경'),
+                              label: context.tr('category_setting.change_icon'),
                               onPressed: () {
                                 showDialog(
                                   context: context,
                                   builder: (BuildContext context) =>
                                       AlertDialog(
-                                    title: const Text('아이콘 변경',
+                                    title: Text(
+                                        context
+                                            .tr('category_setting.change_icon'),
                                         style: TextStyle(
                                             fontSize: 16.0,
                                             fontWeight: FontWeight.bold)),
@@ -222,7 +229,8 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                                     ),
                                     actions: <Widget>[
                                       TextButton(
-                                        child: const Text('취소'),
+                                        child: Text(context
+                                            .tr('category_setting.cancel')),
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
@@ -234,7 +242,8 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                             ),
                             SizedBox(height: 10),
                             SettingCategoryDetail(
-                              label: context.tr('라벨 변경'),
+                              label:
+                                  context.tr('category_setting.change_label'),
                               isEnabled: !selectedLabel.contains('category.'),
                               onPressed: !selectedLabel.contains('category.')
                                   ? () {
@@ -242,7 +251,9 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                                         context: context,
                                         builder: (BuildContext context) =>
                                             AlertDialog(
-                                          title: const Text('라벨 변경',
+                                          title: Text(
+                                              context.tr(
+                                                  'category_setting.change_label'),
                                               style: TextStyle(
                                                   fontSize: 16.0,
                                                   fontWeight: FontWeight.bold)),
@@ -257,7 +268,8 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                                               }
                                             },
                                             decoration: InputDecoration(
-                                              hintText: '새로운 라벨 입력',
+                                              hintText: context.tr(
+                                                  'category_setting.new_label'),
                                               border: OutlineInputBorder(),
                                               enabled: !selectedLabel
                                                   .contains('category.'),
@@ -265,7 +277,8 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                                           ),
                                           actions: <Widget>[
                                             TextButton(
-                                              child: const Text('취소'),
+                                              child: Text(context.tr(
+                                                  'category_setting.cancel')),
                                               onPressed: () {
                                                 Navigator.of(context).pop();
                                               },
@@ -282,7 +295,8 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                                                           .pop();
                                                     }
                                                   : null,
-                                              child: const Text('변경'),
+                                              child: Text(context.tr(
+                                                  'category_setting.select')),
                                             ),
                                           ],
                                         ),
@@ -336,11 +350,13 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                       );
                     }
                     showCustomToast(
-                        context: context, message: context.tr('save_category'));
+                        context: context,
+                        message: context.tr('category_setting.save_category'));
                   } else {
                     if (selectedLabel.isEmpty) {
                       return showCustomToast(
-                          context: context, message: context.tr('need_label'));
+                          context: context,
+                          message: context.tr('category_setting.need_label'));
                     }
                     if (widget.type == 'income') {
                       _notifier.addIncomeCategory(
@@ -360,7 +376,8 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                       );
                     }
                     showCustomToast(
-                        context: context, message: context.tr('add_category'));
+                        context: context,
+                        message: context.tr('category_setting.add_category'));
                   }
                   Navigator.pop(context);
                 },
@@ -369,7 +386,7 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                       EdgeInsets.symmetric(vertical: 17.0, horizontal: 30.0),
                 ),
                 child: Text(
-                  context.tr('save_category'),
+                  context.tr('category_setting.save_category'),
                   style: TextStyle(
                     fontSize: 19,
                     color: Colors.white,
@@ -393,11 +410,12 @@ class _CategorySettingDetailState extends ConsumerState<CategorySettingDetail> {
                     }
                     showCustomToast(
                         context: context,
-                        message: context.tr('remove_category'));
+                        message:
+                            context.tr('category_setting.remove_category'));
                     Navigator.pop(context);
                   },
                   child: Text(
-                    context.tr('delete_category'),
+                    context.tr('category_setting.delete_category'),
                     style: TextStyle(
                       fontSize: 14,
                       color: Colors.red,

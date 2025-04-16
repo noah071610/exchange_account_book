@@ -6,7 +6,7 @@ import 'dart:convert';
 
 class Utf8LengthLimitingTextInputFormatter extends TextInputFormatter {
   Utf8LengthLimitingTextInputFormatter(this.maxLength)
-      : assert(maxLength == null || maxLength == -1 || maxLength > 0);
+      : assert(maxLength == -1 || maxLength > 0);
 
   final int maxLength;
 
@@ -15,9 +15,7 @@ class Utf8LengthLimitingTextInputFormatter extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    if (maxLength != null &&
-        maxLength > 0 &&
-        bytesLength(newValue.text) > maxLength) {
+    if (maxLength > 0 && bytesLength(newValue.text) > maxLength) {
       // If already at the maximum and tried to enter even more, keep the old value.
       if (bytesLength(oldValue.text) == maxLength) {
         return oldValue;

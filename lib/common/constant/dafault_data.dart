@@ -20,5 +20,5 @@ final defaultSettingModel = SettingModel(
   primaryColor: '#000000',
   subColor: '#000000',
   selectCountryForAnalytics: '',
-  selectedCountriesForCalender: [],
+  curCurrency: null,
 );

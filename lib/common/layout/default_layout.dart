@@ -1,11 +1,5 @@
-import 'package:currency_exchange/exchange/view/exchange_screen.dart';
-import 'package:currency_exchange/common/constant/category.dart';
-import 'package:currency_exchange/common/provider/category_list_provider.dart';
-import 'package:currency_exchange/common/provider/currency_list_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:currency_exchange/common/widgets/account_book_btn.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:currency_exchange/common/widgets/calculator_sheet.dart';
 
 class DefaultLayout extends ConsumerWidget {
   final String? title;
@@ -13,7 +7,7 @@ class DefaultLayout extends ConsumerWidget {
   final Color? color;
   final Widget child;
   final Widget? bottomNavigationBar;
-  final Widget? floatingButton;
+  final Widget? floatingActionButton;
   final Widget? leading;
   final List<Widget>? actions;
   final void Function()? onClickTitle;
@@ -30,7 +24,7 @@ class DefaultLayout extends ConsumerWidget {
     this.actions,
     this.leading,
     this.onClickTitle,
-    this.floatingButton,
+    this.floatingActionButton,
     this.centerTitle = false,
     this.showAppbar = true,
     this.bottomSafe = true,
@@ -61,6 +55,7 @@ class DefaultLayout extends ConsumerWidget {
       ),
       appBar: showAppbar == true ? renderAppbar(context) : null,
       bottomNavigationBar: bottomNavigationBar,
+      floatingActionButton: floatingActionButton,
     );
   }
 

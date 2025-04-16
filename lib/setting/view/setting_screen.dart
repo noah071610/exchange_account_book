@@ -16,10 +16,10 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SettingDetailLayout(child: [
       SettingSection(
-        title: context.tr('settings'),
+        title: context.tr('settings.settings'),
         items: [
           SettingItem(
-            title: context.tr('currency_settings'),
+            title: context.tr('settings.currency_settings'),
             icon: Icons.font_download,
             settingType: SettingType.navigator,
             onTap: () {
@@ -27,7 +27,7 @@ class SettingScreen extends StatelessWidget {
             },
           ),
           SettingItem(
-            title: context.tr('category_settings'),
+            title: context.tr('settings.category_settings'),
             icon: Icons.font_download,
             settingType: SettingType.navigator,
             onTap: () {
@@ -37,18 +37,10 @@ class SettingScreen extends StatelessWidget {
         ],
       ),
       SettingSection(
-        title: context.tr('settings'),
+        title: context.tr('settings.settings'),
         items: [
           SettingItem(
-            title: context.tr('font_settings'),
-            icon: Icons.font_download,
-            settingType: SettingType.navigator,
-            onTap: () {
-              context.go('/font-setting');
-            },
-          ),
-          SettingItem(
-            title: context.tr('language_settings'),
+            title: context.tr('settings.language_settings'),
             icon: Icons.language,
             settingType: SettingType.navigator,
             onTap: () {
@@ -56,7 +48,7 @@ class SettingScreen extends StatelessWidget {
             },
           ),
           SettingItem(
-            title: context.tr('display_settings'),
+            title: context.tr('settings.display_settings'),
             icon: Icons.brightness_6,
             settingType: SettingType.navigator,
             onTap: () {
@@ -66,16 +58,16 @@ class SettingScreen extends StatelessWidget {
         ],
       ),
       SettingSection(
-        title: context.tr('etc'),
+        title: context.tr('settings.etc'),
         items: [
           SettingItem(
-            title: context.tr('feedback_and_requests'),
+            title: context.tr('settings.feedback_and_requests'),
             icon: Icons.feedback,
             onTap: () => _launchEmail(context),
             settingType: SettingType.event,
           ),
           SettingItem(
-            title: context.tr('version_info'),
+            title: context.tr('settings.version_info'),
             icon: Icons.info,
             settingType: SettingType.event,
             onTap: () {
@@ -102,13 +94,13 @@ class SettingScreen extends StatelessWidget {
       scheme: 'mailto',
       path: 'noah071610@gmail.com',
       query: encodeQueryParameters(<String, String>{
-        'subject': context.tr('feedback_and_requests'),
-        'body': context.tr('feedback_help_message')
+        'subject': context.tr('settings.feedback_and_requests'),
+        'body': context.tr('settings.feedback_help_message')
       }),
     );
 
     if (!await launchUrl(emailLaunchUri)) {
-      throw Exception(context.tr('cannot_open_email'));
+      throw Exception(context.tr('settings.cannot_open_email'));
     }
   }
 

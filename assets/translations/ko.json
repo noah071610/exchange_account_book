@@ -321,6 +321,30 @@
     "zwl": "달러",
     "unknown": ""
   },
+  "spend": "지출",
+  "total": "총합",
+  "income": "수입",
+  "exchange_calculator": "환율 계산기",
+  "spend_category": "지출 종류",
+  "year": "년",
+  "month": {
+    "1": "1월",
+    "2": "2월",
+    "3": "3월",
+    "4": "4월",
+    "5": "5월",
+    "6": "6월",
+    "7": "7월",
+    "8": "8월",
+    "9": "9월",
+    "10": "10월",
+    "11": "11월",
+    "12": "12월"
+  },
+  "day": "일",
+  "exchange": "환율",
+  "analytics": "분석",
+  "exchange_amount": "환전액 (환전 화폐)",
   "continent": {
     "oceania": "오세아니아",
     "europe": "유럽",
@@ -329,12 +353,27 @@
     "southAmerica": "남미",
     "africa": "아프리카"
   },
+  "week": {
+    "mon": "월",
+    "tue": "화",
+    "wed": "수",
+    "thu": "목",
+    "fri": "금",
+    "sat": "토",
+    "sun": "일"
+  },
   "suffix": {
     "man": "만",
     "oku": "억",
     "won": "원"
   },
+  "calculator": {
+    "save_account_book": "저장하기",
+    "go_to_account_book": "가계부에 추가",
+    "calculate_exchange_rate": "환율 계산"
+  },
   "category": {
+    "category": "분류",
     "food": "식비",
     "transportation": "교통비",
     "accommodation": "숙박비",
@@ -360,5 +399,54 @@
     "exchange": "환전",
     "exchangeSpend": "환전 출금",
     "exchangeIncome": "환전 송금"
-  }
+  },
+  "settings": {
+    "settings": "설정",
+    "selected_country": "선택된 국가",
+    "country_search": "나라이름, 통화 코드...",
+    "currency_settings": "화폐 설정",
+    "category_settings": "카테고리 설정",
+    "font_settings": "폰트 설정",
+    "language_settings": "언어 설정",
+    "display_settings": "화면 설정",
+    "etc": "기타",
+    "feedback_and_requests": "피드백 및 요청",
+    "version_info": "버전 정보",
+    "feedback_help_message": "피드백 및 요청 사항을 알려주세요.",
+    "cannot_open_email": "이메일을 열 수 없습니다."
+  },
+  "currency_setting": {
+    "title": "화폐 설정"
+  },
+  "category_setting": {
+    "title": "카테고리 설정",
+    "spend_category": "지출 카테고리",
+    "income_category": "수입 카테고리",
+    "add_category": "카테고리 추가",
+    "settings": "설정",
+    "change_color": "색상 변경",
+    "change_icon": "아이콘 변경",
+    "change_label": "라벨 변경",
+    "empty_label": "빈 라벨",
+    "cancel": "취소",
+    "select": "선택",
+    "new_label": "새로운 라벨 입력",
+    "save_category": "카테고리 저장",
+    "need_label": "라벨이 필요합니다",
+    "remove_category": "카테고리 삭제",
+    "delete_category": "카테고리 삭제"
+  },
+  "calendar": {
+    "calendar": "캘린더",
+    "view_list": "리스트 보기",
+    "view_statistics": "통계 보기",
+    "empty_account": "아직 가계부가 없어요"
+  },
+  "system": "시스템환경",
+  "light": "라이트모드",
+  "dark": "다크모드",
+  "main_country": "기준 화폐 (내 국가 ↔️ 타겟 국가)",
+  "another_country": "환전 화폐 (그 외 국가)",
+  "delete": "삭제하기",
+  "at_least_two_currency": "화폐는 최소 2개 이상 설정되어야 합니다."
 }

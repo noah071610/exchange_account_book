@@ -4,6 +4,7 @@ import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:currency_exchange/common/provider/category_list_provider.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/widgets/account_book_setting_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_reorderable_grid_view/widgets/widgets.dart';
@@ -38,13 +39,13 @@ class _CategorySettingState extends ConsumerState<CategorySetting> {
         color: Theme.of(context).extension<CustomColors>()?.containerWhiteBg,
         child: CustomScrollView(
           slivers: [
-            const SliverAppBar(
+            SliverAppBar(
               backgroundColor: Color.fromARGB(255, 245, 242, 252),
               surfaceTintColor: Color.fromARGB(255, 245, 242, 252),
               pinned: true, // 스크롤 시 AppBar 고정
               flexibleSpace: FlexibleSpaceBar(
                 title: Text(
-                  '카테고리 설정',
+                  context.tr('settings.category_settings'),
                   style: TextStyle(fontSize: 18.0),
                 ),
               ),
@@ -56,7 +57,7 @@ class _CategorySettingState extends ConsumerState<CategorySetting> {
                 alignment: Alignment.centerLeft,
                 color: Color.fromARGB(255, 245, 242, 252),
                 child: Text(
-                  '지출 카테고리',
+                  context.tr('category_setting.spend_category'),
                   style: TextStyle(
                     color:
                         Theme.of(context).extension<CustomColors>()?.textGrey,
@@ -117,7 +118,7 @@ class _CategorySettingState extends ConsumerState<CategorySetting> {
                     onPressed: () {
                       context.go('/category-setting/spend/add');
                     },
-                    child: Text('카테고리 추가'),
+                    child: Text(context.tr('category_setting.add_category')),
                   ),
                 ),
               ),
@@ -129,7 +130,7 @@ class _CategorySettingState extends ConsumerState<CategorySetting> {
                 alignment: Alignment.centerLeft,
                 color: Color.fromARGB(255, 245, 242, 252),
                 child: Text(
-                  '수입 카테고리',
+                  context.tr('category_setting.income_category'),
                   style: TextStyle(
                     color:
                         Theme.of(context).extension<CustomColors>()?.textGrey,
@@ -190,7 +191,7 @@ class _CategorySettingState extends ConsumerState<CategorySetting> {
                     onPressed: () {
                       context.go('/category-setting/income/add');
                     },
-                    child: Text('카테고리 추가'),
+                    child: Text(context.tr('category_setting.add_category')),
                   ),
                 ),
               ),
