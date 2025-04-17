@@ -1,4 +1,4 @@
-final Map<String, double> exchange = {
+final Map<String, double> defaultExchange = {
   "KRW": 1,
   "AED": 0.002540,
   "AFN": 0.05045,

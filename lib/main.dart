@@ -9,13 +9,13 @@ import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/model/currency_list_model.dart';
 import 'package:currency_exchange/common/model/currency_model.dart';
+import 'package:currency_exchange/common/model/exchange_rate_model.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/view/root_tab.dart';
 import 'package:currency_exchange/setting/view/category_setting.dart';
 import 'package:currency_exchange/setting/view/category_setting_detail.dart';
 import 'package:currency_exchange/setting/view/currency_setting.dart';
 import 'package:currency_exchange/setting/view/display_setting.dart';
-import 'package:currency_exchange/setting/view/font_setting.dart';
 import 'package:currency_exchange/setting/view/language_setting.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -47,6 +47,7 @@ void main() async {
   Hive.registerAdapter(AccountBookModelAdapter());
   Hive.registerAdapter(AccountBookCategoryModelAdapter());
   Hive.registerAdapter(AccountBookListModelAdapter());
+  Hive.registerAdapter(ExchangeRateModelAdapter());
 
   Hive.registerAdapter(SettingModelAdapter());
 

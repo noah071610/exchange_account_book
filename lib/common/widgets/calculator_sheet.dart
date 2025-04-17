@@ -3,6 +3,7 @@ import 'package:currency_exchange/common/model/account_book_btn_model.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/model/currency_card_model.dart';
 import 'package:currency_exchange/common/provider/account_book_list_provider.dart';
+import 'package:currency_exchange/common/provider/exchange_rate_provider.dart';
 import 'package:currency_exchange/common/provider/setting_provider.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/utils/utils.dart';
@@ -258,6 +259,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
     final currencyList = ref.watch(currencyListProvider).currencyList;
     final settingNotifier = ref.read(settingProvider.notifier);
     final settings = ref.watch(settingProvider);
+    final exchangeRate = ref.watch(exchangeRateProvider).map;
 
     // 숫자 계산
     double result = calculateLeft();
@@ -266,6 +268,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
       amount: result,
       baseCode: _currentBaseData.currencyCode,
       targetCode: _currentTargetData.currencyCode,
+      exchangeRate: exchangeRate,
     );
 
     for (var i = 0; i < currencyList.length; i++) {
@@ -277,6 +280,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
             amount: result,
             baseCode: _currentBaseData.currencyCode,
             targetCode: currencyModels[currencyList[i].name]!.currencyCode,
+            exchangeRate: exchangeRate,
           ),
         );
       }
@@ -365,6 +369,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
     final incomeCategories =
         ref.watch(accountBookCategoryProvider).incomeCategories;
     final userCurrencyList = ref.watch(currencyListProvider).currencyList;
+    final exchangeRate = ref.watch(exchangeRateProvider).map;
 
     if (selectedCategory == null) {
       setState(() {
@@ -572,6 +577,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                           amount: double.parse(firstNumSet),
                           baseCode: _currentBaseData.currencyCode,
                           targetCode: _currentTargetData.currencyCode,
+                          exchangeRate: exchangeRate,
                         )),
                         style: TextStyle(
                           fontSize: 26,
@@ -665,6 +671,7 @@ class _CalculatorSheetState extends ConsumerState<CalculatorSheet> {
                                         baseCode: _currentBaseData.currencyCode,
                                         targetCode:
                                             _currentTargetData.currencyCode,
+                                        exchangeRate: exchangeRate,
                                       ),
                                       isDecimal: false);
                                   break;

@@ -1,6 +1,8 @@
 import 'package:currency_exchange/analytics/view/analytics_screen.dart';
 import 'package:currency_exchange/common/constant/currency_models.dart';
+import 'package:currency_exchange/common/model/exchange_rate_model.dart';
 import 'package:currency_exchange/common/provider/currency_list_provider.dart';
+import 'package:currency_exchange/common/provider/exchange_rate_provider.dart';
 import 'package:currency_exchange/common/provider/setting_provider.dart';
 import 'package:currency_exchange/common/widgets/calculator_sheet.dart';
 import 'package:currency_exchange/exchange/view/exchange_screen.dart';
@@ -13,6 +15,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:currency_exchange/common/layout/default_layout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class RootTab extends ConsumerStatefulWidget {
   const RootTab({
@@ -35,6 +40,32 @@ class _RootTabState extends ConsumerState<RootTab>
   void initState() {
     super.initState();
     _controller = TabController(length: 4, vsync: this);
+
+    // API 호출
+    fetchExchangeData();
+  }
+
+  Future<void> fetchExchangeData() async {
+    try {
+      final now = DateTime.now();
+      final date = DateFormat('yyyy-MM-dd').format(now);
+
+      final response = await http
+          .get(Uri.parse('http://localhost:5555/api/exchange?date=$date'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final Map<String, dynamic> exchangeRateDynamic = data['json'];
+        final Map<String, double> exchangeRate = exchangeRateDynamic
+            .map((key, value) => MapEntry(key, value.toDouble()));
+        await ref
+            .read(exchangeRateProvider.notifier)
+            .updateExchangeRate(ExchangeRateModel(map: exchangeRate));
+      } else {
+        print('Error: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
   }
 
   @override

@@ -1,10 +1,8 @@
 import 'dart:math';
 import 'package:currency_exchange/common/constant/currency_models.dart';
-import 'package:currency_exchange/common/constant/temp.dart';
 import 'package:currency_exchange/common/model/account_book_btn_model.dart';
 import 'package:currency_exchange/common/model/account_book_list_model.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
-import 'package:currency_exchange/common/model/currency_model.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -102,22 +100,25 @@ double getExchangedAmount({
   required double amount,
   required String baseCode,
   required String targetCode,
+  required Map<String, double> exchangeRate,
 }) {
-  final baseExchange = Map<String, double>.from(convertExchangeRates(baseCode));
+  final baseExchange =
+      Map<String, double>.from(convertExchangeRates(baseCode, exchangeRate));
   return amount * (baseExchange[targetCode] ?? 1.0);
 }
 
-Map<String, double> convertExchangeRates(String baseCurrency) {
-  if (baseCurrency == 'KRW') return exchange;
+Map<String, double> convertExchangeRates(
+    String baseCurrency, Map<String, double> exchangeRate) {
+  if (baseCurrency == 'KRW') return exchangeRate;
 
-  if (!exchange.containsKey(baseCurrency)) {
+  if (!exchangeRate.containsKey(baseCurrency)) {
     throw ArgumentError('Invalid currency code');
   }
 
-  double baseRate = exchange[baseCurrency]!;
+  double baseRate = exchangeRate[baseCurrency]!;
   Map<String, double> convertedRates = {};
 
-  exchange.forEach((currency, rate) {
+  exchangeRate.forEach((currency, rate) {
     convertedRates[currency] = rate / baseRate;
   });
 
