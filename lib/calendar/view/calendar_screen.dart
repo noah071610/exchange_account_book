@@ -1,13 +1,10 @@
 import 'package:currency_exchange/common/constant/currency_models.dart';
 import 'package:currency_exchange/common/model/account_book_model.dart';
 import 'package:currency_exchange/common/provider/account_book_list_provider.dart';
-import 'package:currency_exchange/common/provider/currency_list_provider.dart';
-import 'package:currency_exchange/common/provider/setting_provider.dart';
 import 'package:currency_exchange/common/theme/custom_colors.dart';
 import 'package:currency_exchange/common/utils/utils.dart';
 import 'package:currency_exchange/common/widgets/account_book_card.dart';
 import 'package:currency_exchange/common/widgets/account_total_by_day.dart';
-import 'package:currency_exchange/common/widgets/country_image.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +30,6 @@ class _CalenderScreenState extends ConsumerState<CalenderScreen> {
   @override
   Widget build(BuildContext context) {
     final accountBook = ref.watch(accountBookListProvider);
-    final currencyList = ref.watch(currencyListProvider).currencyList;
 
     final DateFormat yearFormatter = DateFormat('yyyy');
     final DateFormat monthFormatter = DateFormat('MM');
